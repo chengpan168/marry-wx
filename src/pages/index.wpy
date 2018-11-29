@@ -1,0 +1,486 @@
+<style lang="less">
+  @import "../assets/css/global";
+
+  page {
+  }
+
+  .page {
+    padding: 0 0 200px 0;
+  }
+
+  .overview {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 40px;
+    padding: 0 40px;
+
+    .item {
+      width: 288px;
+      height: 162px;
+      border-radius: 10px;
+      font-size: 23px;
+      color: #FFFFFF;
+      text-align: center;
+      padding: 30px 0;
+
+      transition: font-size 0.2s ease-in-out, height 0.2s ease-in-out, width 0.2s ease-in-out;
+
+      .amount {
+        margin-top: 20px;
+        font-size: 54px;
+      }
+    }
+    .active {
+      width: 320px !important;
+      height: 180px !important;;
+      font-size: 26px;
+      font-weight: bold;
+      padding: 30px 0;
+      transition: font-size 0.2s ease-in-out, height 0.2s ease-in-out, width 0.2s ease-in-out;
+
+      .amount {
+        font-size: 60px;
+      }
+    }
+    .loan {
+      background: linear-gradient(135deg, rgba(255, 89, 117, 1) 0%, rgba(255, 115, 126, 1) 47%, rgba(255, 153, 102, 1) 100%);
+    }
+
+    .borrow {
+      background: linear-gradient(135deg, rgba(102, 115, 255, 1) 0%, rgba(76, 157, 255, 1) 48%, rgba(102, 204, 255, 1) 100%);
+    }
+  }
+
+  .name {
+    font-size: 36px;
+    font-weight: bold;
+    color: rgba(54, 57, 77, 1);
+    text-align: center;
+    margin-top: 100px;
+  }
+
+  .desc {
+    margin: 30px 40px;
+    padding: 40px;
+    font-size: 30px;
+    font-weight: 500;
+    color: rgba(54, 57, 77, 1);
+    line-height: 1.5;
+    background: #F5F8FA;
+    border-radius: 10px;
+
+    view {
+      &:first-child {
+        margin-bottom: 50px;
+      }
+    }
+  }
+
+  .list {
+    margin-top: 70px;
+    padding: 0 40px;
+
+    .item {
+
+      .title {
+        display: flex;
+        align-items: center;
+
+        padding: 20px 0;
+        font-size: 26px;
+        font-weight: bold;
+        color: rgba(163, 177, 204, 1);
+
+        .icon {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 24px;
+          height: 24px;
+          border-radius: 4px;
+          margin-right: 20px;
+          background: linear-gradient(135deg, rgba(255, 89, 117, 1) 0%, rgba(255, 115, 126, 1) 47%, rgba(255, 153, 102, 1) 100%);
+
+          &.complete {
+            background: #B8C2CC;
+          }
+
+          .iconfont {
+            color: #FFFFFF;
+            font-size: 16px;
+          }
+        }
+      }
+      .content {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 40px;
+        height: 100px;
+        background: rgba(245, 248, 250, 1);
+        border-radius: 10px;
+        font-size: 36px;
+        font-weight: bold;
+        color: rgba(54, 57, 77, 1);
+
+        &.complete {
+          color: #A1A4B3;
+        }
+
+        .user {
+          display: flex;
+          align-items: center;
+          .nickname {
+            margin-right: 20px;
+          }
+
+          .confirm {
+            height: 24px;
+            line-height: 24px;
+            font-size: 18px;
+            padding: 0 5px;
+            color: #FFFFFF;
+            background: linear-gradient(315deg, rgba(137, 217, 98, 1) 0%, rgba(67, 191, 171, 1) 100%);
+            border-radius: 4px;
+            text-align: center;
+          }
+          .close {
+            height: 24px;
+            line-height: 24px;
+            font-size: 18px;
+            padding: 0 5px;
+            color: #FFFFFF;
+            background: #B8C2CC;
+            border-radius: 4px;
+            text-align: center;
+          }
+        }
+
+      }
+    }
+  }
+
+  .btns {
+    position: fixed;
+    bottom: 60px;
+    width: 750px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 40px;
+
+    .add {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      width: 500px;
+      height: 100px;
+      border-radius: 10px;
+      font-size: 36px;
+      font-weight: 800;
+      color: rgba(255, 255, 255, 1);
+
+      &.send {
+        background: linear-gradient(135deg, rgba(255, 89, 117, 1) 0%, rgba(255, 115, 126, 1) 47%, rgba(255, 153, 102, 1) 100%);
+        transition: background 0.2s ease-in-out;
+      }
+      &.receive {
+        background: linear-gradient(135deg, rgba(102, 115, 255, 1) 0%, rgba(76, 157, 255, 1) 48%, rgba(102, 204, 255, 1) 100%);
+        transition: background 0.2s ease-in-out;
+      }
+
+      .icon-add {
+        font-size: 30px;
+        font-weight: bold;
+        margin-right: 15px;
+      }
+    }
+    .share {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      width: 150px;
+      height: 100px;
+      background: linear-gradient(315deg, rgba(137, 217, 98, 1) 0%, rgba(67, 191, 171, 1) 100%);
+      border-radius: 10px;
+      color: #FFFFFF;
+
+      button {
+        border: none;
+        outline: none;
+        text-align: center;
+      }
+      .icon-share {
+        font-size: 48px;
+        font-weight: 400;
+        color: #FFFFFF;
+      }
+    }
+  }
+
+  .hot {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    padding: 20px 0;
+    text-align: center;
+    background: linear-gradient(315deg, rgba(242, 206, 97, 1) 0%, rgba(255, 165, 38, 1) 100%);
+    position: fixed;
+    right: 55px;
+    bottom: 220px;
+
+    .icon-list {
+      font-size: 52px;
+      color: #FFFFFF;
+      font-weight: bold;
+    }
+    view {
+      font-size: 18px;
+      color: #FFFFFF;
+      margin-top: 5px;
+    }
+  }
+
+  .guide-wrapper {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.8);
+    text-align:center;
+
+    image {
+      width: 650px;
+      margin: 50px auto;
+    }
+  }
+
+</style>
+<template>
+  <view class="page">
+    <view class="overview">
+      <view class="item loan {{queryParam.queryType == 'send' ? 'active' : ''}}" @tap="onQueryTypeChange('send')">
+        <view>借出(元)</view>
+        <view class="amount">{{loanAmount}}</view>
+      </view>
+      <view class="item borrow {{queryParam.queryType == 'receive' ? 'active' : ''}}"
+            @tap="onQueryTypeChange('receive')">
+        <view>借入(元)</view>
+        <view class="amount">{{borrowAmount}}</view>
+      </view>
+    </view>
+
+    <view class="name" wx:if="{{!list || list.length == 0}}">什么是借单管家？</view>
+
+    <view class="desc" wx:if="{{!list || list.length == 0}}">
+      <view>借单管家是一款轻便的记录借出（借给别人钱）和借入（向别人借钱）的小工具。</view>
+      <view>轻松管理您的每一笔借款记录，让手写本、word、Excel见鬼去吧！</view>
+    </view>
+
+    <view class="list" wx:if="{{list && list.length > 0}}">
+      <view class="item" wx:for="{{list}}" wx:key="{{index}}" @tap="onItemTap('{{item.id}}')">
+        <view class="title">
+          <view class="icon {{item.isReceiveComplete == 'y' ? 'complete' : ''}}">
+            <text class="iconfont {{queryParam.queryType == 'send' ? 'icon-left-arrow' : 'icon-right-arrow'}}"></text>
+          </view>
+          <text>{{item.timeText}}</text>
+        </view>
+        <view class="content {{item.isReceiveComplete == 'y' ? 'complete' : ''}}">
+          <view class="user">
+            <text class="nickname">{{queryParam.queryType == 'send' ? item.receiveName : item.sendName}}</text>
+            <view class="close" wx:if="{{item.isReceiveComplete == 'y'}}">已还清</view>
+            <view class="confirm" wx:elif="{{item.hasConfirm == 'y'}}">已确认</view>
+          </view>
+          <text>￥{{item.isReceiveComplete == 'y' ? item.sendAmount : item.sendAmount - item.receiveAmount}}</text>
+        </view>
+      </view>
+
+      <view>
+        <view wx:if="{{loading}}" class="paginate">
+          <image src="/assets/icon/icon_loading.gif" alt=""/>
+          <view>正在加载中...</view>
+        </view>
+        <view wx:elif="{{hasNext}}" class="paginate" bindclick="onNextPage">加载更多</view>
+        <view wx:else class="paginate"></view>
+      </view>
+    </view>
+
+    <view class="hot hide">
+      <text class="iconfont icon-list"></text>
+      <view>负债榜</view>
+    </view>
+
+    <view class="btns">
+      <view class="add {{queryParam.queryType}}" @tap="onAdd">
+        <text class="iconfont icon-add"></text>
+        <text>{{queryParam.queryType == 'send' ? '创建借出记录' : '创建借入记录'}}</text>
+      </view>
+      <view class="share">
+        <button open-type="share" plain="true" hover-class="none">
+          <text class="iconfont icon-share"></text>
+        </button>
+      </view>
+    </view>
+
+    <view class="guide-wrapper" wx:if="{{shortcutGuideVisible}}" @tap="onCloseShortcutGuide">
+      <image mode="widthFix" src="http://load-wx.oss-cn-hangzhou.aliyuncs.com/assets/image/shortcut_guide%402x.png" alt=""/>
+    </view>
+    <!--分隔线-->
+    <i-toast id="toast"/>
+  </view>
+</template>
+
+<script>
+  import page from '@/common/page'
+  import format from 'date-fns/format'
+
+  const { $Toast } = require('@/components/iview/base/index')
+
+  export default class Index extends page {
+    config = {
+      'navigationBarTitleText': '借单管家',
+      'enablePullDownRefresh': false,
+      'navigationBarBackgroundColor': '#FFFFFF',
+      'usingComponents': {
+        'i-toast': '/components/iview/toast/index'
+      }
+    }
+    components = {}
+
+    data = {
+      token: '',
+      loading: false,
+      hasNext: true,
+      shortcutGuideVisible: false,
+      firstUse: false,
+      borrowAmount: 0,
+      loanAmount: 0,
+      queryParam: {
+        queryType: 'send',
+        current: 1
+      },
+      list: []
+    }
+
+    computed = {}
+
+    onLoad () {
+      this.firstUse = this.$parent.globalData.firstUse
+    }
+
+    onShow () {
+      this.init()
+    }
+
+    onReachBottom (e) {
+      if (!this.hasNext || this.loading) {
+        return
+      }
+      this.queryParam.current = this.queryParam.current + 1
+      this.getList()
+    }
+
+    onShareAppMessage (e) {
+      let opt = {
+        title: this.shareTitles[parseInt(Math.random() * 10 / 3)],
+        imageUrl: 'http://load-wx.oss-cn-hangzhou.aliyuncs.com/assets/image/share_image.png',
+        // path: '/pages/share/confirm?id=' + this.id,
+        success (res) {
+          console.log('分享成功', res)
+        }
+      }
+      return opt
+    }
+
+    init () {
+      this.getAmount()
+      this.getList()
+    }
+
+    methods = {
+      onQueryTypeChange (type) {
+        this.queryParam.queryType = type
+        this.queryParam.current = 1
+        this.getList()
+      },
+      onNextPage () {
+        this.queryParam.current = this.queryParam.current + 1
+        this.getList()
+      },
+      onAdd () {
+        let path = '/pages/load/edit'
+        if (this.queryParam.queryType == 'send') {
+        } else {
+          path = '/pages/borrow/edit'
+        }
+
+        wx.navigateTo({
+          url: path
+        })
+      },
+      onItemTap (id) {
+        if (this.queryParam.queryType == 'send') {
+          wx.navigateTo({
+            url: '/pages/load/detail?id=' + id
+          })
+        } else {
+          wx.navigateTo({
+            url: '/pages/borrow/detail?id=' + id
+          })
+        }
+      },
+      onCloseShortcutGuide () {
+        console.log('sfsaffa')
+        this.shortcutGuideVisible = false
+        this.firstUse = 'n'
+        wx.setStorageSync('firstUse', 'n')
+      }
+    }
+
+    getAmount () {
+      this.$get('/dr/totalAmount').then(res => {
+        this.loanAmount = res.totalSendAmount || 0
+        this.borrowAmount = res.totalReceiveAmount || 0
+        this.$apply()
+      })
+    }
+
+    getList () {
+      this.loading = true
+      wx.showNavigationBarLoading()
+
+      this.$get('/dr/queryPageList', this.queryParam).then(res => {
+        let list = res.records
+        if (!list) {
+          return
+        }
+
+        list.forEach(item => {
+          if (this.queryParam.type == 'send') {
+            item.timeText = format(item.receiveAmountTime, 'YYYY-MM-DD')
+          } else {
+            item.timeText = format(item.sendAmountTime, 'YYYY-MM-DD')
+          }
+        })
+
+        if (this.queryParam.current == 1) {
+          this.list = list
+        } else {
+          this.list = this.list.concat(list)
+        }
+
+        this.shortcutGuideVisible = list.length > 0 && (this.firstUse == 'y')
+
+        this.loading = false
+        this.hasNext = res.current < res.pages
+        wx.hideNavigationBarLoading()
+        this.$apply()
+      })
+    }
+  }
+</script>

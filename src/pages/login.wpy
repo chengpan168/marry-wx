@@ -1,0 +1,168 @@
+<style lang="less">
+  @import "../assets/css/global";
+
+  page {
+  }
+
+  .page {
+  }
+
+  .login {
+    margin: 80px 40px;
+    border: none;
+    outline: none;
+    height: 100px;
+    line-height: 100px;
+    background: linear-gradient(315deg, rgba(137, 217, 98, 1) 0%, rgba(67, 191, 171, 1) 100%);
+    border-radius: 10px;
+    font-size: 36px;
+    font-weight: 800;
+    color: rgba(255, 255, 255, 1);
+  }
+
+</style>
+<template>
+  <view class="page">
+    <button class="login" open-type="getUserInfo" hover-class="none" bindgetuserinfo="onGetUserInfo">
+      微信登录
+    </button>
+    <!--分隔线-->
+    <i-toast id="toast"/>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import page from '@/common/page'
+  import logger from '@/mixins/logger'
+  import schema from 'async-validator'
+  import isMobilePhone from 'validator/lib/isMobilePhone'
+  import _get from 'lodash/get'
+
+  const { $Toast } = require('@/components/iview/base/index')
+
+  export default class Login extends page {
+    config = {
+      'navigationBarTitleText': '登录',
+      'enablePullDownRefresh': false,
+      'navigationBarBackgroundColor': '#FFFFFF',
+      'usingComponents': {
+        'i-row': '/components/iview/row/index',
+        'i-col': '/components/iview/col/index',
+        'i-checkbox-group': '/components/iview/checkbox-group/index',
+        'i-checkbox': '/components/iview/checkbox/index',
+        'i-input': '/components/iview/input/index',
+        'i-toast': '/components/iview/toast/index'
+      }
+    }
+    components = {}
+
+    data = {
+      token: '',
+      from: ''
+    }
+
+    computed = {}
+
+    onLoad (opt) {
+      this.from = _get(opt, 'from', '')
+    }
+
+    onShow () {
+      this.init()
+    }
+
+    onReachBottom (e) {
+      if (!this.data.hasNext || this.data.loading) {
+        return
+      }
+    }
+
+    onShareAppMessage (e) {
+      let opt = {
+        success (res) {
+          logger.info('分享成功', res)
+        }
+      }
+      return opt
+    }
+
+    init () {
+    }
+
+    methods = {
+      onGetUserInfo (e) {
+        let userInfoDetail = e.detail
+        if (!userInfoDetail.userInfo) {
+          return
+        }
+
+        let loginData = {
+          rawData: userInfoDetail.rawData,
+          signature: userInfoDetail.signature,
+          encryptedData: userInfoDetail.encryptedData,
+          iv: userInfoDetail.iv
+        }
+
+        wepy.login().then(loginRes => {
+          logger.info('小程序本地登录成功', loginRes)
+          loginData.code = loginRes.code
+          this.$login(loginData).then(res => {
+            this.token = res.token
+            this.nickname = res.data.nickName
+            this.$apply()
+
+            wx.navigateBack({
+              delta: 2
+            })
+          })
+        }).catch(loginRes => {
+          logger.info('小程序本地登录失败', loginRes)
+        })
+      },
+      onSendCode () {
+        if (!isMobilePhone(this.formData.phone, 'zh-CN')) {
+          $Toast({
+            content: '手机号格式不正确'
+          })
+          return
+        }
+
+        $Toast({
+          content: '验证码发送成功'
+        })
+      },
+      onSubmit () {
+        const validator = new schema(this.formValidator)
+        validator.validate(this.formData, (errors, fields) => {
+          if (errors) {
+            $Toast({
+              content: errors[0].message
+            })
+          }
+
+        })
+      },
+      onAgreeChange ({ detail = {} }) {
+        this.formData.agree = detail.current
+      },
+      onPhoneChange ({ detail }) {
+        this.formData.phone = detail.value
+      },
+      onPasswordChange ({ detail }) {
+        this.formData.password = detail.value
+      },
+      onCodeChange ({ detail }) {
+        this.formData.code = detail.value
+      },
+      onImagePreview (index) {
+        let room = this.rooms[index]
+        wx.previewImage({
+          current: index, // 当前显示图片的http链接
+          urls: room.imgs // 需要预览的图片http链接列表
+        })
+      }
+    }
+
+  }
+</script>

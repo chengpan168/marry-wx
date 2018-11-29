@@ -1,0 +1,13 @@
+{
+  "description": "结婚",
+  "setting": {
+    "urlCheck": true,
+    "es6": false,
+    "postcss": false,
+    "minified": false
+  },
+  "compileType": "miniprogram",
+  "appid": "wx99ac839378dbf468",
+  "projectname": "marry-wx",
+  "miniprogramRoot": "./dist"
+}

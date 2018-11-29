@@ -1,0 +1,554 @@
+<style lang="less">
+  @import "../../assets/css/global";
+
+  page {
+    background: #F5F8FA;
+  }
+
+  .page {
+    background: #F5F8FA;
+  }
+
+  .form {
+    padding: 0 40px 40px 40px;
+    .remark {
+      display: block;
+      text-align: left;
+      position: relative;
+
+      .form-item-content {
+        display: block;
+
+        textarea {
+          margin-top: 24px;
+          display: block;
+          width: 100%;
+          height: 100px;
+        }
+      }
+
+      .confirm {
+        position: absolute;
+        right: 35px;
+        bottom: 35px;
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+      }
+    }
+  }
+
+  .head-bar {
+    position: relative;
+    margin: 60px 40px 0 40px;
+    height: 100px;
+    line-height: 100px;
+    /*background: linear-gradient(315deg, rgba(137, 217, 98, 1) 0%, rgba(67, 191, 171, 1) 100%);*/
+    background: url("http://load-wx.oss-cn-hangzhou.aliyuncs.com/assets/image/share_confirm_bg.png");
+    background-size: contain;
+    box-shadow: 0px -1px 0px 0px rgba(102, 204, 136, 0.5);
+    border-radius: 10px 10px 4px 4px;
+    font-size: 30px;
+    font-family: PingFang-SC-Bold;
+    font-weight: bold;
+    color: rgba(255, 255, 255, 1);
+    text-align: center;
+
+  }
+
+  .share-confirm {
+    position: relative;
+    margin: 0px 40px 60px 40px;
+    background: #ffffff;
+  }
+
+  .btn-l {
+    height: 100px;
+    line-height: 100px;
+    border-radius: 10px;
+    font-size: 36px;
+    font-weight: 800;
+    text-align: center;
+    margin: 0 40px 40px 40px;
+  }
+
+  .pre-submit {
+    background: linear-gradient(315deg, #D2EDEA 0%, #E0F2DC 100%);
+    border: 2px solid #A2DEB1;
+    color: #66CC80;
+  }
+
+  .submit {
+    border: none;
+    outline: none;
+    background: linear-gradient(315deg, rgba(137, 217, 98, 1) 0%, rgba(67, 191, 171, 1) 100%);
+    color: rgba(255, 255, 255, 1);
+  }
+
+  .btn-home {
+    border: 2px solid #66CC88;
+    background: rgba(255, 255, 255, 1);
+    color: rgba(102, 204, 128, 1);
+  }
+
+  .pay-off {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    width: 670px;
+    height: 100px;
+    background: rgba(245, 248, 250, 1);
+    border-radius: 10px;
+    font-size: 30px;
+    text-align: center;
+    font-weight: bold;
+    color: rgba(163, 177, 204, 1);
+  }
+
+  .receive-complete-delete {
+    width: 670px;
+    height: 100px;
+    line-height: 100px;
+    background: rgba(255, 255, 255, 1);
+    border-radius: 10px;
+    margin: 40px auto;
+    border: 2px solid #FF8080;
+    font-size: 36px;
+    font-weight: 800;
+    color: rgba(255, 128, 128, 1);
+    text-align: center;
+  }
+
+  .btns {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0 40px;
+
+    button {
+      width: 320px;
+      height: 100px;
+      line-height: 100px;
+      background: rgba(255, 255, 255, 1);
+      border-radius: 10px;
+      border: 2px solid RGBA(102, 204, 136, 0.5);
+      font-size: 36px;
+      font-weight: 800;
+      color: rgba(102, 204, 128, 1);
+    }
+
+    .edit {
+      color: rgba(102, 204, 128, 1);
+    }
+    .del {
+      color: rgba(255, 128, 128, 1);
+      border: 2px solid RGBA(255, 128, 128, 0.5);
+    }
+  }
+
+  .receive-modal {
+    .amount {
+      height: 100px;
+      background: rgba(245, 248, 250, 1);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      margin: 60px 0;
+
+      input {
+        flex-grow: 1;
+        text-align: left;
+      }
+
+      .all {
+        font-size: 30px;
+        font-weight: 500;
+        color: rgba(62, 179, 149, 1);
+      }
+
+    }
+    .modal-btns {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      button {
+        width: 260px;
+        height: 100px;
+        line-height: 100px;
+        border-radius: 10px;
+        font-size: 36px;
+        font-weight: 800;
+      }
+      .close {
+        color: rgba(102, 204, 128, 1);
+        background: #FFFFFF;
+        border: 2px solid RGBA(102, 204, 136, 0.5);
+      }
+      .share {
+        color: #FFFFFF;
+        background: linear-gradient(315deg, rgba(137, 217, 98, 1) 0%, rgba(67, 191, 171, 1) 100%);
+      }
+    }
+  }
+
+  .receive-record-modal {
+    .scroll-view {
+      display: block;
+      height: 480px;
+
+      .item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 100px;
+        background: rgba(245, 248, 250, 1);
+        border-radius: 10px;
+        font-size: 30px;
+        font-weight: 500;
+        color: rgba(54, 57, 77, 1);
+        padding: 0 20px;
+        margin-bottom: 20px;
+      }
+    }
+  }
+
+  .delete-modal {
+    .text {
+      position: relative;
+      font-size: 30px;
+      font-weight: 500;
+      color: rgba(54, 57, 77, 1);
+      padding-left: 20px;
+      text-align: left;
+      margin-bottom: 30px;
+    }
+    .modal-btns {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      button {
+        width: 260px;
+        height: 100px;
+        line-height: 100px;
+        border-radius: 10px;
+        font-size: 36px;
+        font-weight: 800;
+      }
+      .close {
+        color: rgba(102, 204, 128, 1);
+        background: #FFFFFF;
+        border: 2px solid RGBA(102, 204, 136, 0.5);
+      }
+      .share {
+        color: #FFFFFF;
+        background: linear-gradient(315deg, rgba(137, 217, 98, 1) 0%, rgba(67, 191, 171, 1) 100%);
+      }
+    }
+  }
+</style>
+<template>
+  <view class="page">
+    <view class="head-bar">您收到一张借条</view>
+    <view class="form share-confirm">
+      <view class="form-item">
+        <label class="form-item-label">借出额度</label>
+        <view class="form-item-content">
+          <input bindinput="onSendAmountChange" disabled type="number" value="{{ iou.sendAmount }}"
+                 placeholder="人民币"
+                 placeholder-class="placeholder"/>
+        </view>
+      </view>
+      <view class="form-item">
+        <label class="form-item-label">借出时间</label>
+        <view class="form-item-content">
+          <picker mode="date" disabled value="{{iou.sendAmountTime}}" bindchange="bindSendTimeChange">
+            <view class="picker">
+              {{iou.sendAmountTime ? iou.sendAmountTime : '默认今天'}}
+            </view>
+          </picker>
+        </view>
+      </view>
+      <view class="form-item">
+        <label class="form-item-label">还款期限</label>
+        <view class="form-item-content">
+          <picker mode="date" disabled value="{{iou.receiveAmountTime}}" bindchange="bindReceiveTimeChange">
+            <view class="picker">
+              {{iou.receiveAmountTime ? iou.receiveAmountTime : '请选择还款期限'}}
+            </view>
+          </picker>
+        </view>
+      </view>
+      <view class="form-item">
+        <label class="form-item-label">借给谁</label>
+        <view class="form-item-content">
+          <input bindinput="onReceiveNameChange" disabled value="{{ iou.receiveName }}" placeholder="输入对方姓名"
+                 placeholder-class="placeholder"/>
+        </view>
+      </view>
+      <view class="form-item remark">
+        <label class="form-item-label">备注</label>
+        <view class="form-item-content">
+          <textarea bindinput="onRemarkChange" disabled value="{{ iou.remark }}" placeholder="可备注利息约定等信息"
+                    placeholder-class="placeholder" maxlength="1000"/>
+        </view>
+        <image wx:if="{{iou.hasConfirm == 'y'}}" class="confirm" src="/assets/icon/icon_comfirm.png" mode="aspectFill"/>
+      </view>
+    </view>
+
+
+    <view class="pay-off" wx:if="{{iou.isReceiveComplete == 'y'}}">{{iou.receiveCompleteTimeText}} 对方已还清</view>
+    <button class="receive-complete-delete" wx:if="{{iou.isReceiveComplete == 'y'}}"
+            @tap="onShowDeleteModal"
+            hover-class="none">删除
+    </button>
+
+    <button class="btn-l pre-submit" wx:if="{{!submitConfirm}}" @tap="onSubmitConfirm" hover-class="none">签收借条</button>
+    <button class="btn-l submit" wx:else @tap="onSubmit" hover-class="none">确认签收</button>
+    <button class="btn-l btn-home" @tap="reLaunchTo('/pages/index')" hover-class="none">返回首页
+    </button>
+
+
+    <i-modal title="收账额度" visible="{{ receiveModalVisible }}" bind:close="onCloseReceiveModal"
+             show-ok="{{false}}" cancel-text="查看记录"
+             show-cancel="{{false}}">
+      <view class="receive-modal">
+        <view class="amount">
+          <input bindinput="onAmountChange" type="number" value="{{ formData.receiveAmount }}" placeholder="输入此次收款金额"
+                 placeholder-class="placeholder"/>
+          <view class="all" @tap="onAllAmount">全部收到</view>
+        </view>
+        <view class="modal-btns">
+          <button class="close" @tap="onShowReceiveRecordModal" hover-class="none">查看记录</button>
+          <button class="share" @tap="onSubmit" hover-class="none">确认</button>
+        </view>
+      </view>
+    </i-modal>
+    <i-modal title="收账记录" visible="{{ receiveRecordModalVisible }}" bind:close="onCloseReceiveRecordModal"
+             show-ok="{{false}}" show-cancel="{{false}}">
+      <view class="receive-record-modal">
+        <scroll-view scroll-y class="scroll-view" wx:if="{{record && record.length > 0}}">
+          <view class="item" wx:for="{{record}}" wx:key="{{index}}">
+            <text>{{item.createTimeText}}</text>
+            <text>￥{{item.receiveAmount}}</text>
+          </view>
+        </scroll-view>
+        <view wx:else class="none">没有记录哦~</view>
+      </view>
+    </i-modal>
+
+    <i-modal title="确认删除?" visible="{{ deleteModalVisible }}" bind:close="onCloseDeleteModal"
+             show-ok="{{false}}"
+             show-cancel="{{false}}">
+      <view class="delete-modal">
+        <view class="text">确认删除该条记录吗?</view>
+        <view class="modal-btns">
+          <button class="close" @tap="onCloseDeleteModal" hover-class="none">取消</button>
+          <button class="share" @tap="onDel" hover-class="none">确认</button>
+        </view>
+      </view>
+    </i-modal>
+    <!--分隔线-->
+    <i-toast id="toast"/>
+  </view>
+</template>
+
+<script>
+  import page from '@/common/page'
+  import logger from '@/mixins/logger'
+  import format from 'date-fns/format'
+
+  const { $Toast } = require('@/components/iview/base/index')
+
+  export default class ShareConfirm extends page {
+    config = {
+      'navigationBarTitleText': '',
+      'enablePullDownRefresh': false,
+      'navigationBarBackgroundColor': '#FFFFFF',
+      'usingComponents': {
+        'i-toast': '/components/iview/toast/index',
+        'i-modal': '/components/iview/modal/index'
+      }
+    }
+    components = {}
+
+    data = {
+      token: '',
+      id: '',
+      receiveModalVisible: false,
+      receiveRecordModalVisible: false,
+      deleteModalVisible: false,
+      submitConfirm: false,
+      iou: {},
+      record: [],
+      formData: {
+        debitRecordId: '',
+        receiveAmount: ''
+      },
+      formValidator: {
+        receiveAmount: [
+          { required: true, message: '请填写收款金额', trigger: 'blur' }
+        ],
+        debitRecordId: [
+          { required: true, message: '请填写收款金额', trigger: 'blur' }
+        ]
+      }
+
+    }
+
+    computed = {}
+
+    onLoad (opt) {
+      this.id = opt.id
+      this.formData.debitRecordId = opt.id
+    }
+
+    onShow () {
+      this.init()
+    }
+
+    onReachBottom (e) {
+      if (!this.data.hasNext || this.data.loading) {
+        return
+      }
+    }
+
+
+    onShareAppMessage (e) {
+      let opt = {
+        title: this.shareTitles[parseInt(Math.random() * 10 / 3)],
+        imageUrl: 'http://load-wx.oss-cn-hangzhou.aliyuncs.com/assets/image/share_image.png',
+        // path: '/pages/share/confirm?id=' + this.id,
+        success (res) {
+          console.log('分享成功', res)
+        }
+      }
+      return opt
+    }
+
+    init () {
+      this.getDetail()
+      this.getRecord()
+    }
+
+    methods = {
+      onShowReceiveModal () {
+        this.receiveModalVisible = true
+      },
+      onCloseReceiveModal () {
+        this.receiveModalVisible = false
+      },
+      onCloseReceiveRecordModal () {
+        this.receiveRecordModalVisible = false
+      },
+      onShowDeleteModal () {
+        this.deleteModalVisible = true
+      },
+      onCloseDeleteModal () {
+        this.deleteModalVisible = false
+      },
+      onShowReceiveRecordModal () {
+        this.receiveModalVisible = false
+        this.receiveRecordModalVisible = true
+      },
+      onSubmitConfirm () {
+        this.submitConfirm = true
+      },
+      onSubmit () {
+        this.$post('/dr/confirm', { id: this.id }).then(res => {
+          $Toast({
+            content: '签收成功',
+            duration: 0
+          })
+          setTimeout(() => {
+            $Toast.hide()
+            wx.reLaunch({
+              url: '/pages/index'
+            })
+          }, 1000)
+
+          this.iou.hasConfirm = 'y'
+          this.$apply()
+
+        })
+      },
+      onAllAmount () {
+        this.formData.receiveAmount = this.iou.sendAmount
+      },
+      onAmountChange ({ detail }) {
+        this.formData.receiveAmount = detail.value
+      },
+      onSendAmountChange ({ detail }) {
+        this.iou.sendAmount = detail.value
+      },
+      bindSendTimeChange ({ detail }) {
+        this.iou.sendAmountTime = detail.value
+      },
+      bindReceiveTimeChange ({ detail }) {
+        this.iou.receiveAmountTime = detail.value
+      },
+      onReceiveNameChange ({ detail }) {
+        this.iou.receiveName = detail.value
+      },
+      onRemarkChange ({ detail }) {
+        this.iou.remark = detail.remark
+      },
+      onDel () {
+        this.$post('/dr/delete', { id: this.id }).then(res => {
+          $Toast({
+            content: '删除成功',
+            duration: 0
+          })
+          setTimeout(() => {
+            $Toast.hide()
+            wx.navigateTo({
+              url: '/pages/index'
+            })
+          }, 1000)
+        })
+      }
+    }
+
+    getDetail () {
+      wx.showNavigationBarLoading()
+
+      this.$get('/dr/queryById', { id: this.id }).then(res => {
+
+        let iou = res
+
+        if (iou.receiveCompleteTime) {
+          iou.receiveCompleteTimeText = format(iou.receiveCompleteTime, 'YYYY-MM-DD')
+        }
+        if (iou.sendAmountTime) {
+          iou.sendAmountTime = format(iou.sendAmountTime, 'YYYY-MM-DD')
+        }
+        if (iou.receiveAmountTime) {
+          iou.receiveAmountTime = format(iou.receiveAmountTime, 'YYYY-MM-DD')
+        }
+        this.iou = iou
+        wx.hideNavigationBarLoading()
+        this.$apply()
+      })
+
+    }
+
+    getRecord () {
+      wx.showNavigationBarLoading()
+
+      this.$get('/rar/listByDrId', { debitRecordId: this.id }).then(res => {
+        let record = res || []
+        record.forEach(item => {
+          item.createTimeText = format(item.createTime, 'YYYY-MM-DD')
+        })
+        this.record = record
+        wx.hideNavigationBarLoading()
+        this.$apply()
+      })
+
+    }
+
+  }
+</script>

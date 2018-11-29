@@ -1,0 +1,410 @@
+<style lang="less">
+  @import "../../assets/css/global";
+
+  page {
+  }
+
+  .page {
+  }
+
+  .search-wrapper {
+    display: flex;
+    align-items: center;
+    padding: 20px 30px;
+    background: #FFFFFF;
+
+    .region {
+      display: flex;
+      align-items: center;
+      margin-right: 30px;
+      .picker {
+        font-size: 34px;
+        color: #333333;
+      }
+      text {
+        font-size: 34px;
+        color: #333333;
+      }
+      .iconfont {
+        font-size: 20px;
+        color: #444444;
+        margin-left: 5px;
+      }
+    }
+    input {
+      flex-grow: 1;
+      height: 58px;
+      line-height: 58px;
+      font-size: 28px;
+      color: rgba(153, 153, 153, 1);
+      background: #F7F7F7;
+      border-radius: 29px;
+      text-align: center;
+    }
+
+  }
+
+  .banner {
+    width: 750px;
+    margin: 15px 0;
+  }
+
+  .rooms {
+    padding: 0 10px;
+    background: #FFFFFF;
+    .mixin-shadow();
+
+    .item {
+      position: relative;
+      padding: 30px 20px;
+      border-bottom: 1px solid #DDDDDD;
+
+      .avatar {
+        position: absolute;
+        left: 0;
+        top: 30px;
+        width: 66px;
+
+        image {
+          width: 66px;
+          height: 66px;
+          border-radius: 33px;
+        }
+        .time {
+          margin-top: 12px;
+          font-size: 20px;
+          color: rgba(153, 153, 153, 1);
+          text-align: center;
+        }
+      }
+
+      .content {
+        margin-left: 80px;
+
+        .title {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          font-size: 28px;
+          color: rgba(153, 153, 153, 1);
+          padding: 16px 0;
+
+          .address {
+            display: flex;
+            align-items: center;
+            font-size: 22px;
+            color: rgba(74, 144, 226, 1);
+
+            .icon-location {
+              color: #CCCCCC;
+              font-size: 24px;
+              margin-left: 8px;
+            }
+          }
+        }
+
+        .time {
+          font-size: 20px;
+          color: rgba(153, 153, 153, 1);
+        }
+
+        .detail {
+          margin-top: 22px;
+          font-size: 30px;
+          font-family: PingFangSC-Regular;
+          color: rgba(51, 51, 51, 1);
+          line-height: 1.5;
+        }
+
+        .imgs {
+          margin-top: 10px;
+
+          image {
+            width: 180px;
+            height: 180px;
+            border-radius: 10px;
+            margin-right: 10px;
+          }
+          .item-1 {
+            width: 310px;
+            height: 310px;
+          }
+          .item-2 {
+            width: 180px;
+            height: 180px;
+          }
+          .item-3 {
+          }
+          .item-4 {
+            width: 260px;
+            height: 185px;
+          }
+        }
+
+        .foot {
+          display: flex;
+          align-items: center;
+
+          margin-top: 50px;
+          font-size: 26px;
+          color: #999999;
+
+          .foot-item {
+            margin-right: 30px;
+            display: flex;
+            align-items: center;
+
+            text {
+              &.active {
+                color: #666666;
+              }
+            }
+
+            .iconfont {
+              font-size: 26px;
+              margin-right: 5px;
+            }
+            .icon-praise-fill, icon-like-fill, icon-comment-fill {
+              color: #FF7D84;
+            }
+          }
+          .img-num {
+            float: right;
+          }
+        }
+
+      }
+
+    }
+  }
+
+</style>
+<template>
+  <view class="page">
+    <view class="search-wrapper">
+      <view class="region">
+        <picker mode="region" bindchange="onRegionChange" value="{{region}}" custom-item="{{'全部'}}">
+          <view class="picker">
+            {{region[2]}}
+          </view>
+        </picker>
+        <text class="iconfont icon-down"></text>
+      </view>
+      <input bindinput="onKeywordsChange" value="{{ queryParam.keyWords }}"
+             placeholder="搜索物品/小区名" placeholder-class="placeholder"></input>
+    </view>
+
+    <image class="banner" mode="widthFix"
+           src="https://lj-assets.oss-cn-beijing.aliyuncs.com/wx/banner/banner_market.png"></image>
+    <view class="box rooms">
+
+      <view wx:if="{{rooms && rooms.length > 0}}">
+        <view class="item" wx:for="{{rooms}}" wx:key="{{item.id}}">
+          <view class="avatar">
+            <image src="{{item.avatarUrl}}"></image>
+            <view class="time">{{item.createTimeText}}</view>
+          </view>
+
+          <view class="content">
+            <view class="title">
+              <text class="nickname">{{item.nickName}}</text>
+              <view class="address">
+                <text class="iconfont icon-location"></text>
+                <text>{{item.uptownName}}</text>
+              </view>
+            </view>
+            <view class="time">{{item.createTime}}</view>
+            <navigator url="/pages/room/detail?id={{item.id}}" hover-class="none">
+              <view class="detail">
+                {{item.detail}}
+              </view>
+            </navigator>
+            <view class="imgs" wx:if="{{item.imgs && item.imgs.length > 0}}">
+              <navigator url="/pages/room/detail?id={{item.id}}" hover-class="none">
+                <image class="item-{{item.imgs.length}}" mode="aspectFill"
+                       catch:tap="onImagePreview({{index}}, {{imgItem}})" wx:for="{{item.imgs}}"
+                       wx:for-item="imgItem"
+                       wx:for-index="imgIndex" src="{{imgItem}}"
+                       wx:key="{{imgIndex}}"></image>
+              </navigator>
+            </view>
+            <view class="foot">
+              <view class="foot-item" @tap="onRoomLike">
+                <text class="iconfont icon-like{{item.hasFavorite == 'y' ? '-fill' : ''}}"></text>
+                <text class="{{item.hasFavorite == 'y' ? 'active' : ''}}">{{room.favoriteNum || 0}}</text>
+              </view>
+              <view class="foot-item" @tap="onRoomPraise">
+                <text class="iconfont icon-praise{{item.hasPraise == 'y' ? '-fill' : ''}}"></text>
+                <text class="{{item.hasPraise == 'y' ? 'active' : ''}}">{{room.praiseNum || 0}}</text>
+              </view>
+              <view class="foot-item">
+                <text class="iconfont icon-comment{{item.hasComment == 'y' ? '-fill' : ''}}"></text>
+                <text class="{{item.hasComment == 'y' ? 'active' : ''}}">{{room.commentNum || 0}}</text>
+              </view>
+              <text class="img-num">共{{item.imgs.length}}张</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view>
+        <view wx:if="{{loading}}" class="paginate">
+          <image src="/assets/icon/icon_loading.gif" alt=""></image>
+          <view>正在加载中...</view>
+        </view>
+        <view wx:elif="{{hasNext}}" class="paginate" @click="onNextPage">加载更多</view>
+        <view wx:else class="paginate"></view>
+      </view>
+
+    </view>
+
+    <i-toast id="toast"/>
+  </view>
+</template>
+
+<script>
+  import page from '@/common/page'
+  import logger from '@/mixins/logger'
+  import dataHelper from '../../utils/dataHelper'
+  import _get from 'lodash/get'
+  import format from 'date-fns/format'
+  import distanceInWordsToNow from 'date-fns/distance_in_words_to_now'
+  import zh_cn from 'date-fns/locale/zh_cn'
+
+  const { $Toast } = require('@/components/iview/base/index')
+
+  export default class RoomList extends page {
+    config = {
+      'navigationBarTitleText': '借单管家',
+      'enablePullDownRefresh': false,
+      'navigationBarBackgroundColor': '#FFFFFF',
+      'usingComponents': {
+        'i-row': '/components/iview/row/index',
+        'i-col': '/components/iview/col/index',
+        'i-checkbox-group': '/components/iview/checkbox-group/index',
+        'i-checkbox': '/components/iview/checkbox/index',
+        'i-input': '/components/iview/input/index',
+        'i-modal': '/components/iview/modal/index',
+        'i-toast': '/components/iview/toast/index'
+      }
+    }
+    components = {}
+
+    data = {
+      token: '',
+      loading: false,
+      roomTotal: 0,
+      queryParam: {
+        keyWords: '',
+        provinceName: '',
+        cityName: '',
+        districtName: '',
+        hasNext: false,
+        current: 1,
+        size: 10
+      },
+      region: [],
+      rooms: []
+    }
+
+    computed = {}
+
+    onLoad (opt) {
+      let keyWords = opt.keyWords
+      if (keyWords) {
+        this.queryParam.keyWords = keyWords
+      }
+    }
+
+    onShow () {
+      this.init()
+    }
+
+    onReachBottom (e) {
+      if (!this.hasNext || this.loading) {
+        return
+      }
+
+      this.queryParam.current = this.queryParam.current + 1
+      this.getRooms()
+    }
+
+
+    onShareAppMessage (e) {
+      let opt = {
+        title: this.shareTitles[parseInt(Math.random() * 10 / 3)],
+        imageUrl: 'http://load-wx.oss-cn-hangzhou.aliyuncs.com/assets/image/share_image.png',
+        path: '/pages/index',
+        success (res) {
+          console.log('分享成功', res)
+        }
+      }
+      return opt
+    }
+
+    init () {
+      this.region = [this.$parent.globalData.province, this.$parent.globalData.city, this.$parent.globalData.district]
+      this.setRegionQueryParam(this.queryParam)
+
+      this.queryParam.current = 1
+
+      this.queryParam.keyWords = wx.getStorageSync('homeKeyWords')
+      this.getRooms()
+      wx.removeStorageSync('homeKeyWords')
+
+      this.$apply()
+
+    }
+
+    methods = {
+      onKeywordsChange ({ detail }) {
+        this.queryParam.keyWords = detail.value
+        this.queryParam.current = 1
+        this.getRooms()
+      },
+      onRegionChange ({ detail }) {
+        let region = detail.value
+        this.region = region
+        this.setRegion(region)
+        this.setRegionQueryParam(this.queryParam)
+        this.queryParam.current = 1
+        this.getRooms()
+      },
+      onImagePreview (index, current) {
+        let room = this.rooms[index]
+        wx.previewImage({
+          current: current, // 当前显示图片的http链接
+          urls: room.imgs // 需要预览的图片http链接列表
+        })
+      },
+      onNextPage () {
+        this.queryParam.current = this.queryParam.current + 1
+        this.getRooms()
+      }
+    }
+
+    getRooms () {
+      this.loading = true
+      wx.showNavigationBarLoading()
+
+      this.$get('/mr/queryPageList', this.queryParam).then(res => {
+        let rooms = res.records
+        rooms.forEach(item => {
+          item.imgs = item.imageDtoList.map(img => img.url)
+          item.detail = dataHelper.maxStr(item.detail, 40)
+          item.nickName = _get(item, 'userDto.nickName')
+          item.avatarUrl = _get(item, 'userDto.avatarUrl')
+          item.createTime = format(item.createTime, 'YYYY-MM-DD')
+          item.createTimeText = distanceInWordsToNow(item.createTime, { locale: zh_cn }).replace('大约', '')
+        })
+        this.rooms = rooms
+
+        this.loading = false
+        wx.hideNavigationBarLoading()
+        this.queryParam.hasNext = res.current < res.pages
+        this.roomTotal = res.total
+        this.$apply()
+      })
+    }
+  }
+</script>

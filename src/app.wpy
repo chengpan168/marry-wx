@@ -1,0 +1,304 @@
+<style lang="less">
+  @import "./assets/css/iconfont";
+  @import "./assets/css/global";
+
+  page {
+    line-height: 1;
+    font-family: "PingFangSC-Regular", "PingFang SC", "华文细黑", "Microsoft YaHei", "微软雅黑", Arial;
+    height: 100%;
+    background: #FFFFFF;
+  }
+
+  text {
+    font-family: "PingFang SC", "华文细黑", "Microsoft YaHei", "微软雅黑", Arial;
+    box-sizing: border-box;
+  }
+
+  button {
+    cursor: pointer;
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+    outline: none;
+    border: 0;
+  }
+
+  view {
+    font-family: "PingFang SC", "华文细黑", "Microsoft YaHei", "微软雅黑", Arial;
+    box-sizing: border-box;
+  }
+
+  rich-text {
+    font-family: "PingFang SC", "华文细黑", "Microsoft YaHei", "微软雅黑", Arial;
+  }
+
+  .hide {
+    display: none !important;
+  }
+
+  /*富文本css*/
+  .ql-size-huge {
+    font-size: 40px;
+  }
+
+  .ql-size-large {
+    font-size: 36px;
+  }
+
+  .ql-size-normal {
+    font-size: 34px;
+  }
+
+  .ql-size-small {
+    font-size: 28px;
+  }
+
+  .ql-align-center {
+    text-align: center;
+  }
+
+  .ql-align-justify {
+    text-align: justify;
+  }
+
+  .ql-align-right {
+    text-align: right;
+  }
+
+  .quill-img {
+    max-width: 100%;
+  }
+
+  rich-text {
+    font-size: 28 rpx;
+    color: #333333;
+
+    img {
+      width: 750 rpx;
+    }
+  }
+
+  .i-checkbox-group {
+    line-height: 1;
+  }
+
+  .paginate {
+    margin-top: 10px;
+    padding: 20px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 26px;
+    color: #333333;
+    text-align: center;
+    image {
+      width: 30px;
+      height: 30px;
+      margin-right: 10px;
+    }
+  }
+
+  .data-coming {
+    width: 300px;
+    height: 346px;
+    display: block;
+    margin: 20px auto;
+    padding: 20px 0;
+  }
+
+  .placeholder {
+    font-size: 26px;
+    font-weight: bold;
+    color: rgba(163, 177, 204, 1);
+  }
+
+  .no-data {
+    text-align: center;
+    padding: 20px 0;
+    font-size: 30px;
+    color: #CCCCCC;
+  }
+
+  .box {
+    margin: 0px;
+    .mixin-shadow();
+
+    .box-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      position: relative;
+      background: #FFFFFF;
+      font-size: 36px;
+      color: rgba(51, 51, 51, 1);
+      height: 90px;
+      line-height: 90px;
+      padding: 0 20px 0 40px;
+
+      &:before {
+        position: absolute;
+        content: '';
+        display: inline-block;
+        width: 8px;
+        height: 42px;
+        background: #FFDD00;
+        left: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        border-radius: 4px;
+      }
+
+      .more {
+        float: right;
+        font-size: 24px;
+        color: rgba(158, 158, 158, 1);
+
+        text {
+        }
+
+        .icon-enter {
+          font-size: 24px;
+          color: #9E9E9E;
+        }
+      }
+    }
+
+    .box-content {
+      background: #FFFFFF;
+      padding: 0 20px;
+      border-radius: 8px;
+    }
+  }
+
+  .form {
+    padding: 40px;
+
+    .form-item {
+      position: relative;
+      display: flex;
+      align-items: center;
+      padding: 30px 20px;
+      border-bottom: 1px solid #E6E6E6;
+
+      .form-item-label {
+        flex-grow: 0;
+        font-size: 30px;
+        font-weight: bold;
+        color: rgba(54, 57, 77, 1);
+      }
+      .form-item-content {
+        display: flex;
+        align-items: center;
+        flex-grow: 1;
+        font-size: 26px;
+        color: rgba(54, 57, 77, 1);
+
+        input, picker {
+          margin-left: 10px;
+          flex-grow: 1;
+          padding: 0px;
+          font-size: 26px;
+          font-weight: bold;
+          color: rgba(54, 57, 77, 1);
+          text-align: right;
+        }
+      }
+    }
+  }
+
+  .tab-wrapper {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    justify-content: space-around;
+
+    width: 750px;
+    background: #FFFFFF;
+    box-shadow: 0px 2px 6px 0px rgba(185, 185, 185, 0.5);
+
+    .tab-item {
+      justify-content: center;
+      padding: 0 5px;
+      height: 90px;
+      line-height: 90px;
+      font-size: 32px;
+      color: #999999;
+
+      &.active {
+        border-bottom: 5px solid #FFDD00;
+        color: #333333;
+        font-weight: 600;
+      }
+    }
+  }
+</style>
+
+<script>
+  import wepy from 'wepy'
+  import 'wepy-async-function'
+  import Promise from 'promise-polyfill'
+
+  const defaultProvince = '浙江省'
+  const defaultCity = '杭州市'
+  const defaultDistrict = '西湖区'
+
+  export default class extends wepy.app {
+    config = {
+      pages: [
+        'pages/index',
+        'pages/login',
+        'pages/load/edit',
+        'pages/load/success',
+        'pages/load/detail',
+        'pages/borrow/edit',
+        'pages/borrow/success',
+        'pages/borrow/detail',
+        'pages/share/confirm',
+      ],
+      window: {
+        backgroundTextStyle: 'light',
+        navigationBarBackgroundColor: '#FFFFFF',
+        navigationBarTitleText: '借单管家',
+        navigationBarTextStyle: 'black'
+      }
+    }
+
+    globalData = {
+      userInfo: null,
+      token: '',
+      userId: '',
+      avatarUrl: '',
+      nickname: '',
+      firstUse: 'y'
+    }
+
+    constructor () {
+      super()
+      this.use('promisify')
+      this.use('requestfix')
+    }
+
+    onLaunch () {
+      this.globalData.userId = wx.getStorageSync('userId')
+      this.globalData.token = wx.getStorageSync('token')
+      this.globalData.avatarUrl = wx.getStorageSync('avatarUrl')
+      this.globalData.nickname = wx.getStorageSync('nickname')
+      this.globalData.firstUse = wx.getStorageSync('firstUse') || 'y'
+
+      this.globalData.province = wx.getStorageSync('province') || defaultProvince
+      this.globalData.city = wx.getStorageSync('city') || defaultCity
+      this.globalData.district = wx.getStorageSync('district') || defaultDistrict
+    }
+
+    getUserInfo () {
+      const that = this
+      if (this.globalData.userInfo) {
+        return Promise.resolve(this.globalData.userInfo)
+      }
+      return Promise.reject('当前未登录')
+    }
+
+  }
+</script>
