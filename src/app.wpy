@@ -6,7 +6,7 @@
     line-height: 1;
     font-family: "PingFangSC-Regular", "PingFang SC", "华文细黑", "Microsoft YaHei", "微软雅黑", Arial;
     height: 100%;
-    background: #FFFFFF;
+    background: #E7E7E7;
   }
 
   text {
