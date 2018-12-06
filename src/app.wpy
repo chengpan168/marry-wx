@@ -9,6 +9,10 @@
     background: #E7E7E7;
   }
 
+  .page {
+    border-top: 1px solid #E6E6E6;
+  }
+
   text {
     font-family: "PingFang SC", "华文细黑", "Microsoft YaHei", "微软雅黑", Arial;
     box-sizing: border-box;
@@ -259,6 +263,7 @@
         'pages/shop/list',
         'pages/activity/list',
         'pages/activity/detail',
+        'pages/my/index',
 
         'pages/login'
       ],
@@ -293,7 +298,7 @@
             'text': '活动'
           },
           {
-            'pagePath': 'pages/index',
+            'pagePath': 'pages/my/index',
             'iconPath': '/assets/icon/Navigation-my-default@2x.png',
             'selectedIconPath': '/assets/icon/Navigation-my-selection@2x.png',
             'text': '我的'
