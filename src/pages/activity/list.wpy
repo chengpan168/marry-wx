@@ -1,0 +1,187 @@
+<style lang="less">
+  @import "../../assets/css/global";
+
+  page {
+  }
+
+  .page {
+  }
+
+  .activity-list {
+    .item {
+      position: relative;
+      padding: 20px 24px;
+      background: #ffffff;
+      margin-top: 10px;
+
+      .surplus {
+        position: absolute;
+        left: 24px;
+        top: 20px;
+        padding: 0 16px;
+        height: 40px;
+        line-height: 40px;
+        background: rgba(252, 214, 1, 1);
+        border-radius: 4px;
+        font-size: 22px;
+        font-weight: bold;
+        color: rgba(255, 255, 255, 1);
+      }
+
+      image {
+        display: block;
+        width: 100%;
+        height: 320px;
+        border-radius: 4px;
+      }
+
+      .name {
+        margin-top: 20px;
+        line-height: 1;
+        font-size: 32px;
+        font-weight: bold;
+        color: rgba(0, 0, 0, 1);
+      }
+
+      .sub-name {
+        margin-top: 15px;
+        font-size: 24px;
+        font-weight: bold;
+        color: rgba(84, 84, 84, 1);
+      }
+
+      .price {
+        position: absolute;
+        right: 24px;
+        bottom: 45px;
+        font-size: 36px;
+        font-weight: bold;
+        color: rgba(205, 92, 91, 1);
+      }
+    }
+  }
+
+</style>
+<template>
+  <view class="page">
+
+    <view class="activity-list">
+      <view class="item" wx:for="{{[1,3,4]}}" wx:key="{{index}}">
+        <view class="surplus">仅剩28名</view>
+        <image
+          src="https://cdn.pingwest.com/portal/2018/11/28/Fgy_8EAlLpNObQD_7mFN_oZ1DQzD.jpg?imageView2/2/w/1440/q/100"
+          mode="aspectFill"/>
+        <view class="name">2018年穿着婚纱去春游报名啦！</view>
+        <view class="sub-name" wx:if="{{index == 2}}">仅售3999元|4D实景|底片全送|送婚纱</view>
+        <view class="price" wx:if="{{index == 2}}">￥4999</view>
+      </view>
+      <loadMore :loading="loading"/>
+    </view>
+    <!--分隔线-->
+    <i-toast id="toast"/>
+  </view>
+</template>
+
+<script>
+  import page from '@/common/page'
+  import format from 'date-fns/format'
+  import loadMore from '../../components/loadMore'
+
+  const { $Toast } = require('@/components/iview/base/index')
+
+  export default class ActivityList extends page {
+    config = {
+      'navigationBarTitleText': '',
+      'enablePullDownRefresh': false,
+      'navigationBarBackgroundColor': '#FFFFFF',
+      'usingComponents': {
+        'i-toast': '/components/iview/toast/index',
+        'i-modal': '/components/iview/modal/index'
+      }
+    }
+    components = {
+      loadMore
+    }
+
+    data = {
+      token: '',
+      loading: false,
+      hasNext: true,
+      id: '',
+      receiveModalVisible: false,
+      receiveRecordModalVisible: false,
+      deleteModalVisible: false,
+      submitConfirm: false,
+      iou: {},
+      record: [],
+      formData: {
+        debitRecordId: '',
+        receiveAmount: ''
+      },
+      formValidator: {
+        receiveAmount: [
+          { required: true, message: '请填写收款金额', trigger: 'blur' }
+        ],
+        debitRecordId: [
+          { required: true, message: '请填写收款金额', trigger: 'blur' }
+        ]
+      }
+
+    }
+
+    computed = {}
+
+    onLoad (opt) {
+      this.id = opt.id
+    }
+
+    onShow () {
+      this.init()
+    }
+
+    onReachBottom (e) {
+      if (!this.data.hasNext || this.data.loading) {
+        return
+      }
+    }
+
+    onShareAppMessage (e) {
+      let opt = {
+        success (res) {
+          console.log('分享成功', res)
+        }
+      }
+      return opt
+    }
+
+    init () {
+      // this.getDetail()
+      // this.getRecord()
+    }
+
+    methods = {
+      onShowReceiveModal () {
+        this.receiveModalVisible = true
+      },
+      onCloseReceiveModal () {
+        this.receiveModalVisible = false
+      }
+    }
+
+    getRecord () {
+      wx.showNavigationBarLoading()
+
+      this.$get('/rar/listByDrId', { debitRecordId: this.id }).then(res => {
+        let record = res || []
+        record.forEach(item => {
+          item.createTimeText = format(item.createTime, 'YYYY-MM-DD')
+        })
+        this.record = record
+        wx.hideNavigationBarLoading()
+        this.$apply()
+      })
+
+    }
+
+  }
+</script>

@@ -12,6 +12,7 @@
   text {
     font-family: "PingFang SC", "华文细黑", "Microsoft YaHei", "微软雅黑", Arial;
     box-sizing: border-box;
+    line-height: 1;
   }
 
   button {
@@ -26,6 +27,7 @@
   view {
     font-family: "PingFang SC", "华文细黑", "Microsoft YaHei", "微软雅黑", Arial;
     box-sizing: border-box;
+    line-height: 1;
   }
 
   rich-text {
@@ -70,11 +72,12 @@
   }
 
   rich-text {
-    font-size: 28 rpx;
+    font-size: 28px;
+    line-height: 1.5;
     color: #333333;
 
     img {
-      width: 750 rpx;
+      width: 750px;
     }
   }
 
@@ -92,6 +95,7 @@
     font-size: 26px;
     color: #333333;
     text-align: center;
+
     image {
       width: 30px;
       height: 30px;
@@ -122,54 +126,57 @@
 
   .box {
     margin: 0px;
-    .mixin-shadow();
+    background: #ffffff;
+    padding: 0 24px;
 
-    .box-head {
+    & > .box-header {
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      justify-content: flex-start;
+      padding: 22px 0;
 
       position: relative;
-      background: #FFFFFF;
-      font-size: 36px;
-      color: rgba(51, 51, 51, 1);
-      height: 90px;
-      line-height: 90px;
-      padding: 0 20px 0 40px;
+      font-size: 24px;
+      font-weight: bold;
+      color: rgba(252, 214, 1, 1);
 
       &:before {
-        position: absolute;
         content: '';
         display: inline-block;
-        width: 8px;
-        height: 42px;
-        background: #FFDD00;
-        left: 20px;
-        top: 50%;
-        transform: translateY(-50%);
-        border-radius: 4px;
-      }
-
-      .more {
-        float: right;
-        font-size: 24px;
-        color: rgba(158, 158, 158, 1);
-
-        text {
-        }
-
-        .icon-enter {
-          font-size: 24px;
-          color: #9E9E9E;
-        }
+        width: 16px;
+        height: 16px;
+        background: rgba(251, 211, 1, 1);
+        border-radius: 50%;
+        margin-right: 6px;
       }
     }
 
-    .box-content {
+    & > .box-content {
       background: #FFFFFF;
-      padding: 0 20px;
-      border-radius: 8px;
+      padding: 0;
     }
+
+    & > .box-footer {
+      padding: 25px 0;
+      text-align: center;
+      font-size: 22px;
+      font-weight: bold;
+      color: rgba(138, 139, 140, 1);
+
+      .icon-enter {
+        margin-left: 10px;
+        font-size: 20px;
+        color: rgba(138, 139, 140, 1);
+      }
+    }
+  }
+
+  .content-end {
+    padding: 30px 0;
+    text-align: center;
+    font-size: 22px;
+    font-weight: bold;
+    color: rgba(128, 128, 128, 1);
   }
 
   .form {
@@ -188,6 +195,7 @@
         font-weight: bold;
         color: rgba(54, 57, 77, 1);
       }
+
       .form-item-content {
         display: flex;
         align-items: center;
@@ -248,6 +256,9 @@
     config = {
       pages: [
         'pages/index',
+        'pages/activity/list',
+        'pages/activity/detail',
+
         'pages/login',
         'pages/load/edit',
         'pages/load/success',
@@ -255,13 +266,45 @@
         'pages/borrow/edit',
         'pages/borrow/success',
         'pages/borrow/detail',
-        'pages/share/confirm',
+        'pages/share/confirm'
       ],
       window: {
         backgroundTextStyle: 'light',
         navigationBarBackgroundColor: '#FFFFFF',
         navigationBarTitleText: '借单管家',
         navigationBarTextStyle: 'black'
+      },
+      tabBar: {
+        'color': '#BCC5CA',
+        'selectedColor': '#FCD601',
+        'borderStyle': 'white',
+        'backgroundColor': '#ffffff',
+        'list': [
+          {
+            'pagePath': 'pages/index',
+            'iconPath': '/assets/icon/home_gift@2x.png',
+            'selectedIconPath': '/assets/icon/home_gift@2x.png',
+            'text': '首页'
+          },
+          {
+            'pagePath': 'pages/index',
+            'iconPath': '/assets/icon/home_gift@2x.png',
+            'selectedIconPath': '/assets/icon/home_gift@2x.png',
+            'text': '商铺'
+          },
+          {
+            'pagePath': 'pages/activity/list',
+            'iconPath': '/assets/icon/home_gift@2x.png',
+            'selectedIconPath': '/assets/icon/home_gift@2x.png',
+            'text': '活动'
+          },
+          {
+            'pagePath': 'pages/index',
+            'iconPath': '/assets/icon/home_gift@2x.png',
+            'selectedIconPath': '/assets/icon/home_gift@2x.png',
+            'text': '我的'
+          }
+        ]
       }
     }
 

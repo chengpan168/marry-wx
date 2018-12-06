@@ -59,6 +59,86 @@
     }
   }
 
+  .category {
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    padding: 20px 22px;
+
+    .item {
+      margin: 13px 38px;
+      text-align: center;
+
+      image {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+      }
+
+      .name {
+        margin-top: 20px;
+        font-size: 20px;
+        font-weight: bold;
+        color: rgba(0, 0, 0, 1);
+      }
+    }
+  }
+
+  .week-hot {
+    margin-top: 20px;
+
+    .box-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .item {
+      text-align: center;
+
+      image {
+        width: 220px;
+        height: 200px;
+      }
+
+      .name {
+        margin-top: 20px;
+        font-size: 24px;
+        font-weight: bold;
+        color: rgba(0, 0, 0, 1);
+      }
+    }
+  }
+
+  .you-like {
+    margin-top: 20px;
+
+    .box-content {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+
+    .item {
+      text-align: center;
+
+      image {
+        width: 340px;
+        height: 300px;
+      }
+
+      .name {
+        margin-top: 20px;
+        font-size: 28px;
+        font-weight: bold;
+        color: rgba(0, 0, 0, 1);
+      }
+    }
+  }
+
 </style>
 <template>
   <view class="page">
@@ -79,6 +159,40 @@
             <view class="dot{{index == swiperCurrent ? ' active' : ''}}"></view>
           </block>
         </view>
+      </view>
+    </view>
+
+    <view class="category">
+      <view class="item" wx:for="{{[1,2,3,4,5,6,7,8]}}" wx:key="{{index}}">
+        <image src="/assets/images/home_gift@2x.png" mode="aspectFill"/>
+        <view class="name">婚宴酒店</view>
+      </view>
+    </view>
+    <view class="box week-hot">
+      <view class="box-header">本周热推</view>
+      <view class="box-content">
+        <view class="item"  wx:for="{{[1,2,3]}}" wx:key="{{index}}">
+          <image src="/assets/images/home_gift@2x.png" mode="aspectFill"/>
+          <view class="name">婚宴酒店婚宴酒店</view>
+        </view>
+      </view>
+      <view class="box-footer">
+        <text>查看更多</text>
+        <text class="iconfont icon-enter"></text>
+      </view>
+    </view>
+
+    <view class="box you-like">
+      <view class="box-header">猜你喜欢</view>
+      <view class="box-content">
+        <view class="item"  wx:for="{{[1,2,3,4]}}" wx:key="{{index}}">
+          <image src="/assets/images/home_gift@2x.png" mode="aspectFill"/>
+          <view class="name">婚宴酒店婚宴酒店</view>
+        </view>
+      </view>
+      <view class="box-footer">
+        <text>查看更多</text>
+        <text class="iconfont icon-enter"></text>
       </view>
     </view>
     <!--分隔线-->
