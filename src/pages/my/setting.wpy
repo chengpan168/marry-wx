@@ -1,0 +1,159 @@
+<style lang="less">
+  @import "../../assets/css/global";
+
+  page {
+  }
+
+  .page {
+  }
+
+  .setting {
+    padding: 0 24px;
+
+    .setting-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid #E6E6E6;
+      height: 100px;
+      &:first-child {
+        border: 0;
+      }
+
+      .name {
+        font-size: 30px;
+        font-weight: bold;
+        color: rgba(0, 0, 0, 1);
+      }
+
+      .value {
+        font-size: 24px;
+        color: rgba(84, 84, 84, 1);
+
+        .icon-enter {
+          margin-left: 20px;
+          font-size: 34px;
+          color: #545454;
+        }
+      }
+    }
+  }
+
+
+</style>
+<template>
+  <view class="page">
+
+    <view class="setting">
+      <view class="setting-item">
+
+      </view>
+    </view>
+    <!--分隔线-->
+    <i-toast id="toast"/>
+  </view>
+</template>
+
+<script>
+  import page from '@/common/page'
+  import format from 'date-fns/format'
+  import loadMore from '../../components/loadMore'
+
+  const { $Toast } = require('@/components/iview/base/index')
+
+  export default class MyIndex extends page {
+    config = {
+      'navigationBarTitleText': '严选商家',
+      'enablePullDownRefresh': false,
+      'navigationBarBackgroundColor': '#FFFFFF',
+      'usingComponents': {
+        'i-toast': '/components/iview/toast/index',
+        'i-modal': '/components/iview/modal/index'
+      }
+    }
+    components = {
+      loadMore
+    }
+
+    data = {
+      token: '',
+      loading: false,
+      hasNext: true,
+      id: '',
+      receiveModalVisible: false,
+      receiveRecordModalVisible: false,
+      deleteModalVisible: false,
+      submitConfirm: false,
+      iou: {},
+      record: [],
+      formData: {
+        debitRecordId: '',
+        receiveAmount: ''
+      },
+      formValidator: {
+        receiveAmount: [
+          { required: true, message: '请填写收款金额', trigger: 'blur' }
+        ],
+        debitRecordId: [
+          { required: true, message: '请填写收款金额', trigger: 'blur' }
+        ]
+      }
+
+    }
+
+    computed = {}
+
+    onLoad (opt) {
+      this.id = opt.id
+    }
+
+    onShow () {
+      this.init()
+    }
+
+    onReachBottom (e) {
+      if (!this.data.hasNext || this.data.loading) {
+        return
+      }
+    }
+
+    onShareAppMessage (e) {
+      let opt = {
+        success (res) {
+          console.log('分享成功', res)
+        }
+      }
+      return opt
+    }
+
+    init () {
+      // this.getDetail()
+      // this.getRecord()
+    }
+
+    methods = {
+      onShowReceiveModal () {
+        this.receiveModalVisible = true
+      },
+      onCloseReceiveModal () {
+        this.receiveModalVisible = false
+      }
+    }
+
+    getRecord () {
+      wx.showNavigationBarLoading()
+
+      this.$get('/rar/listByDrId', { debitRecordId: this.id }).then(res => {
+        let record = res || []
+        record.forEach(item => {
+          item.createTimeText = format(item.createTime, 'YYYY-MM-DD')
+        })
+        this.record = record
+        wx.hideNavigationBarLoading()
+        this.$apply()
+      })
+
+    }
+
+  }
+</script>

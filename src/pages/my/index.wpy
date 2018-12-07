@@ -11,6 +11,7 @@
     height: 130px;
     display: flex;
     align-items: center;
+    justify-content: center;
 
 
     button {
@@ -67,6 +68,12 @@
           font-size: 20px;
         }
 
+        .count-down {
+          font-size: 48px;
+          font-weight: bold;
+          color: #FCD601;
+        }
+
         .badge {
           display: flex;
           align-items: center;
@@ -120,8 +127,9 @@
         <text class="iconfont icon-rili"></text>
         <text class="name">大婚日倒计时</text>
         <text class="enter">
-          <text>去设置</text>
-          <text class="iconfont icon-enter"></text>
+          <text class="count-down" wx:if="{{true}}">365天</text>
+          <text wx:if="{{false}}">去设置</text>
+          <text wx:if="{{false}}" class="iconfont icon-enter"></text>
         </text>
       </view>
     </view>
