@@ -240,7 +240,7 @@
 
       &.active {
         border-bottom: 5px solid #FFDD00;
-        color: #333333;
+        color: #FCD601;
         font-weight: 600;
       }
     }
@@ -272,6 +272,7 @@
         'pages/my/setting',
         'pages/my/bindPhone',
         'pages/my/message',
+        'pages/my/favorite',
 
         'pages/login'
       ],
