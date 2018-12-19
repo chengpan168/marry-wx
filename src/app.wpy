@@ -13,7 +13,7 @@
     border-top: 1px solid #E6E6E6;
   }
 
-  text {
+  text, input {
     font-family: "PingFang SC", "华文细黑", "Microsoft YaHei", "微软雅黑", Arial;
     box-sizing: border-box;
     line-height: 1;
@@ -267,14 +267,18 @@
 
         'pages/activity/list',
         'pages/activity/detail',
+
         'pages/my/index',
+        'pages/my/setting',
+        'pages/my/bindPhone',
+        'pages/my/message',
 
         'pages/login'
       ],
       window: {
         backgroundTextStyle: 'light',
         navigationBarBackgroundColor: '#FFFFFF',
-        navigationBarTitleText: '借单管家',
+        navigationBarTitleText: '结婚',
         navigationBarTextStyle: 'black'
       },
       tabBar: {

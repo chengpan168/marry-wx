@@ -7,33 +7,107 @@
   .page {
   }
 
-  .setting {
-    padding: 0 24px;
 
-    .setting-item {
+  .menu-group {
+    background: #ffffff;
+    padding: 0 24px;
+    margin-top: 10px;
+
+
+    .menu-item {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      border-top: 1px solid #E6E6E6;
       height: 100px;
+      padding: 0;
+      border-top: 1px solid #E6E6E6;
+
       &:first-child {
         border: 0;
       }
 
+      .iconfont {
+        font-size: 42px;
+        color: #FCD601;
+        margin-right: 14px;
+      }
+
       .name {
+        flex-grow: 1;
         font-size: 30px;
-        font-weight: bold;
         color: rgba(0, 0, 0, 1);
       }
 
-      .value {
+      .enter {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
         font-size: 24px;
+        font-weight: bold;
         color: rgba(84, 84, 84, 1);
 
+        .value {
+          font-size: 24px;
+          font-weight: bold;
+          color: rgba(84, 84, 84, 1);
+        }
+
         .icon-enter {
-          margin-left: 20px;
-          font-size: 34px;
           color: #545454;
+          font-size: 20px;
+        }
+
+        .count-down {
+          font-size: 48px;
+          font-weight: bold;
+          color: #FCD601;
+        }
+
+        .badge {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          height: 40px;
+          padding: 0 12px;
+          background: rgba(212, 48, 48, 1);
+          border-radius: 50%;
+          font-size: 24px;
+          color: rgba(255, 255, 255, 1);
+          margin-right: 18px;
+        }
+      }
+    }
+
+    .avatar-wrapper {
+      height: 120px;
+
+
+      .avatar {
+        width:84px;
+        height:84px;
+        border-radius:50%;
+      }
+    }
+
+    .menu-item-sub {
+      display: flex;
+      justify-content: flex-start;
+      padding: 20px 0px 20px 50px;
+      text-align: left;
+      border-top: 1px solid #E6E6E6;
+
+      & > .item {
+        text-align: center;
+
+        .iconfont {
+          color: #000000;
+          font-size: 50px;
+        }
+
+        .name {
+          margin-top: 8px;
+          font-size: 24px;
+          font-weight: bold;
+          color: rgba(0, 0, 0, 1);
         }
       }
     }
@@ -44,11 +118,41 @@
 <template>
   <view class="page">
 
-    <view class="setting">
-      <view class="setting-item">
-
+    <view class="menu-group">
+      <view class="menu-item avatar-wrapper">
+        <text class="name">头像</text>
+        <view class="enter">
+          <image class="avatar" src="/assets/icon/icon_loading.gif" mode="aspectFill"/>
+        </view>
+      </view>
+      <view class="menu-item">
+        <text class="name">用户名</text>
+        <text class="enter">
+          <text class="value">cccc</text>
+          <text class="iconfont icon-enter"></text>
+        </text>
+      </view>
+      <view class="menu-item">
+        <text class="name">绑定手机</text>
+        <text class="enter">
+          <text class="iconfont icon-enter"></text>
+        </text>
+      </view>
+      <view class="menu-item">
+        <text class="name">我的地址</text>
+        <text class="enter">
+          <text class="iconfont icon-enter"></text>
+        </text>
+      </view>
+      <view class="menu-item">
+        <text class="name">大婚日</text>
+        <text class="enter">
+          <text class="iconfont icon-enter"></text>
+        </text>
       </view>
     </view>
+
+
     <!--分隔线-->
     <i-toast id="toast"/>
   </view>
@@ -61,9 +165,9 @@
 
   const { $Toast } = require('@/components/iview/base/index')
 
-  export default class MyIndex extends page {
+  export default class MySetting extends page {
     config = {
-      'navigationBarTitleText': '严选商家',
+      'navigationBarTitleText': '设置',
       'enablePullDownRefresh': false,
       'navigationBarBackgroundColor': '#FFFFFF',
       'usingComponents': {

@@ -1,0 +1,228 @@
+<style lang="less">
+  @import "../../assets/css/global";
+
+  page {
+    background: #ffffff;
+  }
+
+  .page {
+    background: #ffffff;
+  }
+
+
+  .form {
+    margin-top: 200px;
+
+    button {
+      background: rgba(252, 214, 1, 1);
+      text-align: center;
+    }
+
+    & > view {
+      margin: 0 auto 30px auto;
+      width: 500px;
+
+      input {
+        background: #EEEEEE;
+        height: 80px;
+        line-height: 80px;
+        border-radius: 20px;
+        width: 100%;
+        padding: 0 20px;
+      }
+    }
+
+    .code {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      input {
+        flex-grow: 1;
+      }
+
+      .send-code {
+        flex-grow: 0;
+        width: 190px;
+        height: 80px;
+        line-height: 80px;
+        margin-left: 10px;
+        border-radius: 20px;
+        font-size: 26px;
+        font-weight: bold;
+        color: rgba(255, 255, 255, 1);
+        text-align: center;
+      }
+    }
+
+    .submit {
+      width: 100%;
+      margin-top: 70px;
+      font-size: 36px;
+      font-weight: bold;
+      color: rgba(255, 255, 255, 1);
+    }
+  }
+
+
+</style>
+<template>
+  <view class="page">
+
+    <view class="form">
+      <view>
+        <input bindinput="onNameChange" value="{{ formData.name }}"
+               placeholder="输入手机号" placeholder-class="placeholder"></input>
+      </view>
+      <view class="code">
+        <input bindinput="onNameChange" value="{{ formData.name }}"
+               placeholder="验证码" placeholder-class="placeholder"></input>
+        <button class="send-code">验证码</button>
+      </view>
+      <!--<view @tap="onChooseLocation">
+        <label>店铺地址</label>
+        <input value="{{formData.address}}" placeholder="请选择店铺地址" disabled="true"></input>
+      </view>-->
+
+      <view>
+        <button class="submit" @tap="onSubmit">确定</button>
+      </view>
+    </view>
+
+
+    <!--分隔线-->
+    <i-toast id="toast"/>
+  </view>
+</template>
+
+<script>
+  import page from '@/common/page'
+  import format from 'date-fns/format'
+  import loadMore from '../../components/loadMore'
+  import schema from 'async-validator'
+  import _get from 'lodash/get'
+
+  const { $Toast } = require('@/components/iview/base/index')
+
+  export default class MyBindPhone extends page {
+    config = {
+      'navigationBarTitleText': '绑定手机',
+      'enablePullDownRefresh': false,
+      'navigationBarBackgroundColor': '#FFFFFF',
+      'usingComponents': {
+        'i-toast': '/components/iview/toast/index',
+        'i-modal': '/components/iview/modal/index'
+      }
+    }
+    components = {
+      loadMore
+    }
+
+    data = {
+      token: '',
+      loading: false,
+      hasNext: true,
+      id: '',
+      receiveModalVisible: false,
+      receiveRecordModalVisible: false,
+      deleteModalVisible: false,
+      submitConfirm: false,
+      iou: {},
+      record: [],
+      formData: {
+        phone: '',
+        code: ''
+      },
+      formValidator: {
+        phone: [
+          { required: true, message: '请填写手机号', trigger: 'blur' },
+          { pattern: /^1[0-9]{10}$/, message: '请填写正确的手机号码', trigger: 'blur' }
+        ],
+        code: [
+          { required: true, message: '请填写验证码', trigger: 'blur' }
+        ]
+      }
+
+    }
+
+    computed = {}
+
+    onLoad (opt) {
+      this.id = opt.id
+    }
+
+    onShow () {
+      this.init()
+    }
+
+    onReachBottom (e) {
+      if (!this.data.hasNext || this.data.loading) {
+        return
+      }
+    }
+
+    onShareAppMessage (e) {
+      let opt = {
+        success (res) {
+          console.log('分享成功', res)
+        }
+      }
+      return opt
+    }
+
+    init () {
+      // this.getDetail()
+      // this.getRecord()
+    }
+
+    methods = {
+      onShowReceiveModal () {
+        this.receiveModalVisible = true
+      },
+      onCloseReceiveModal () {
+        this.receiveModalVisible = false
+      },
+      onSubmit () {
+        const validator = new schema(this.formValidator)
+        validator.validate(this.formData, (errors, fields) => {
+          if (errors) {
+            $Toast({
+              content: errors[0].message
+            })
+          } else {
+            //
+            this.$post('/user/bindPhone', this.formData).then(res => {
+              $Toast({
+                content: '绑定成功',
+                duration: 0
+              })
+              setTimeout(() => {
+                $Toast.hide();
+                wx.navigateBack({
+                  delta: 2
+                })
+              }, 1000)
+            })
+          }
+
+        })
+      }
+    }
+
+    getRecord () {
+      wx.showNavigationBarLoading()
+
+      this.$get('/rar/listByDrId', { debitRecordId: this.id }).then(res => {
+        let record = res || []
+        record.forEach(item => {
+          item.createTimeText = format(item.createTime, 'YYYY-MM-DD')
+        })
+        this.record = record
+        wx.hideNavigationBarLoading()
+        this.$apply()
+      })
+
+    }
+
+  }
+</script>
