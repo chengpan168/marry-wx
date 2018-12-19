@@ -1,0 +1,149 @@
+<style lang="less">
+  @import "../../assets/css/global";
+
+  page {
+  }
+
+  .page {
+    background: #ffffff;
+  }
+
+  .week-hot {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    .item {
+      text-align: center;
+
+      image {
+        width: 220px;
+        height: 200px;
+      }
+
+      .name {
+        margin-top: 20px;
+        font-size: 24px;
+        font-weight: bold;
+        color: rgba(0, 0, 0, 1);
+      }
+    }
+  }
+
+</style>
+<template>
+  <view class="page">
+    <view class="week-hot">
+      <view class="item"  wx:for="{{[1,2,3]}}" wx:key="{{index}}">
+        <image src="/assets/images/home_gift@2x.png" mode="aspectFill"/>
+        <view class="name">婚宴酒店婚宴酒店</view>
+      </view>
+    </view>
+    <!--分隔线-->
+    <i-toast id="toast"/>
+  </view>
+</template>
+
+<script>
+  import page from '@/common/page'
+  import format from 'date-fns/format'
+  import loadMore from '../../components/loadMore'
+
+  const { $Toast } = require('@/components/iview/base/index')
+
+  export default class ShopHot extends page {
+    config = {
+      'navigationBarTitleText': '本周热推',
+      'enablePullDownRefresh': false,
+      'navigationBarBackgroundColor': '#FFFFFF',
+      'usingComponents': {
+        'i-toast': '/components/iview/toast/index',
+        'i-modal': '/components/iview/modal/index'
+      }
+    }
+    components = {
+      loadMore
+    }
+
+    data = {
+      token: '',
+      loading: false,
+      hasNext: true,
+      id: '',
+      receiveModalVisible: false,
+      receiveRecordModalVisible: false,
+      deleteModalVisible: false,
+      submitConfirm: false,
+      iou: {},
+      record: [],
+      formData: {
+        debitRecordId: '',
+        receiveAmount: ''
+      },
+      formValidator: {
+        receiveAmount: [
+          { required: true, message: '请填写收款金额', trigger: 'blur' }
+        ],
+        debitRecordId: [
+          { required: true, message: '请填写收款金额', trigger: 'blur' }
+        ]
+      }
+
+    }
+
+    computed = {}
+
+    onLoad (opt) {
+      this.id = opt.id
+    }
+
+    onShow () {
+      this.init()
+    }
+
+    onReachBottom (e) {
+      if (!this.data.hasNext || this.data.loading) {
+        return
+      }
+    }
+
+    onShareAppMessage (e) {
+      let opt = {
+        success (res) {
+          console.log('分享成功', res)
+        }
+      }
+      return opt
+    }
+
+    init () {
+      // this.getDetail()
+      // this.getRecord()
+    }
+
+    methods = {
+      onShowReceiveModal () {
+        this.receiveModalVisible = true
+      },
+      onCloseReceiveModal () {
+        this.receiveModalVisible = false
+      }
+    }
+
+    getRecord () {
+      wx.showNavigationBarLoading()
+
+      this.$get('/rar/listByDrId', { debitRecordId: this.id }).then(res => {
+        let record = res || []
+        record.forEach(item => {
+          item.createTimeText = format(item.createTime, 'YYYY-MM-DD')
+        })
+        this.record = record
+        wx.hideNavigationBarLoading()
+        this.$apply()
+      })
+
+    }
+
+  }
+</script>

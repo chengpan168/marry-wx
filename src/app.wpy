@@ -260,7 +260,11 @@
     config = {
       pages: [
         'pages/index',
+        'pages/shop/index',
         'pages/shop/list',
+        'pages/shop/hot',
+        'pages/shop/like',
+
         'pages/activity/list',
         'pages/activity/detail',
         'pages/my/index',
