@@ -261,6 +261,7 @@
       pages: [
         'pages/index',
         'pages/shop/index',
+        'pages/shop/detail',
         'pages/shop/list',
         'pages/shop/hot',
         'pages/shop/like',

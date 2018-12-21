@@ -5,146 +5,83 @@
   }
 
   .page {
-    padding-bottom: 100px;
   }
 
-  .activity-detail {
-    margin-top: 10px;
-    padding: 20px 24px;
-    background: #ffffff;
+  .shop-detail {
+    font-size: 0;
 
-    .title {
-      font-size: 30px;
-      font-weight: bold;
-      color: rgba(0, 0, 0, 1);
-      line-height: 1.5;
+    .banner {
+      height: 300px;
+      width: 100%;
     }
 
-    .info {
-      margin-top: 10px;
-      padding-bottom: 25px;
-      border-bottom: 1px solid #E6E6E6;
+    .detail {
+      padding: 10px 24px 0 24px;
+      background-color: #fff;
+      margin-bottom: 10px;
+
+      .title {
+        padding: 10px 0;
+        font-size: 30px;
+        font-weight: bold;
+        color: rgba(84, 84, 84, 1);
+      }
+
+      .content {
+        font-size: 22px;
+        color: rgba(128, 128, 128, 1);
+        padding-bottom: 25px;
+        line-height: 1.5;
+      }
 
       .item {
         display: flex;
         align-items: center;
+        border-top: 1px solid #E6E6E6;
+        height: 80px;
         font-size: 22px;
         font-weight: bold;
         color: rgba(84, 84, 84, 1);
-        margin-top: 20px;
 
-        label {
-          display: flex;
-          align-items: center;
-
-          &:before {
-            content: '';
-            display: inline-block;
-            width: 10px;
-            height: 10px;
-            background: rgba(252, 214, 1, 1);
-            border-radius: 50%;
-            margin-right: 10px;
-          }
+        .iconfont {
+          font-size: 30px;
+          color: #BCC5CA;
+          margin-right: 20px;
         }
       }
-    }
-
-    .detail {
-      margin-top: 38px;
-    }
-  }
-
-  .activity-footer {
-    background: #ffffff;
-    position: fixed;
-    left: 0;
-    bottom: 0;
-    width: 750px;
-    height: 100px;
-    display: flex;
-    align-items: center;
-    border-top: 1px solid #E6E6E6;
-    justify-content: space-between;
-    padding-left: 30px;
-
-    .item {
-      text-align: center;
-
-      .iconfont {
-        font-size: 45px;
-        color: #545454;
-      }
-
-      .name {
-        margin-top: 5px;
-        font-size: 24px;
-        font-weight: bold;
-        color: rgba(84, 84, 84, 1);
-      }
-    }
-
-    .sign-up {
-      width: 250px;
-      height: 100px;
-      line-height: 100px;
-      background: rgba(252, 214, 1, 1);
-      font-size: 36px;
-      font-weight: bold;
-      color: rgba(255, 255, 255, 1);
-      text-align: center;
     }
   }
 </style>
 <template>
   <view class="page">
 
-    <view class="activity-detail">
-      <view class="title">{{detail.title}}</view>
-      <view class="info">
-        <view class="item">
-          <label>主办：</label>
-          <text>嘉兴十九楼</text>
+    <view class="shop-detail">
+      <image class="banner"
+             src="https://cdn.pingwest.com/portal/2018/11/28/Fgy_8EAlLpNObQD_7mFN_oZ1DQzD.jpg?imageView2/2/w/1440/q/100"
+             mode="aspectFill"/>
+
+      <view class="detail">
+        <view class="title">B站要上线马克思的动画</view>
+        <view class="content">
+          “让我们一起建设社会主义吧！”在哔哩哔哩本周举办的国创发布会上，动画《领风者》出品方代表卓丝娜向“观众老爷们”发出了这样一句号召。《领风者》是为纪念马克思诞辰 200 周年制作的一部国产动画，其中的主角就是化身为二次元帅气小哥哥的“千年思想家”卡尔·马克思。
         </view>
         <view class="item">
-          <label>报名时间：</label>
-          <text>2018-11-30 12:00之前有效</text>
+          <text class="iconfont icon-zuobiao"></text>
+          <text>嘉兴市中环西路龙耀大厦23层520室</text>
         </view>
         <view class="item">
-          <label>活动价格：</label>
-          <text>68</text>
-        </view>
-        <view class="item">
-          <label>剩余名额：</label>
-          <text>68</text>
+          <text class="iconfont icon-kefu"></text>
+          <text>客服微信号：jingzhi1234</text>
         </view>
       </view>
 
-      <view class="detail">
-        <view class="rich-text">
-          <rich-text nodes="{{detail.detail}}"></rich-text>
-        </view>
-        <view class="content-end">—— END ——</view>
+      <view class="tab-wrapper">
+        <view class="tab-item active">全部套系</view>
+        <view class="tab-item">优惠套餐</view>
+        <view class="tab-item">作品精选</view>
+        <view class="tab-item">用户点评</view>
       </view>
-    </view>
-    <view class="activity-footer">
-      <view class="item">
-        <text class="iconfont icon-shouye"></text>
-        <view class="name">首页</view>
-      </view>
-      <view class="item">
-        <text class="iconfont icon-kefu"></text>
-        <view class="name">咨询</view>
-      </view>
-      <view class="item">
-        <text class="iconfont icon-ziyuan"></text>
-        <view class="name">收藏</view>
-      </view>
-      <view class="item">
-        <text class="iconfont icon-fenxiang2"></text>
-        <view class="name">分享</view>
-      </view>
-      <view class="sign-up">立即报名</view>
+
     </view>
     <!--分隔线-->
     <i-toast id="toast"/>
