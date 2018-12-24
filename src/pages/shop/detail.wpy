@@ -50,6 +50,237 @@
         }
       }
     }
+
+    .tab-wrapper {
+      border-bottom: 1px solid #E6E6E6;
+
+      .tab-item {
+        height: 60px;
+        line-height: 60px;
+        font-size: 26px;
+        font-weight: bold;
+        color: rgba(84, 84, 84, 1);
+        margin-bottom: -1px;
+
+        &.active {
+          border-bottom: 5px solid #FFDD00;
+          color: #FCD601;
+          font-weight: 600;
+        }
+      }
+    }
+
+    .tab-content {
+      padding: 0 24px 20px 24px;
+      background: #ffffff;
+
+      &.one {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        flex-wrap: wrap;
+
+        .item {
+          margin-top: 20px;
+
+          image {
+            width: 340px;
+            height: 360px;
+            border-radius: 4px;
+          }
+
+          .name {
+            margin-top: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            color: rgba(0, 0, 0, 1);
+          }
+
+          .price {
+            margin-top: 20px;
+            font-size: 36px;
+            font-weight: bold;
+            color: rgba(205, 92, 91, 1);
+          }
+        }
+      }
+
+      &.two {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        flex-wrap: wrap;
+
+        .item {
+          margin-top: 20px;
+
+          image {
+            width: 340px;
+            height: 280px;
+            border-radius: 4px;
+          }
+
+          .info {
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+
+            .name {
+              flex-grow: 1;
+              font-size: 30px;
+              font-weight: bold;
+              color: rgba(0, 0, 0, 1);
+            }
+
+            .label {
+              margin-left: 10px;
+              flex-grow: 0;
+              height: 34px;
+              line-height: 34px;
+              border-radius: 17px;
+              font-size: 24px;
+              color: rgba(255, 255, 255, 1);
+              text-align: center;
+              padding: 0 20px;
+
+              &.green {
+                background: rgba(252, 214, 1, 1);
+              }
+
+              &.gray {
+                background: #BCC5CA;
+              }
+            }
+          }
+
+        }
+      }
+
+
+      /*婚宴菜单*/
+
+      &.three {
+        padding: 10px 0 10px 0;
+
+        .item {
+          padding: 0 24px;
+          margin-bottom: 10px;
+          height: 80px;
+          background: rgba(252, 214, 1, 1);
+          display: flex;
+          align-items: center;
+
+          .name {
+            flex-grow: 1;
+            font-size: 30px;
+            font-weight: bold;
+            color: rgba(255, 255, 255, 1);
+          }
+
+          .price {
+            flex-grow: 0;
+            font-size: 30px;
+            font-weight: bold;
+            color: rgba(255, 255, 255, 1);
+          }
+
+          .iconfont {
+            flex-grow: 0;
+            font-size: 36px;
+            color: #ffffff;
+            margin-left: 18px;
+          }
+
+        }
+      }
+
+      &.comment {
+        .item {
+          padding: 20px 0 15px 0;
+          border-bottom: 1px solid #E6E6E6;
+
+          .user {
+            display: flex;
+            align-items: center;
+
+            .avatar {
+              flex-grow: 0;
+              width: 80px;
+              height: 80px;
+              border-radius: 50%;
+              margin-right: 20px;
+            }
+
+            .info {
+              flex-grow: 1;
+              padding: 10px 0;
+
+              .nickname {
+                font-size: 24px;
+                font-weight: bold;
+                color: rgba(0, 0, 0, 1);
+              }
+
+              .time {
+                margin-top: 10px;
+                font-size: 20px;
+                color: rgba(84, 84, 84, 1);
+              }
+            }
+          }
+
+          .content {
+            margin-top: 18px;
+            line-height: 1.5;
+            font-size: 26px;
+            color: rgba(84, 84, 84, 1);
+          }
+        }
+      }
+
+    }
+
+    .footer {
+      width: 750px;
+      height: 100px;
+      background: rgba(255, 255, 255, 1);
+      border-top: 1px solid #E6E6E6;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-left: 25px;
+      position: fixed;
+      left: 0;
+      bottom: 0;
+
+
+      .item {
+        text-align: center;
+
+        .iconfont {
+          font-size: 45px;
+          color: #545454;
+        }
+
+        .name {
+          margin-top: 4px;
+          font-size: 24px;
+          font-weight: bold;
+          color: rgba(84, 84, 84, 1);
+        }
+      }
+
+      .btn {
+        height: 100px;
+        line-height: 100px;
+        background: rgba(252, 214, 1, 1);
+        font-size: 36px;
+        font-weight: bold;
+        color: rgba(255, 255, 255, 1);
+        text-align: center;
+        padding: 0 45px;
+      }
+    }
   }
 </style>
 <template>
@@ -63,7 +294,8 @@
       <view class="detail">
         <view class="title">B站要上线马克思的动画</view>
         <view class="content">
-          “让我们一起建设社会主义吧！”在哔哩哔哩本周举办的国创发布会上，动画《领风者》出品方代表卓丝娜向“观众老爷们”发出了这样一句号召。《领风者》是为纪念马克思诞辰 200 周年制作的一部国产动画，其中的主角就是化身为二次元帅气小哥哥的“千年思想家”卡尔·马克思。
+          “让我们一起建设社会主义吧！”在哔哩哔哩本周举办的国创发布会上，动画《领风者》出品方代表卓丝娜向“观众老爷们”发出了这样一句号召。《领风者》是为纪念马克思诞辰 200
+          周年制作的一部国产动画，其中的主角就是化身为二次元帅气小哥哥的“千年思想家”卡尔·马克思。
         </view>
         <view class="item">
           <text class="iconfont icon-zuobiao"></text>
@@ -81,7 +313,76 @@
         <view class="tab-item">作品精选</view>
         <view class="tab-item">用户点评</view>
       </view>
+      <view class="tab-content three">
+        <view class="item" wx:for="{{[1,2,3,4]}}" wx:key="{{index}}">
+          <view class="name">情比金坚</view>
+          <view class="price">¥ 6688/桌</view>
+          <text class="iconfont icon-enter"></text>
+        </view>
+      </view>
 
+      <view class="tab-content comment">
+        <view class="item" wx:for="{{[1,2,3,4]}}" wx:key="{{index}}">
+          <view class="user">
+            <image class="avatar"
+                   src="https://cdn.pingwest.com/portal/2018/11/28/Fgy_8EAlLpNObQD_7mFN_oZ1DQzD.jpg?imageView2/2/w/1440/q/100"
+                   mode="aspectFill"/>
+            <view class="info">
+              <view class="nickname">威尼斯的水</view>
+              <view class="time">2018-9-23</view>
+            </view>
+          </view>
+          <view class="content">
+            这里是评价内容这里是评价内容这里是评价内容这里
+            是评价内容这里是评价内容
+          </view>
+        </view>
+      </view>
+
+      <view class="tab-content two">
+        <view class="item" wx:for="{{[1,2,3,4]}}" wx:key="{{index}}">
+          <image class="banner"
+                 src="https://cdn.pingwest.com/portal/2018/11/28/Fgy_8EAlLpNObQD_7mFN_oZ1DQzD.jpg?imageView2/2/w/1440/q/100"
+                 mode="aspectFill"/>
+          <view class="info">
+            <text class="name">姑苏之约</text>
+            <text class="label green">50桌</text>
+            <text class="label gray">无柱</text>
+          </view>
+        </view>
+      </view>
+      <view class="tab-content one">
+        <view class="item" wx:for="{{[1,2,3,4]}}" wx:key="{{index}}">
+          <image class="banner"
+                 src="https://cdn.pingwest.com/portal/2018/11/28/Fgy_8EAlLpNObQD_7mFN_oZ1DQzD.jpg?imageView2/2/w/1440/q/100"
+                 mode="aspectFill"/>
+          <view class="name">RL《丽江姑苏之约》系列</view>
+          <view class="price">¥ 3999</view>
+        </view>
+      </view>
+
+
+      <view class="footer">
+        <view class="item">
+          <text class="iconfont icon-shouye"></text>
+          <view class="name">首页</view>
+        </view>
+        <view class="item">
+          <text class="iconfont icon-pinglun"></text>
+          <view class="name">点评</view>
+        </view>
+        <view class="item">
+          <text class="iconfont icon-ziyuan"></text>
+          <view class="name">收藏</view>
+        </view>
+        <view class="item">
+          <text class="iconfont icon-fenxiang2"></text>
+          <view class="name">分享</view>
+        </view>
+        <view class="btn">
+          免费预约
+        </view>
+      </view>
     </view>
     <!--分隔线-->
     <i-toast id="toast"/>
