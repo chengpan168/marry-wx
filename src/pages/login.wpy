@@ -107,6 +107,7 @@
         wepy.login().then(loginRes => {
           logger.info('小程序本地登录成功', loginRes)
           loginData.code = loginRes.code
+          loginData.appId = 'wx99ac839378dbf468'
           this.$login(loginData).then(res => {
             this.token = res.token
             this.nickname = res.data.nickName

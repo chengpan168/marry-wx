@@ -147,13 +147,13 @@
               class="swiper">
         <block wx:for="{{banners}}" wx:key="unique">
           <swiper-item>
-            <image mode="aspectFill" src="{{item.imageUrl}}" class="img"></image>
+            <image mode="aspectFill" src="{{item.fileDto.url}}" class="img"></image>
           </swiper-item>
         </block>
       </swiper>
 
       <view class="footer">
-        <text class="txt">{{banners[swiperCurrent].text}}</text>
+        <text class="txt">{{banners[swiperCurrent].title}}</text>
         <view class="dots">
           <block wx:for="{{banners}}" wx:key="unique">
             <view class="dot{{index == swiperCurrent ? ' active' : ''}}"></view>
@@ -163,17 +163,17 @@
     </view>
 
     <view class="category">
-      <view class="item" wx:for="{{[1,2,3,4,5,6,7,8]}}" wx:key="{{index}}">
-        <image src="/assets/images/home_gift@2x.png" mode="aspectFill"/>
-        <view class="name">婚宴酒店</view>
+      <view class="item" wx:for="{{category}}" wx:key="{{index}}" @tap="navTo('/pages/shop/list?categoryId={{item.id}}&categoryName={{item.name}}')">
+        <image src="{{item.imageFileDto.url}}" mode="aspectFill"/>
+        <view class="name">{{item.name}}</view>
       </view>
     </view>
     <view class="box week-hot">
       <view class="box-header">本周热推</view>
       <view class="box-content">
-        <view class="item"  wx:for="{{[1,2,3]}}" wx:key="{{index}}">
-          <image src="/assets/images/home_gift@2x.png" mode="aspectFill"/>
-          <view class="name">婚宴酒店婚宴酒店</view>
+        <view class="item"  wx:for="{{weekhot}}" wx:key="{{index}}">
+          <image src="{{item.fileDto.url}}" mode="aspectFill"/>
+          <view class="name">{{item.title}}</view>
         </view>
       </view>
       <view class="box-footer">
@@ -185,9 +185,9 @@
     <view class="box you-like">
       <view class="box-header">猜你喜欢</view>
       <view class="box-content">
-        <view class="item"  wx:for="{{[1,2,3,4]}}" wx:key="{{index}}">
-          <image src="/assets/images/home_gift@2x.png" mode="aspectFill"/>
-          <view class="name">婚宴酒店婚宴酒店</view>
+        <view class="item"  wx:for="{{guessLike}}" wx:key="{{index}}">
+          <image src="{{item.fileDto.url}}" mode="aspectFill"/>
+          <view class="name">{{item.title}}</view>
         </view>
       </view>
       <view class="box-footer">
@@ -223,14 +223,13 @@
       hasNext: true,
       banners: [
         {
-          text: '拍一场最美多季节！',
+          title: '拍一场最美多季节！',
           imageUrl: 'https://cdn.pingwest.com/portal/2018/11/28/Fgy_8EAlLpNObQD_7mFN_oZ1DQzD.jpg?imageView2/2/w/1440/q/100'
-        },
-        {
-          text: '拍一场最美的mm',
-          imageUrl: 'https://cdn.pingwest.com/portal/2018/11/26/FmG4nphYPs-PzV6Firr8e4NHnWak.png?imageView2/1/w/330/h/420/q/100'
         }
       ],
+      category: [],
+      weekhot: [],
+      guessLike: [],
       swiperCurrent: 0,
       shortcutGuideVisible: false,
       firstUse: false,
@@ -246,7 +245,6 @@
     computed = {}
 
     onLoad () {
-      this.firstUse = this.$parent.globalData.firstUse
     }
 
     onShow () {
@@ -258,14 +256,11 @@
         return
       }
       this.queryParam.current = this.queryParam.current + 1
-      this.getList()
+      // this.getList()
     }
 
     onShareAppMessage (e) {
       let opt = {
-        title: this.shareTitles[parseInt(Math.random() * 10 / 3)],
-        imageUrl: 'http://load-wx.oss-cn-hangzhou.aliyuncs.com/assets/image/share_image.png',
-        // path: '/pages/share/confirm?id=' + this.id,
         success (res) {
           console.log('分享成功', res)
         }
@@ -274,18 +269,15 @@
     }
 
     init () {
-      this.getAmount()
-      this.getList()
+      this.getCategory()
+      this.getBanner()
+      this.getWeekhot()
+      this.getGuessLike()
     }
 
     methods = {
       swiperChange ({ detail }) {
         this.swiperCurrent = detail.current
-      },
-      onQueryTypeChange (type) {
-        this.queryParam.queryType = type
-        this.queryParam.current = 1
-        this.getList()
       },
       onNextPage () {
         this.queryParam.current = this.queryParam.current + 1
@@ -293,10 +285,27 @@
       }
     }
 
-    getAmount () {
-      this.$get('/dr/totalAmount').then(res => {
-        this.loanAmount = res.totalSendAmount || 0
-        this.borrowAmount = res.totalReceiveAmount || 0
+    getBanner () {
+      this.$get('/plate/queryPageList', {type: 'banner'}).then(res => {
+        this.banners = res.records || []
+        this.$apply()
+      })
+    }
+    getWeekhot () {
+      this.$get('/plate/queryPageList', {type: 'weekHot'}).then(res => {
+        this.weekhot = res.records || []
+        this.$apply()
+      })
+    }
+    getGuessLike () {
+      this.$get('/plate/queryPageList', {type: 'guessLike'}).then(res => {
+        this.guessLike = res.records || []
+        this.$apply()
+      })
+    }
+    getCategory () {
+      this.$get('/category/list').then(res => {
+        this.category = res || []
         this.$apply()
       })
     }

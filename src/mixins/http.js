@@ -24,7 +24,7 @@ export default class httpMixin extends wepy.mixin {
         return Promise.resolve(result.data || {})
       }
       // 登录过期
-      else if (result.status === '601') {
+      else if (result.status == '400') {
         logger.debug('token 过期, 重定向到登录页面')
         this.$clearUser()
         wx.navigateTo({

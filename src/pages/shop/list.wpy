@@ -144,23 +144,24 @@
 <template>
   <view class="page">
     <view class="shop-list">
-      <view class="item" wx:for="{{[1,3,4]}}" wx:key="{{index}}">
+      <view class="item" wx:for="{{record}}" wx:key="{{index}}">
         <image
-          src="https://cdn.pingwest.com/portal/2018/11/28/Fgy_8EAlLpNObQD_7mFN_oZ1DQzD.jpg?imageView2/2/w/1440/q/100"
+          src="{{item.coverFileDto.url}}"
           mode="aspectFill"/>
         <view class="content">
-          <view class="name">2018年穿着婚纱去春游报名啦！</view>
+          <view class="name">{{item.name}}</view>
           <view class="tags">
-            <view class="tag gray">文苑婚纱</view>
-            <view class="tag">文苑婚纱</view>
+            <view class="tag gray">{{item.weddingCaseNum}}个案例</view>
+            <view class="tag">{{item.collectNum}}人关注</view>
           </view>
           <view class="address">
             <text class="iconfont icon-zuobiao"></text>
-            <text>西湖</text>
+            <text>{{item.address}}</text>
           </view>
         </view>
       </view>
-      <loadMore :loading="loading"/>
+
+      <loadMore loading="{{loading}}" hasNext="{{hasNext}}" list="{{record}}"/>
     </view>
     <!--分隔线-->
     <i-toast id="toast"/>
@@ -192,32 +193,18 @@
       token: '',
       loading: false,
       hasNext: true,
-      id: '',
-      receiveModalVisible: false,
-      receiveRecordModalVisible: false,
-      deleteModalVisible: false,
-      submitConfirm: false,
-      iou: {},
-      record: [],
-      formData: {
-        debitRecordId: '',
-        receiveAmount: ''
-      },
-      formValidator: {
-        receiveAmount: [
-          { required: true, message: '请填写收款金额', trigger: 'blur' }
-        ],
-        debitRecordId: [
-          { required: true, message: '请填写收款金额', trigger: 'blur' }
-        ]
-      }
-
+      categoryId: '',
+      record: []
     }
 
     computed = {}
 
     onLoad (opt) {
-      this.id = opt.id
+      this.categoryId = opt.categoryId || ''
+      wx.setNavigationBarTitle({
+        title: opt.categoryName || '严选商家'
+      })
+
     }
 
     onShow () {
@@ -240,8 +227,7 @@
     }
 
     init () {
-      // this.getDetail()
-      // this.getRecord()
+      this.getList()
     }
 
     methods = {
@@ -253,17 +239,24 @@
       }
     }
 
-    getRecord () {
+    getList () {
       wx.showNavigationBarLoading()
 
-      this.$get('/rar/listByDrId', { debitRecordId: this.id }).then(res => {
+      this.loading = true
+      this.$get('/seller/queryPageList', { categoryId: this.categoryId }).then(res => {
         let record = res || []
         record.forEach(item => {
           item.createTimeText = format(item.createTime, 'YYYY-MM-DD')
         })
         this.record = record
+
+        this.hasNext = res.current < res.pages
+        this.loading = false
         wx.hideNavigationBarLoading()
         this.$apply()
+      }).catch(err => {
+        this.loading = false
+        wx.hideNavigationBarLoading()
       })
 
     }

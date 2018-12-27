@@ -27,8 +27,8 @@
   </block>
 
   <block wx:elif="{{status == 'next'}}">
-    <view class="load-more" >
-      <text>上拉加载更多</text>
+    <view class="load-more" @tap=onNextPage>
+      <text>加载更多</text>
     </view>
   </block>
 
