@@ -5,11 +5,12 @@
   }
 
   .page {
-    background: #ffffff;
   }
 
   .you-like {
-    margin-top: 20px;
+    padding: 0 24px;
+    margin-top: 10px;
+    background: #ffffff;
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
@@ -17,6 +18,8 @@
 
     .item {
       text-align: center;
+      margin-top: 20px;
+      padding-bottom: 15px;
 
       image {
         width: 340px;
@@ -36,9 +39,9 @@
 <template>
   <view class="page">
     <view class="you-like">
-      <view class="item" wx:for="{{[1,2,3,4]}}" wx:key="{{index}}">
-        <image src="/assets/images/home_gift@2x.png" mode="aspectFill"/>
-        <view class="name">婚宴酒店婚宴酒店</view>
+      <view class="item" wx:for="{{list}}" wx:key="{{index}}">
+        <image src="{{item.fileDto.url}}" mode="aspectFill"/>
+        <view class="name">{{item.title}}</view>
       </view>
     </view>
     <!--分隔线-->
@@ -71,25 +74,12 @@
       token: '',
       loading: false,
       hasNext: true,
-      id: '',
-      receiveModalVisible: false,
-      receiveRecordModalVisible: false,
-      deleteModalVisible: false,
-      submitConfirm: false,
-      iou: {},
-      record: [],
-      formData: {
-        debitRecordId: '',
-        receiveAmount: ''
+      queryParam: {
+        type: 'guessLike',
+        current: 1,
+        size: 10
       },
-      formValidator: {
-        receiveAmount: [
-          { required: true, message: '请填写收款金额', trigger: 'blur' }
-        ],
-        debitRecordId: [
-          { required: true, message: '请填写收款金额', trigger: 'blur' }
-        ]
-      }
+      list: []
 
     }
 
@@ -119,32 +109,45 @@
     }
 
     init () {
-      // this.getDetail()
-      // this.getRecord()
+      this.queryParam.current = 1
+      this.getList()
     }
 
     methods = {
-      onShowReceiveModal () {
-        this.receiveModalVisible = true
-      },
-      onCloseReceiveModal () {
-        this.receiveModalVisible = false
+      onNextPage () {
+        if (!this.hasNext) {
+          return
+        }
+
+        this.queryParam.current = this.queryParam.current + 1
+        this.getList()
       }
     }
 
-    getRecord () {
-      wx.showNavigationBarLoading()
+    getList () {
+      if (this.loading) {
+        return
+      }
 
-      this.$get('/rar/listByDrId', { debitRecordId: this.id }).then(res => {
-        let record = res || []
-        record.forEach(item => {
+      wx.showNavigationBarLoading()
+      this.loading = true
+      this.$get('/plate/queryPageList', this.queryParam).then(res => {
+        let list = res.records || []
+        list.forEach(item => {
           item.createTimeText = format(item.createTime, 'YYYY-MM-DD')
         })
-        this.record = record
+        this.list = list
+        this.hasNext = res.current < res.pages
+
+        this.loading = false
         wx.hideNavigationBarLoading()
         this.$apply()
-      })
 
+      }).catch(err => {
+        wx.hideNavigationBarLoading()
+        this.loading = false
+        this.$apply()
+      })
     }
 
   }

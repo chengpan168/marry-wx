@@ -292,13 +292,13 @@
       })
     }
     getWeekhot () {
-      this.$get('/plate/queryPageList', {type: 'weekHot'}).then(res => {
+      this.$get('/plate/queryPageList', {type: 'weekHot', size: 3}).then(res => {
         this.weekhot = res.records || []
         this.$apply()
       })
     }
     getGuessLike () {
-      this.$get('/plate/queryPageList', {type: 'guessLike'}).then(res => {
+      this.$get('/plate/queryPageList', {type: 'guessLike', size: 2}).then(res => {
         this.guessLike = res.records || []
         this.$apply()
       })

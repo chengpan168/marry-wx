@@ -150,25 +150,29 @@
         <text>热门搜索</text>
       </view>
       <view class="tags">
-        <view class="tag">文苑婚纱</view>
-        <view class="tag">文苑婚纱</view>
+        <view class="tag" @tap="onKeywordTap('{{item.name}}')" wx:for="{{hotKeywords}}" wx:key="{{index}}">
+          {{item.name}}
+        </view>
       </view>
     </view>
     <view class="sort-bar">
-      <view class="item active">全部</view>
-      <view class="item">案例</view>
-      <view class="item">关注度</view>
+      <view @tap="onSortTap('')" class="item {{queryParam.sortType == '' ? 'active' : ''}}">全部</view>
+      <view @tap="onSortTap('weddingCaseNum')" class="item {{queryParam.sortType == 'weddingCaseNum' ? 'active' : ''}}">
+        案例
+      </view>
+      <view @tap="onSortTap('collectNum')" class="item {{queryParam.sortType == 'collectNum' ? 'active' : ''}}">关注度
+      </view>
     </view>
     <view class="shop-list">
-      <view class="item" wx:for="{{[1,3,4]}}" wx:key="{{index}}">
+      <view class="item" wx:for="{{list}}" wx:key="{{index}}">
         <image
-          src="https://cdn.pingwest.com/portal/2018/11/28/Fgy_8EAlLpNObQD_7mFN_oZ1DQzD.jpg?imageView2/2/w/1440/q/100"
+          src="{{item.coverFileDto.url}}"
           mode="aspectFill"/>
         <view class="content">
-          <view class="name">2018年穿着婚纱去春游报名啦！</view>
+          <view class="name">{{item.name}}</view>
           <view class="tags">
-            <view class="tag gray">文苑婚纱</view>
-            <view class="tag">文苑婚纱</view>
+            <view class="tag gray">{{item.weddingCaseNum}}个案例</view>
+            <view class="tag">{{item.collectNum}}人关注</view>
           </view>
           <view class="address">
             <text class="iconfont icon-zuobiao"></text>
@@ -176,8 +180,10 @@
           </view>
         </view>
       </view>
-      <loadMore :loading="loading"/>
+
+      <loadMore :loading.sync="loading" :hasNext.sync="hasNext" :list.sync="list"/>
     </view>
+
     <!--分隔线-->
     <i-toast id="toast"/>
   </view>
@@ -185,7 +191,6 @@
 
 <script>
   import page from '@/common/page'
-  import format from 'date-fns/format'
   import loadMore from '../../components/loadMore'
 
   const { $Toast } = require('@/components/iview/base/index')
@@ -208,26 +213,14 @@
       token: '',
       loading: false,
       hasNext: true,
-      id: '',
-      receiveModalVisible: false,
-      receiveRecordModalVisible: false,
-      deleteModalVisible: false,
-      submitConfirm: false,
-      iou: {},
-      record: [],
-      formData: {
-        debitRecordId: '',
-        receiveAmount: ''
+      hotKeywords: [],
+      queryParam: {
+        keywords: '',
+        sortType: '',
+        current: 1,
+        size: 10
       },
-      formValidator: {
-        receiveAmount: [
-          { required: true, message: '请填写收款金额', trigger: 'blur' }
-        ],
-        debitRecordId: [
-          { required: true, message: '请填写收款金额', trigger: 'blur' }
-        ]
-      }
-
+      list: []
     }
 
     computed = {}
@@ -241,7 +234,7 @@
     }
 
     onReachBottom (e) {
-      if (!this.data.hasNext || this.data.loading) {
+      if (!this.hasNext || this.loading) {
         return
       }
     }
@@ -256,33 +249,54 @@
     }
 
     init () {
-      // this.getDetail()
-      // this.getRecord()
+      this.queryParam.current = 1
+
+      this.getHotKeywords()
+      this.getList()
     }
 
     methods = {
-      onShowReceiveModal () {
-        this.receiveModalVisible = true
+      onKeywordTap (keywords) {
+        this.queryParam.keywords = keywords
+        this.queryParam.current = 1
+        this.getList()
       },
-      onCloseReceiveModal () {
-        this.receiveModalVisible = false
+      onSortTap (sortType) {
+        this.queryParam.sortType = sortType
+        this.queryParam.current = 1
+        this.getList()
       }
     }
 
-    getRecord () {
-      wx.showNavigationBarLoading()
-
-      this.$get('/rar/listByDrId', { debitRecordId: this.id }).then(res => {
-        let record = res || []
-        record.forEach(item => {
-          item.createTimeText = format(item.createTime, 'YYYY-MM-DD')
-        })
-        this.record = record
-        wx.hideNavigationBarLoading()
+    getHotKeywords () {
+      this.$get('/hkw/list').then(res => {
+        this.hotKeywords = res || []
         this.$apply()
       })
-
     }
 
+    getList () {
+      if (this.loading) {
+        return
+      }
+
+      wx.showNavigationBarLoading()
+      this.loading = true
+      this.$get('/seller/queryPageList', this.queryParam).then(res => {
+        let list = res.records || []
+
+        this.list = list
+        this.hasNext = res.current < res.pages
+
+        this.loading = false
+        wx.hideNavigationBarLoading()
+        this.$apply()
+
+      }).catch(err => {
+        wx.hideNavigationBarLoading()
+        this.loading = false
+        this.$apply()
+      })
+    }
   }
 </script>

@@ -5,18 +5,23 @@
   }
 
   .page {
-    background: #ffffff;
   }
 
   .week-hot {
-    margin-top: 20px;
+    margin-top: 10px;
+    background: #ffffff;
+    padding: 0 24px;
+
     display: flex;
     align-items: center;
     justify-content: space-between;
+    flex-wrap: wrap;
+
     .item {
       margin-top: 20px;
       text-align: center;
       padding-bottom: 15px;
+      line-height: 1;
 
       image {
         width: 220px;
@@ -36,7 +41,7 @@
 <template>
   <view class="page">
     <view class="week-hot">
-      <view class="item"  wx:for="{{record}}" wx:key="{{index}}">
+      <view class="item"  wx:for="{{list}}" wx:key="{{index}}">
         <image src="{{item.fileDto.url}}" mode="aspectFill"/>
         <view class="name">{{item.title}}</view>
       </view>
@@ -75,7 +80,8 @@
         type: 'weekHot',
         current: 1,
         size: 10
-      }
+      },
+      list: []
 
     }
 
@@ -128,11 +134,11 @@
       wx.showNavigationBarLoading()
       this.loading = true
       this.$get('/plate/queryPageList', this.queryParam).then(res => {
-        let record = res.records || []
-        record.forEach(item => {
+        let list = res.records || []
+        list.forEach(item => {
           item.createTimeText = format(item.createTime, 'YYYY-MM-DD')
         })
-        this.record = record
+        this.list = list
         this.hasNext = res.current < res.pages
 
         this.loading = false

@@ -27,8 +27,19 @@
   </block>
 
   <block wx:elif="{{status == 'next'}}">
-    <view class="load-more" @tap=onNextPage>
+    <view class="load-more" @tap="onNextPage">
       <text>加载更多</text>
+    </view>
+  </block>
+
+  <block wx:elif="{{status == 'none'}}">
+    <view class="load-more">
+      <text>没有数据</text>
+    </view>
+  </block>
+  <block wx:elif="{{status == 'noMore'}}">
+    <view class="load-more">
+      <text>到底了</text>
     </view>
   </block>
 
@@ -40,17 +51,16 @@
 
   export default class LoadMore extends wepy.component {
 
-    data = {}
     computed = {
       status () {
-        let data = this.list
+        let list = this.list
         if (this.loading) {
           return 'loading'
-        } else if (!data || data.length == 0) {
+        } else if (!list || list.length == 0) {
           return 'none'
-        } else if (data && data.length > 0 && this.hasNext) {
+        } else if (list && list.length > 0 && this.hasNext) {
           return 'next'
-        } else if (data && data.length > 0 && !this.hasNext) {
+        } else if (list && list.length > 0 && !this.hasNext) {
           return 'noMore'
         }
       }

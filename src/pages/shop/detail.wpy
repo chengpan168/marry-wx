@@ -288,32 +288,46 @@
 
     <view class="shop-detail">
       <image class="banner"
-             src="https://cdn.pingwest.com/portal/2018/11/28/Fgy_8EAlLpNObQD_7mFN_oZ1DQzD.jpg?imageView2/2/w/1440/q/100"
+             src="{{detail.coverFileDto.url}}"
              mode="aspectFill"/>
 
       <view class="detail">
-        <view class="title">B站要上线马克思的动画</view>
-        <view class="content">
-          “让我们一起建设社会主义吧！”在哔哩哔哩本周举办的国创发布会上，动画《领风者》出品方代表卓丝娜向“观众老爷们”发出了这样一句号召。《领风者》是为纪念马克思诞辰 200
-          周年制作的一部国产动画，其中的主角就是化身为二次元帅气小哥哥的“千年思想家”卡尔·马克思。
-        </view>
+        <view class="title">{{detail.name}}</view>
+        <view class="content">{{detail.description}}</view>
         <view class="item">
           <text class="iconfont icon-zuobiao"></text>
-          <text>嘉兴市中环西路龙耀大厦23层520室</text>
+          <text>{{detail.address}}</text>
         </view>
         <view class="item">
           <text class="iconfont icon-kefu"></text>
-          <text>客服微信号：jingzhi1234</text>
+          <text>客服微信号：{{detail.customerServiceWxAccount}}</text>
         </view>
       </view>
 
-      <view class="tab-wrapper">
+      <view class="tab-wrapper" wx:if="{{detail.tab == 'tab1'}}">
+        <view class="tab-item active">宴会厅</view>
+        <view class="tab-item">婚宴菜单</view>
+        <view class="tab-item">婚礼案例</view>
+        <view class="tab-item">用户点评</view>
+      </view>
+      <view class="tab-wrapper" wx:if="{{detail.tab == 'tab2'}}">
         <view class="tab-item active">全部套系</view>
         <view class="tab-item">优惠套餐</view>
         <view class="tab-item">作品精选</view>
         <view class="tab-item">用户点评</view>
       </view>
-      <view class="tab-content three">
+      <view class="tab-wrapper" wx:if="{{detail.tab == 'tab3'}}">
+        <view class="tab-item active">全部套系</view>
+        <view class="tab-item">作品精选</view>
+        <view class="tab-item">视频赏析</view>
+        <view class="tab-item">用户点评</view>
+      </view>
+      <view class="tab-wrapper" wx:if="{{detail.tab == 'tab4'}}">
+        <view class="tab-item active">全部套系</view>
+        <view class="tab-item">个性精选</view>
+        <view class="tab-item">用户点评</view>
+      </view>
+      <view class="tab-content three"  wx:if="{{tabContentType == 'tc3'}}">
         <view class="item" wx:for="{{[1,2,3,4]}}" wx:key="{{index}}">
           <view class="name">情比金坚</view>
           <view class="price">¥ 6688/桌</view>
@@ -321,7 +335,7 @@
         </view>
       </view>
 
-      <view class="tab-content comment">
+      <view class="tab-content comment"  wx:if="{{tabContentType == 'tcComment'}}">
         <view class="item" wx:for="{{[1,2,3,4]}}" wx:key="{{index}}">
           <view class="user">
             <image class="avatar"
@@ -339,25 +353,26 @@
         </view>
       </view>
 
-      <view class="tab-content two">
-        <view class="item" wx:for="{{[1,2,3,4]}}" wx:key="{{index}}">
+      <view class="tab-content two"  wx:if="{{tabContentType == 'tc2'}}">
+        <view class="item" wx:for="{{list}}" wx:key="{{index}}">
           <image class="banner"
-                 src="https://cdn.pingwest.com/portal/2018/11/28/Fgy_8EAlLpNObQD_7mFN_oZ1DQzD.jpg?imageView2/2/w/1440/q/100"
+                 src="{{item.coverFileDto.url}}"
                  mode="aspectFill"/>
           <view class="info">
-            <text class="name">姑苏之约</text>
+            <text class="name">{{item.name}}</text>
             <text class="label green">50桌</text>
             <text class="label gray">无柱</text>
           </view>
         </view>
       </view>
-      <view class="tab-content one">
-        <view class="item" wx:for="{{[1,2,3,4]}}" wx:key="{{index}}">
+
+      <view class="tab-content one" wx:if="{{tabContentType == 'tc1'}}">
+        <view class="item" wx:for="{{list}}" wx:key="{{index}}">
           <image class="banner"
-                 src="https://cdn.pingwest.com/portal/2018/11/28/Fgy_8EAlLpNObQD_7mFN_oZ1DQzD.jpg?imageView2/2/w/1440/q/100"
+                 src="{{item.coverFileDto.url}}"
                  mode="aspectFill"/>
-          <view class="name">RL《丽江姑苏之约》系列</view>
-          <view class="price">¥ 3999</view>
+          <view class="name">{{item.name}}</view>
+          <view class="price" wx:if="{{item.currentAmount}}">¥ {{item.currentAmount}}</view>
         </view>
       </view>
 
@@ -391,7 +406,6 @@
 
 <script>
   import page from '@/common/page'
-  import format from 'date-fns/format'
 
   const { $Toast } = require('@/components/iview/base/index')
 
@@ -411,10 +425,22 @@
       token: '',
       loading: false,
       id: '',
-      detail: {
-        title: '2018年穿着婚纱去春游报名啦2018年穿着婚纱去春游报名啦！！',
-        detail: '<strong>即便是中国互联网的第一代资深网民</strong>，<img style="width: 100%" src="https://cdn.pingwest.com/portal/2018/11/28/Fi1oqaSDdzFWK5IY4oemCmsBurSp.jpeg?imageView2/2/w/1440/q/100|watermark/1/image/aHR0cHM6Ly9jZG4ucGluZ3dlc3QuY29tL3B3LWNvcHlyaWdodC5wbmc=/dissolve/100/gravity/SouthEast/dx/30/dy/30" alt="">父母们也意识到自己有些看不懂现在儿女们的网络世界了。这群“自我意识强、内心孤独、喜欢幻想和表演”的年轻人，挣脱现实中的道德约束，在网络上寻求浪漫和刺激。而一旦跳脱出网络这一环境，他们也会意识到现实还是现实。'
+      detail: {},
+      tab: {
+        tab1: [1],  //婚宴酒店：宴会厅、婚宴菜单、婚礼案例、用户点评
+        tab2: [2, 4, 6, 8], //婚纱摄影、婚纱西服、婚车租赁、婚礼甜品:  全部套系、优惠套餐、作品精选、用户点评
+        tab3: [3, 7],//婚礼策划、四大金刚:  全部套系、作品精选、视频赏析、用户点评
+        tab4: [5]//婚戒首饰: 全部套系、个性精选、用户点评
       },
+      tabContentType: 'tc1',
+      list: [],
+      queryParam: {
+        sellerId: '',
+        type: '',
+        current: 1,
+        size: 10,
+      },
+
       deleteModalVisible: false,
       submitConfirm: false,
       iou: {},
@@ -438,6 +464,7 @@
 
     onLoad (opt) {
       this.id = opt.id
+      this.queryParam.sellerId = opt.id
     }
 
     onShow () {
@@ -460,8 +487,7 @@
     }
 
     init () {
-      // this.getDetail()
-      // this.getRecord()
+      this.getDetail()
     }
 
     methods = {
@@ -473,19 +499,69 @@
       }
     }
 
-    getRecord () {
+    getDetail () {
       wx.showNavigationBarLoading()
 
-      this.$get('/rar/listByDrId', { debitRecordId: this.id }).then(res => {
-        let record = res || []
-        record.forEach(item => {
-          item.createTimeText = format(item.createTime, 'YYYY-MM-DD')
-        })
-        this.record = record
+      this.$get('/seller/queryById', { id: this.id }).then(res => {
+        let detail = res || {}
+
+        let tab = 'tab2'
+        for (let key in this.tab) {
+          if (this.tab[key].indexOf(detail.categoryId) > -1) {
+            tab = key
+          }
+        }
+
+        detail.tab = tab
+
+        if (tab == 'tab1') {
+          // 案会厅
+          this.getProducts('banquetHall')
+        } else {
+          // 其它加载全部套系
+          this.getProducts('allSet')
+        }
+
+        this.detail = detail
         wx.hideNavigationBarLoading()
         this.$apply()
       })
+    }
 
+    getProducts(type) {
+
+      this.queryParam.type = type
+
+      if (type == 'banquetHall') {
+        this.tabContentType = 'tc2'
+      } else if (type == 'allSet') {
+        this.tabContentType = 'tc1'
+      }
+
+      this.loading = true
+      wx.showNavigationBarLoading()
+      this.$get('/product/queryPageList', this.queryParam).then(res => {
+        let list = res.records || []
+
+        this.list = list
+        this.loading = false
+        wx.hideNavigationBarLoading()
+        this.$apply()
+      })
+    }
+
+    getWeddingCase() {
+
+      this.loading = true
+      wx.showNavigationBarLoading()
+      this.$get('/wc/queryPageList', this.queryParam).then(res => {
+        let list = res.records || []
+
+        this.list = list
+        this.loading = false
+        wx.hideNavigationBarLoading()
+        this.$apply()
+      })
     }
 
   }
