@@ -296,7 +296,7 @@
             'text': '首页'
           },
           {
-            'pagePath': 'pages/shop/list',
+            'pagePath': 'pages/shop/index',
             'iconPath': '/assets/icon/Navigation-shop-default@2x.png',
             'selectedIconPath': '/assets/icon/Navigation-shop-selection@2x.png',
             'text': '商铺'

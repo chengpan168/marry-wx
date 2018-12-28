@@ -244,7 +244,7 @@
 
       this.loading = true
       this.$get('/seller/queryPageList', { categoryId: this.categoryId }).then(res => {
-        let record = res || []
+        let record = res.records || []
         record.forEach(item => {
           item.createTimeText = format(item.createTime, 'YYYY-MM-DD')
         })
