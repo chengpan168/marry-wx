@@ -1,0 +1,260 @@
+<style lang="less">
+  @import "../../assets/css/global";
+
+  page {
+  }
+
+  .page {
+  }
+
+  .shop-detail {
+    margin-top: 10px;
+    position: relative;
+    padding: 20px 24px;
+    background: #ffffff;
+    border-top: 1px solid #E6E6E6;
+    display: flex;
+    align-items: flex-start;
+
+    image {
+      width: 200px;
+      height: 180px;
+      border-radius: 10px;
+    }
+
+    .content {
+      margin-left: 30px;
+      overflow: hidden;
+
+
+      .name {
+        font-size: 32px;
+        font-weight: bold;
+        color: rgba(0, 0, 0, 1);
+      }
+
+      .tags {
+        margin-top: 30px;
+
+        .tag {
+          display: inline-block;
+          margin-right: 20px;
+          height: 36px;
+          line-height: 36px;
+          background: rgba(252, 214, 1, 1);
+          border-radius: 18px;
+          padding: 0 20px;
+          text-align: center;
+          font-size: 24px;
+          font-weight: bold;
+          color: rgba(255, 255, 255, 1);
+
+          &.gray {
+            background: #BCC5CA;
+          }
+        }
+      }
+
+      .address {
+        display: flex;
+        align-items: center;
+        margin-top: 30px;
+
+        text {
+          font-size: 22px;
+          font-weight: bold;
+          color: rgba(0, 0, 0, 1);
+        }
+
+        .iconfont {
+          font-size: 30px;
+          color: #FCD601;
+          margin-right: 8px;
+        }
+      }
+
+    }
+  }
+
+  .comment-write {
+    background: #ffffff;
+    height: 400px;
+    padding: 20px 24px;
+    margin-top: 10px;
+
+    textarea {
+      width: 100%;
+      height: 100%;
+      font-size:28px;
+      color: #666666;
+    }
+  }
+
+  .submit {
+    margin: 60px auto 0 auto;
+    width: 480px;
+    height: 90px;
+    line-height: 90px;
+    background: rgba(252, 214, 1, 1);
+    border-radius: 20px;
+    text-align: center;
+    font-size: 36px;
+    font-weight: bold;
+    color: rgba(255, 255, 255, 1);
+  }
+
+</style>
+<template>
+  <view class="page">
+    <view class="shop-detail">
+      <image
+        src="{{item.coverFileDto.url}}"
+        mode="aspectFill"/>
+      <view class="content">
+        <view class="name">{{detail.name}}</view>
+        <view class="tags">
+          <view class="tag gray">{{detail.weddingCaseNum}}个案例</view>
+          <view class="tag">{{detail.collectNum}}人关注</view>
+        </view>
+        <view class="address">
+          <text class="iconfont icon-zuobiao"></text>
+          <text>{{detail.address}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="comment-write">
+      <textarea bindinput="onContentChange" placeholder="输入评价内容，可以从服务的各种角度进行点评" maxlength="1000"/>
+    </view>
+
+    <button class="submit" @tap="onSubmit">发布</button>
+    <!--分隔线-->
+    <i-toast id="toast"/>
+  </view>
+</template>
+
+<script>
+  import schema from 'async-validator'
+  import page from '@/common/page'
+  import loadMore from '../../components/loadMore'
+
+  const { $Toast } = require('@/components/iview/base/index')
+
+  export default class ShopCommentEdit extends page {
+    config = {
+      'navigationBarTitleText': '商家点评',
+      'enablePullDownRefresh': false,
+      'navigationBarBackgroundColor': '#FFFFFF',
+      'usingComponents': {
+        'i-toast': '/components/iview/toast/index',
+        'i-modal': '/components/iview/modal/index'
+      }
+    }
+    components = { loadMore }
+
+    data = {
+      token: '',
+      loading: false,
+      id: '',
+      detail: {},
+      list: [],
+      queryParam: {
+        sellerId: '',
+        type: '',
+        current: 1,
+        size: 10
+      },
+      settingModalVisible: false,
+      successModalVisible: false,
+
+      formData: {
+        content: '',
+        objectId: '',
+        objectType: 'seller'
+      },
+      formValidator: {
+        content: [
+          { required: true, message: '请填写评论内容', trigger: 'blur' }
+        ]
+      }
+
+    }
+
+    computed = {}
+
+    onLoad (opt) {
+      this.id = opt.id
+    }
+
+    onShow () {
+      this.init()
+    }
+
+    onReachBottom (e) {
+      if (!this.hasNext || this.loading) {
+        return
+      }
+    }
+
+    onShareAppMessage (e) {
+      let opt = {
+        success (res) {
+          console.log('分享成功', res)
+        }
+      }
+      return opt
+    }
+
+    init () {
+      this.getDetail()
+    }
+
+    methods = {
+      onContentChange ({ detail }) {
+        this.formData.content = detail.value
+      },
+      onSubmit () {
+
+        this.formData.objectId = this.id
+
+        const validator = new schema(this.formValidator)
+        validator.validate(this.formData, (errors, fields) => {
+          if (errors) {
+            $Toast({
+              content: errors[0].message
+            })
+          } else {
+            this.$post('/comment/submit', this.formData).then(res => {
+              $Toast({
+                content: '发表成功',
+                duration: 0
+              })
+              setTimeout(() => {
+                $Toast.hide()
+                wx.navigateBack({
+                  delta: 2
+                })
+              }, 1000)
+            })
+          }
+
+        })
+      }
+    }
+
+    getDetail () {
+      wx.showNavigationBarLoading()
+
+      this.$get('/seller/queryById', { id: this.id }).then(res => {
+        let detail = res || {}
+
+        this.detail = detail
+        wx.hideNavigationBarLoading()
+        this.$apply()
+      })
+    }
+
+
+
+  }
+</script>

@@ -4,7 +4,7 @@
   top: 50%;
   left: 50%;
   max-height: 80%;
-  width: 90%;
+  width: 600rpx;
   z-index: 1000;
   display: flex;
   outline: 0;
@@ -54,11 +54,11 @@
   text-align: center;
   height: 100%;
   overflow: hidden;
-  padding: 20px;
+  padding: 0px;
 }
 
 .i-modal-body {
-  margin: 10px 0;
+  margin: 0;
   font-size: 14px;
   color: #80848f;
   height: 100%;

@@ -2,10 +2,6 @@
 <view class="i-class i-modal {{ visible ? 'i-modal-show' : '' }}">
 <view class="i-modal-main">
   <view class="i-modal-content">
-    <view bindtap="handleClose" class="close">x</view>
-    <view class="i-modal-title" wx:if="{{ title }}">
-      <text>{{ title }}</text>
-    </view>
     <view class="i-modal-body">
       <slot></slot>
     </view>

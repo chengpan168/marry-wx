@@ -85,36 +85,6 @@
     }
   }
 
-  .i-checkbox-group {
-    line-height: 1;
-  }
-
-  .paginate {
-    margin-top: 10px;
-    padding: 20px 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    font-size: 26px;
-    color: #333333;
-    text-align: center;
-
-    image {
-      width: 30px;
-      height: 30px;
-      margin-right: 10px;
-    }
-  }
-
-  .data-coming {
-    width: 300px;
-    height: 346px;
-    display: block;
-    margin: 20px auto;
-    padding: 20px 0;
-  }
-
   .placeholder {
     font-size: 26px;
     font-weight: bold;
@@ -245,6 +215,38 @@
       }
     }
   }
+
+  .modal {
+    padding: 20px 50px 0 50px;
+    font-size:24px;
+    font-weight:bold;
+    color:rgba(84,84,84,1);
+    line-height: 1.5;
+    text-align: center;
+
+    .btns {
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      padding: 40px 0;
+
+      button {
+        width:224px;
+        height:66px;
+        line-height:66px;
+        border-radius:20px;
+        font-size:36px;
+        font-weight:bold;
+        color:rgba(255,255,255,1);
+      }
+      .cancel {
+        background:rgba(188,197,202,1);
+      }
+      .ok {
+        background:rgba(252,214,1,1);
+      }
+    }
+  }
 </style>
 
 <script>
@@ -265,6 +267,9 @@
         'pages/shop/list',
         'pages/shop/hot',
         'pages/shop/like',
+        'pages/shop/commentEdit',
+
+        'pages/product/detail',
 
         'pages/activity/list',
         'pages/activity/detail',

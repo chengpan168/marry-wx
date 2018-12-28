@@ -1,0 +1,314 @@
+<style lang="less">
+  @import "../../assets/css/global";
+
+  page {
+  }
+
+  .page {
+  }
+
+  .banner {
+    height: 260px;
+    width: 100%;
+  }
+
+  .product-detail {
+    padding: 20px 24px 0 24px;
+    background-color: #fff;
+    margin-top: 10px;
+
+    .title {
+      line-height: 1;
+      font-size: 30px;
+      font-weight: bold;
+      color: rgba(0, 0, 0, 1);
+    }
+
+    .price {
+      border-bottom: 1px solid #E6E6E6;
+
+      text {
+        display: inline-block;
+        padding: 20px 0;
+      }
+      .current {
+        font-size: 36px;
+        font-weight: bold;
+        color: rgba(205, 92, 91, 1);
+        margin-right: 20px;
+        border-bottom: 6px solid #BCC5CA;
+      }
+
+      .origin {
+        font-size: 22px;
+        font-weight: bold;
+        color: rgba(188, 197, 202, 1);
+        text-decoration: line-through;
+      }
+    }
+  }
+
+  .rich-text {
+    padding: 20px 0px;
+  }
+
+</style>
+<template>
+  <view class="page">
+    <image class="banner"
+           src="{{detail.coverFileDto.url}}"
+           mode="aspectFill"/>
+
+    <view class="product-detail">
+      <view class="title">{{detail.name}}</view>
+      <view class="price">
+        <text class="current">￥{{detail.currentAmount}}</text>
+        <text class="origin">￥{{detail.originalAmount}}</text>
+      </view>
+      <view class="rich-text">
+        <rich-text nodes="{{detail.description}}"></rich-text>
+      </view>
+    </view>
+    <!--分隔线-->
+
+
+    <i-toast id="toast"/>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import page from '@/common/page'
+  import format from 'date-fns/format'
+  import loadMore from '../../components/loadMore'
+
+  const { $Toast } = require('@/components/iview/base/index')
+
+  export default class ProductDetail extends page {
+    config = {
+      'navigationBarTitleText': '详情',
+      'enablePullDownRefresh': false,
+      'navigationBarBackgroundColor': '#FFFFFF',
+      'usingComponents': {
+        'i-toast': '/components/iview/toast/index',
+        'i-modal': '/components/iview/modal/index'
+      }
+    }
+    components = { loadMore }
+
+    data = {
+      token: '',
+      loading: false,
+      id: '',
+      type: '',
+      detail: {},
+      list: [],
+      queryParam: {
+        sellerId: '',
+        type: '',
+        current: 1,
+        size: 10
+      }
+    }
+
+    computed = {}
+
+    onLoad (opt) {
+      this.id = opt.id
+      this.type = opt.type
+    }
+
+    onShow () {
+      this.init()
+    }
+
+    onReachBottom (e) {
+      if (!this.data.hasNext || this.data.loading) {
+        return
+      }
+    }
+
+    onShareAppMessage (e) {
+      let opt = {
+        success (res) {
+          console.log('分享成功', res)
+        }
+      }
+      return opt
+    }
+
+    init () {
+      this.getDetail()
+    }
+
+    methods = {
+      onTabChange (tabName) {
+        this.tabName = tabName
+
+        this.queryParam.current = 1
+
+        if ('weddingCase' == tabName) {
+          // FIXME 婚礼案礼
+          this.getWeddingCase()
+        } else if ('comment' == tabName) {
+          // 评论
+          this.getComments()
+        } else if ('video' == tabName) {
+          // 视频
+          this.getVideos()
+        } else {
+          this.getProducts(tabName)
+        }
+      },
+      onLikeTap () {
+        this.$post('/vw/queryPageList').then(res => {
+          if (res) {
+
+          } else {
+
+          }
+          this.$apply()
+        })
+      },
+      onCloseSettingModal () {
+        this.settingModalVisible = false
+      },
+      onCloseSuccessModal () {
+        this.successModalVisible = false
+      },
+      setClipboard () {
+
+        wepy.setClipboardData({
+          data: 'jiaxing19lou'
+        }).then(res => {
+          wx.hideToast()
+          this.successModalVisible = false
+          $Toast({
+            content: '复制成功',
+            duration: 1
+          })
+
+          this.$apply()
+        })
+      }
+    }
+
+    getDetail () {
+      wx.showNavigationBarLoading()
+
+      this.$get('/product/queryById', { id: this.id }).then(res => {
+        let detail = res || {}
+
+        this.detail = detail
+        wx.hideNavigationBarLoading()
+        this.$apply()
+      })
+    }
+
+    getProducts (type) {
+
+      this.queryParam.type = type
+
+      if (type == 'banquetHall') {
+        this.tabContentType = 'tc2'
+      } else if (['allSet', 'discountSetMeal', 'selectedWorks'].indexOf(type) > -1) {
+        this.tabContentType = 'tc1'
+      }
+      // 婚礼菜单
+      else if (type == 'weddingMenu') {
+        this.tabContentType = 'tc3'
+      }
+
+      this.loading = true
+      wx.showNavigationBarLoading()
+      this.$get('/product/queryPageList', this.queryParam).then(res => {
+        let list = res.records || []
+
+        list.forEach(item => {
+          if (type == 'banquetHall' && item.extProperty) {
+            item.extProperty = JSON.parse(item.extProperty)
+          }
+
+          item.createTimeText = format(item.createTime, 'YYYY-MM-DD')
+        })
+
+        this.list = list
+
+        this.loading = false
+        wx.hideNavigationBarLoading()
+        this.$apply()
+      })
+    }
+
+    getWeddingCase () {
+
+      this.tabContentType = 'tc1'
+
+      this.loading = true
+      wx.showNavigationBarLoading()
+      this.$get('/wc/queryPageList', this.queryParam).then(res => {
+        let list = res.records || []
+
+        this.list = list
+        this.loading = false
+        wx.hideNavigationBarLoading()
+        this.$apply()
+      })
+    }
+
+    getComments () {
+
+      this.tabContentType = 'tcComment'
+      this.queryParam.type = ''
+
+      this.loading = true
+      wx.showNavigationBarLoading()
+
+      let param = {
+        objectType: 'seller',
+        objectId: this.id,
+        current: this.queryParam.current,
+        size: this.queryParam.size
+      }
+      this.$get('/comment/queryPageList', param).then(res => {
+        let list = res.records || []
+
+        this.list = list
+        this.loading = false
+        wx.hideNavigationBarLoading()
+        this.$apply()
+      })
+    }
+
+    getVideos () {
+
+      this.tabContentType = 'tcVideo'
+
+      this.loading = true
+      wx.showNavigationBarLoading()
+
+      let param = {
+        sellerId: this.id,
+        current: this.queryParam.current,
+        size: this.queryParam.size
+      }
+      this.$get('/vw/queryPageList', param).then(res => {
+        let list = res.records || []
+
+        this.list = list
+        this.loading = false
+        wx.hideNavigationBarLoading()
+        this.$apply()
+      })
+    }
+
+    submit () {
+      this.$post('/subscribe/submit', { sellerId: this.id }).then(res => {
+
+        this.successModalVisible = true
+        this.$apply()
+      })
+    }
+
+  }
+</script>
