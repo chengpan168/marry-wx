@@ -171,7 +171,7 @@
         <text class="iconfont icon-pingjia"></text>
         <text class="name">我的消息</text>
         <view class="enter">
-          <view class="badge">8</view>
+          <view class="badge" wx:if="{{messageCount}}">{{messageCount}}</view>
           <text class="iconfont icon-enter"></text>
         </view>
       </view>
@@ -242,7 +242,8 @@
       nickname: '',
       avatarUrl: '',
       id: '',
-      user: {}
+      user: {},
+      messageCount: ''
     }
 
     computed = {
@@ -324,6 +325,13 @@
           logger.info('小程序本地登录失败', loginRes)
         })
       }
+    }
+
+    getMessageCount () {
+      this.$get(' /message/totalMyUnReadMsg').then(res => {
+        this.messageCount = res || ''
+        this.$apply()
+      })
     }
 
   }

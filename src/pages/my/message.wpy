@@ -124,6 +124,8 @@
     init () {
       this.queryParam.current = 1
       this.getList()
+
+      this.markRead()
     }
 
     methods = {
@@ -137,7 +139,7 @@
       }
     }
 
-    getList (type) {
+    getList () {
 
       this.loading = true
       wx.showNavigationBarLoading()
@@ -163,6 +165,10 @@
         wx.hideNavigationBarLoading()
         this.$apply()
       })
+    }
+
+    markRead () {
+      this.$get(' /message/read')
     }
 
   }
