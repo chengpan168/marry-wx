@@ -162,7 +162,9 @@
       </view>
 
       <loadMore :loading.sync="loading" :hasNext.sync="hasNext" :list.sync="list" @on-next-page.user="onNextPage"/>
+
     </view>
+
     <!--分隔线-->
     <i-toast id="toast"/>
   </view>

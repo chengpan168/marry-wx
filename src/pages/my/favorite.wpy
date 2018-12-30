@@ -156,18 +156,18 @@
 <template>
   <view class="page">
     <view class="tab-wrapper">
-      <view class="tab-item active">商家</view>
-      <view class="tab-item">案例</view>
-      <view class="tab-item">商品</view>
-      <view class="tab-item">活动</view>
+      <view @tap="onTabChange('seller')" class="tab-item {{queryParam.objectType == 'seller' ? 'active' : ''}}">商家
+      </view>
+      <!--<view class="tab-item {{queryParam.objectType == 'seller' ? 'active' : ''}}">案例</view>-->
+      <view @tap="onTabChange('product')" class="tab-item {{queryParam.objectType == 'product' ? 'active' : ''}}">商品活动
+      </view>
+      <!--<view class="tab-item"></view>-->
     </view>
-    <view class="shop-list">
-      <view class="item" wx:for="{{[1,3,4]}}" wx:key="{{index}}">
-        <image
-          src="https://cdn.pingwest.com/portal/2018/11/28/Fgy_8EAlLpNObQD_7mFN_oZ1DQzD.jpg?imageView2/2/w/1440/q/100"
-          mode="aspectFill"/>
+    <view wx:if="{{queryParam.objectType == 'seller'}}" class="shop-list">
+      <view class="item" wx:for="{{list}}" wx:key="{{index}}">
+        <image src="{{item.sellerDto.coverFileDto.url}}" mode="aspectFill"/>
         <view class="content">
-          <view class="name">2018年穿着婚纱去春游报名啦！</view>
+          <view class="name">{{item.sellerDto.name}}</view>
           <view class="tags">
             <view class="tag gray">文苑婚纱</view>
             <view class="tag">文苑婚纱</view>
@@ -178,10 +178,10 @@
           </view>
         </view>
       </view>
-      <loadMore :loading="loading"/>
+
     </view>
 
-    <view class="case-list">
+    <view wx:if="{{queryParam.objectType == 'weddingCase'}}" class="case-list">
       <view class="item" wx:for="{{[1,2,3,4]}}" wx:key="{{index}}">
         <image
           src="https://cdn.pingwest.com/portal/2018/11/28/Fgy_8EAlLpNObQD_7mFN_oZ1DQzD.jpg?imageView2/2/w/1440/q/100"
@@ -190,14 +190,13 @@
       </view>
     </view>
 
-    <view class="product-activity-list">
-      <view class="item" wx:for="{{[1,2,3,4]}}" wx:key="{{index}}">
-        <image
-          src="https://cdn.pingwest.com/portal/2018/11/28/Fgy_8EAlLpNObQD_7mFN_oZ1DQzD.jpg?imageView2/2/w/1440/q/100"
+    <view wx:if="{{queryParam.objectType == 'product'}}" class="product-activity-list">
+      <view class="item" wx:for="{{list}}" wx:key="{{index}}">
+        <image src="{{item.productDto.coverFileDto.url}}"
           mode="aspectFill"/>
-        <view class="name">婚宴酒店婚宴酒店</view>
-        <view class="desc">婚宴酒店婚宴酒店婚宴酒店婚宴酒店</view>
-        <view class="price">￥ 1999</view>
+        <view class="name">{{item.productDto.name}}</view>
+        <view class="desc">{{item.productDto.description}}</view>
+        <view class="price">￥ {{item.productDto.currentAmount}}}</view>
       </view>
     </view>
 
@@ -211,7 +210,6 @@
   import page from '@/common/page'
   import format from 'date-fns/format'
   import loadMore from '../../components/loadMore'
-  import schema from 'async-validator'
 
   const { $Toast } = require('@/components/iview/base/index')
 
@@ -235,7 +233,7 @@
       hasNext: true,
       id: '',
       queryParam: {
-        type: '',
+        objectType: 'seller',
         current: 1,
         size: 10
       },
@@ -271,6 +269,7 @@
     }
 
     init () {
+      this.queryParam.current = 1
       this.getList()
     }
 
@@ -281,6 +280,11 @@
         }
 
         this.queryParam.current = this.queryParam.current + 1
+        this.getList()
+      },
+      onTabChange (type) {
+        this.queryParam.current = 1
+        this.queryParam.objectType = type
         this.getList()
       }
     }
@@ -301,7 +305,8 @@
             if (item.productActivityExtDto.activitySignUpNum >= item.productActivityExtDto.activityNum) {
               item.remainSign = '告罄'
             } else {
-              item.remainSign = '仅剩'+ (item.productActivityExtDto.activityNum - (item.productActivityExtDto.activitySignUpNum || 0)) +'名'
+              item.remainSign = '仅剩' +
+                (item.productActivityExtDto.activityNum - (item.productActivityExtDto.activitySignUpNum || 0)) + '名'
             }
           }
 

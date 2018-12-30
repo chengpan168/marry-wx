@@ -145,6 +145,8 @@
     }
 
     init () {
+
+      this.queryParam.current = 1
       this.getList()
     }
 
@@ -175,7 +177,8 @@
             if (item.productActivityExtDto.activitySignUpNum >= item.productActivityExtDto.activityNum) {
               item.remainSign = '告罄'
             } else {
-              item.remainSign = '仅剩'+ (item.productActivityExtDto.activityNum - (item.productActivityExtDto.activitySignUpNum || 0)) +'名'
+              item.remainSign = '仅剩' +
+                (item.productActivityExtDto.activityNum - (item.productActivityExtDto.activitySignUpNum || 0)) + '名'
             }
           }
 
