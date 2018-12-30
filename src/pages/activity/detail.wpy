@@ -104,12 +104,24 @@
     }
   }
 
+
+  .sign-up-mask {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    z-index: 90;
+    background: rgba(0, 0, 0, 0.4);
+  }
+
   .sign-up-wrapper {
     background: #ffffff;
     position: fixed;
     bottom: 0;
     width: 750px;
     padding: 0 24px;
+    z-index: 100;
 
     .item {
       position: relative;
@@ -241,36 +253,79 @@
           <view class="name">分享</view>
         </button>
       </view>
-      <view class="sign-up">立即报名</view>
+      <view class="sign-up" @tap="onPreSubmit">立即报名</view>
     </view>
 
 
-    <view class="sign-up-wrapper">
+    <view class="sign-up-mask" wx:if="{{signUpVisible}}" @tap="onSignUpClose"></view>
+    <view class="sign-up-wrapper" wx:if="{{signUpVisible}}">
       <view class="item">
         <view class="name">{{detail.name}}</view>
-        <text class="iconfont icon-guanbi"></text>
+        <text class="iconfont icon-guanbi" @tap="onSignUpClose"></text>
       </view>
       <view class="item">
         <label>数量</label>
         <view class="num">
           <view class="op" @tap="onAddNum(-1)">-</view>
-          <input bindinput="onNumChange" type="number" maxlength="4" value="{{ formData.num }}"></input>
+          <input bindinput="onNumChange" bindblur="onNumBlur" type="number" maxlength="4"
+                 value="{{ formData.num }}"></input>
           <view class="op" @tap="onAddNum(1)">+</view>
         </view>
       </view>
       <view class="item">
         <label for="">总计</label>
-        <view class="value">￥{{detail.currentAmount * formData.num}}</view>
+        <view class="value">￥{{amount}}</view>
       </view>
-      <view class="item submit">支付</view>
+      <view class="item submit"  @tap="onPreConfirmSubmit">支付</view>
     </view>
+
+
     <!--分隔线-->
+    <i-modal visible="{{ settingModalVisible }}" bind:close="onCloseSettingModal" show-ok="{{false}}"
+             show-cancel="{{false}}">
+      <view class="modal setting-modal">
+        <image class="error-icon" src="/assets/images/icon_wrong@2x.png" mode="aspectFill"/>
+        <view class="text">报名参与活动需要绑定手机号 请前往设置</view>
+
+        <view class="btns">
+          <button class="cancel" @tap="onCloseSettingModal" hover-class="none">取消</button>
+          <button class="ok" hover-class="none" @tap="navTo('/pages/my/bindPhone')">前往设置
+          </button>
+        </view>
+      </view>
+    </i-modal>
+    <i-modal visible="{{ confirmModalVisible }}" bind:close="onCloseConfirmModal" show-ok="{{false}}"
+             show-cancel="{{false}}">
+      <view class="modal setting-modal">
+        <image class="error-icon" src="/assets/images/icon_read@2x.png" mode="aspectFill"/>
+        <view class="text">请仔细阅读活动要求，确保准时参加，确定报名吗？</view>
+
+        <view class="btns">
+          <button class="cancel" @tap="onCloseConfirmModal" hover-class="none">取消</button>
+          <button class="ok" hover-class="none" @tap="onConfirmSubmit">确定</button>
+        </view>
+      </view>
+    </i-modal>
+    <i-modal visible="{{ successModalVisible }}" bind:close="onCloseSuccessModal" show-ok="{{false}}"
+             show-cancel="{{false}}">
+      <view class="modal success-modal">
+        <image class="success-icon" src="/assets/images/icon_success@2x.png" mode="aspectFill"/>
+        <view class="name">预约成功，商家会尽快联系您</view>
+        <view class="text">也可以添加19楼客服微信:jiaxing19lou 了解具体活动详情。</view>
+
+        <view class="btns">
+          <button class="ok" hover-class="none" @tap="setClipboard">复制微信号</button>
+        </view>
+      </view>
+    </i-modal>
     <i-toast id="toast"/>
   </view>
 </template>
 
 <script>
   import page from '@/common/page'
+  import logger from '../../mixins/logger'
+  import md5 from '../../utils/md5'
 
   const { $Toast } = require('@/components/iview/base/index')
 
@@ -291,10 +346,10 @@
       loading: false,
       id: '',
       detail: {},
-      deleteModalVisible: false,
-      submitConfirm: false,
-      iou: {},
-      record: [],
+      settingModalVisible: false,
+      confirmModalVisible: false,
+      successModalVisible: false,
+      signUpVisible: false,
       formData: {
         productId: '',
         num: 1
@@ -310,7 +365,14 @@
 
     }
 
-    computed = {}
+    computed = {
+      amount () {
+        if (isNaN(this.formData.num)) {
+          return 0
+        }
+        return this.detail.currentAmount * this.formData.num
+      }
+    }
 
     onLoad (opt) {
       this.id = opt.id
@@ -372,11 +434,46 @@
         }
         this.formData.num = parseInt(this.formData.num) + parseInt(n)
       },
-      onNumChange (n) {
-        if (this.formData.num <= 1 && n == -1) {
-          return
+      onNumChange ({ detail }) {
+        this.formData.num = detail.value
+      },
+      onNumBlur ({ detail }) {
+        if (isNaN(detail.value) || parseInt(detail.value) < 1) {
+          this.formData.num = 1
+        } else {
+          this.formData.num = parseInt(detail.value)
         }
-        this.formData.num = parseInt(this.formData.num) + parseInt(n)
+      },
+      onSignUpClose () {
+        this.signUpVisible = false
+      },
+      onCloseSettingModal () {
+        this.settingModalVisible = false
+      },
+      onCloseSuccessModal () {
+        this.successModalVisible = false
+      },
+      onCloseConfirmModal () {
+        this.confirmModalVisible = false
+      },
+      onPreSubmit () {
+        this.$getUser().then(res => {
+          this.user = res || {}
+          if (!res.phone) {
+            this.settingModalVisible = true
+          } else {
+            this.confirmModalVisible = true
+          }
+          this.$apply()
+        })
+      },
+      onPreConfirmSubmit () {
+        this.signUpVisible = false
+        this.confirmModalVisible = true
+      },
+      onConfirmSubmit () {
+        this.confirmModalVisible = false
+        this.submit()
       }
     }
 
@@ -396,6 +493,84 @@
         wx.hideNavigationBarLoading()
         this.$apply()
       })
+    }
+
+    submit () {
+      if (this.loading) {
+        return
+      }
+
+
+      this.loading = true
+      this.formData.productId = this.id
+      this.$post('/order/createOrder', this.formData).then(buyRes => {
+        if (buyRes) {
+          this.confirmModalVisible = false
+
+          let prepayId = buyRes
+          this.pay(prepayId)
+
+          /*wepy.login().then(loginRes => {
+            let code = loginRes.code
+            this.$post('/wxPay/payServer', {
+              id: id,
+              code: code,
+              type: 'servicePackage'
+            }).then(res => {
+              this.pay(res.prepayId)
+            })
+          })*/
+
+        } else {
+          $Toast({
+            content: '报名失败',
+            duration: 1
+          })
+        }
+
+        this.loading = false
+        this.$apply()
+      }).catch(err => {
+        this.loading = false
+      })
+    }
+
+    pay (id) {
+      let prepayId = id
+      let timeStamp = parseInt(Date.now() / 1000) + ''
+      let nonceStr = '341fjoqj3r3qrjio34rjojqrq'
+      let paySign = md5(
+        `appId=wx99ac839378dbf468&nonceStr=${nonceStr}&package=prepay_id=${prepayId}&signType=MD5&timeStamp=${timeStamp}&key=AWSEDXCTYUcxsoj87642GBhuiMKO902S`)
+      wx.requestPayment(
+        {
+          'timeStamp': timeStamp,
+          'nonceStr': nonceStr,
+          'package': 'prepay_id=' + prepayId,
+          'signType': 'MD5',
+          'paySign': paySign,
+          'success': function(res) {
+            logger.info(res)
+
+            $Toast({
+              content: '支付成功'
+            })
+            this.successModalVisible = true
+           /* setTimeout(
+              () => {
+                wx.navigateBack({
+                  delta: 2
+                })
+              },
+              2000
+            )*/
+          },
+          'fail': function(res) {
+            console.log(res)
+          },
+          'complete': function(res) {
+            console.log(res)
+          }
+        })
     }
 
   }

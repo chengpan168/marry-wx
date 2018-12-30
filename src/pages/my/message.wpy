@@ -33,9 +33,9 @@
         background: #ffffff;
         border-radius: 20px;
         padding: 20px;
-        font-size:24px;
-        font-family:PingFangSC-Regular;
-        color:rgba(84,84,84,1);
+        font-size: 24px;
+        font-family: PingFangSC-Regular;
+        color: rgba(84, 84, 84, 1);
         line-height: 1.5;
       }
     }
@@ -46,19 +46,18 @@
 <template>
   <view class="page">
     <view class="message">
-      <view class="item" wx:for="{{[1, 2, 3, 4]}}" wx:key="{{index}}">
+      <view class="item" wx:for="{{list}}" wx:key="{{index}}">
         <view class="time">
           <text class="iconfont icon-dot"></text>
-          <text>2018-10-10</text>
+          <text>{{item.createTimeText}}</text>
         </view>
         <view class="content">
-          消费通知：
-          亲，您已成功购买《商品标题》，请到“我的订单”查看
-          订单详情，如有疑问请及时联系官方客服。
+          {{item.content}}
         </view>
       </view>
     </view>
 
+    <loadMore :loading.sync="loading" :hasNext.sync="hasNext" :list.sync="list" @on-next-page.user="onNextPage"/>
     <!--分隔线-->
     <i-toast id="toast"/>
   </view>
@@ -68,7 +67,6 @@
   import page from '@/common/page'
   import format from 'date-fns/format'
   import loadMore from '../../components/loadMore'
-  import schema from 'async-validator'
 
   const { $Toast } = require('@/components/iview/base/index')
 
@@ -91,32 +89,17 @@
       loading: false,
       hasNext: true,
       id: '',
-      receiveModalVisible: false,
-      receiveRecordModalVisible: false,
-      deleteModalVisible: false,
-      submitConfirm: false,
-      iou: {},
-      record: [],
-      formData: {
-        phone: '',
-        code: ''
+      queryParam: {
+        current: 1,
+        size: 10
       },
-      formValidator: {
-        phone: [
-          { required: true, message: '请填写手机号', trigger: 'blur' },
-          { pattern: /^1[0-9]{10}$/, message: '请填写正确的手机号码', trigger: 'blur' }
-        ],
-        code: [
-          { required: true, message: '请填写验证码', trigger: 'blur' }
-        ]
-      }
+      list: []
 
     }
 
     computed = {}
 
     onLoad (opt) {
-      this.id = opt.id
     }
 
     onShow () {
@@ -124,7 +107,7 @@
     }
 
     onReachBottom (e) {
-      if (!this.data.hasNext || this.data.loading) {
+      if (!this.hasNext || this.loading) {
         return
       }
     }
@@ -139,57 +122,47 @@
     }
 
     init () {
-      // this.getDetail()
-      // this.getRecord()
+      this.queryParam.current = 1
+      this.getList()
     }
 
     methods = {
-      onShowReceiveModal () {
-        this.receiveModalVisible = true
-      },
-      onCloseReceiveModal () {
-        this.receiveModalVisible = false
-      },
-      onSubmit () {
-        const validator = new schema(this.formValidator)
-        validator.validate(this.formData, (errors, fields) => {
-          if (errors) {
-            $Toast({
-              content: errors[0].message
-            })
-          } else {
-            //
-            this.$post('/user/bindPhone', this.formData).then(res => {
-              $Toast({
-                content: '绑定成功',
-                duration: 0
-              })
-              setTimeout(() => {
-                $Toast.hide()
-                wx.navigateBack({
-                  delta: 2
-                })
-              }, 1000)
-            })
-          }
+      onNextPage () {
+        if (!this.hasNext) {
+          return
+        }
 
-        })
+        this.queryParam.current = this.queryParam.current + 1
+        this.getList()
       }
     }
 
-    getRecord () {
-      wx.showNavigationBarLoading()
+    getList (type) {
 
-      this.$get('/rar/listByDrId', { debitRecordId: this.id }).then(res => {
-        let record = res || []
-        record.forEach(item => {
+      this.loading = true
+      wx.showNavigationBarLoading()
+      this.$get('/message/list', this.queryParam).then(res => {
+        let list = res.records || []
+
+        list.forEach(item => {
           item.createTimeText = format(item.createTime, 'YYYY-MM-DD')
         })
-        this.record = record
+
+        if (this.queryParam.current == 1) {
+          this.list = list
+        } else {
+          this.list.concat(list)
+        }
+
+        this.loading = false
+        this.hasNext = res.current < res.pages
+        wx.hideNavigationBarLoading()
+        this.$apply()
+      }).catch(err => {
+        this.loading = false
         wx.hideNavigationBarLoading()
         this.$apply()
       })
-
     }
 
   }

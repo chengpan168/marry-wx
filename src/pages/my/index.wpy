@@ -31,6 +31,32 @@
     padding: 0 24px;
     margin-top: 10px;
 
+    .user {
+      display: flex;
+      align-items: center;
+      height: 130px;
+
+      .avatar {
+        width: 84px;
+        height: 84px;
+        border-radius: 50%;
+        flex-grow: 0;
+      }
+
+      .name {
+        flex-grow: 1;
+        font-size: 36px;
+        font-weight: bold;
+        color: rgba(22, 22, 22, 1);
+        margin-left: 20px;
+      }
+
+      .iconfont {
+        flex-grow: 0;
+        font-size: 50px;
+        color: #545454;
+      }
+    }
 
     .menu-item {
       display: flex;
@@ -118,8 +144,15 @@
 <template>
   <view class="page">
 
-    <view class="box login">
-      <button>去登录</button>
+    <view class="box login" wx:if="{{!isLogin}}">
+      <button open-type="getUserInfo" bindgetuserinfo="onGetUserInfo">去登录</button>
+    </view>
+    <view wx:else class="menu-group">
+      <view class="user">
+        <image class="avatar" src="{{avatarUrl}}" mode="aspectFill"/>
+        <view class="name">{{nickname}}</view>
+        <text class="iconfont icon-linedesign-07" @tap="navTo('/pages/my/setting')"></text>
+      </view>
     </view>
 
     <view class="menu-group">
@@ -127,14 +160,14 @@
         <text class="iconfont icon-rili"></text>
         <text class="name">大婚日倒计时</text>
         <text class="enter">
-          <text class="count-down" wx:if="{{true}}">365天</text>
-          <text wx:if="{{false}}">去设置</text>
-          <text wx:if="{{false}}" class="iconfont icon-enter"></text>
+          <text class="count-down" wx:if="{{marryDays}}">{{marryDays}}</text>
+          <text wx:if="{{!marryDays}}">去设置</text>
+          <text wx:if="{{!marryDays}}" class="iconfont icon-enter"></text>
         </text>
       </view>
     </view>
     <view class="menu-group">
-      <view class="menu-item">
+      <view class="menu-item" @tap="navTo('/pages/my/message')">
         <text class="iconfont icon-pingjia"></text>
         <text class="name">我的消息</text>
         <view class="enter">
@@ -176,8 +209,13 @@
 </template>
 
 <script>
+  import logger from '../../mixins/logger'
+  import wepy from 'wepy'
   import page from '@/common/page'
   import format from 'date-fns/format'
+  import _parse from 'date-fns/parse'
+  import _isFuture from 'date-fns/is_future/index.js'
+  import _isPast from 'date-fns/is_past/index.js'
   import loadMore from '../../components/loadMore'
 
   const { $Toast } = require('@/components/iview/base/index')
@@ -198,34 +236,38 @@
 
     data = {
       token: '',
+      isLogin: true,
       loading: false,
       hasNext: true,
+      nickname: '',
+      avatarUrl: '',
       id: '',
-      receiveModalVisible: false,
-      receiveRecordModalVisible: false,
-      deleteModalVisible: false,
-      submitConfirm: false,
-      iou: {},
-      record: [],
-      formData: {
-        debitRecordId: '',
-        receiveAmount: ''
-      },
-      formValidator: {
-        receiveAmount: [
-          { required: true, message: '请填写收款金额', trigger: 'blur' }
-        ],
-        debitRecordId: [
-          { required: true, message: '请填写收款金额', trigger: 'blur' }
-        ]
-      }
-
+      user: {}
     }
 
-    computed = {}
+    computed = {
+      marryDays () {
+        if (!this.user.marryTime) {
+          return ''
+        }
+        if (_isPast(this.user.marryTime)) {
+          return '恭喜恭喜'
+        }
+
+        return parseInt((_parse(this.user.marryTime).getTime() - Date.now())/1000/60/60/24) + '天'
+      }
+    }
 
     onLoad (opt) {
       this.id = opt.id
+      if (opt.login == 'force') {
+        this.isLogin = false
+      } else {
+        this.isLogin = this.$parent.globalData.token && true
+      }
+
+      this.nickname = this.$parent.globalData.nickname
+      this.avatarUrl = this.$parent.globalData.avatarUrl
     }
 
     onShow () {
@@ -248,32 +290,40 @@
     }
 
     init () {
-      // this.getDetail()
-      // this.getRecord()
+      this.$getUser().then(res => {
+        this.user = res
+        this.$apply()
+      })
     }
 
     methods = {
-      onShowReceiveModal () {
-        this.receiveModalVisible = true
-      },
-      onCloseReceiveModal () {
-        this.receiveModalVisible = false
-      }
-    }
+      onGetUserInfo (e) {
+        let userInfoDetail = e.detail
+        if (!userInfoDetail.userInfo) {
+          return
+        }
 
-    getRecord () {
-      wx.showNavigationBarLoading()
+        let loginData = {
+          rawData: userInfoDetail.rawData,
+          signature: userInfoDetail.signature,
+          encryptedData: userInfoDetail.encryptedData,
+          iv: userInfoDetail.iv
+        }
 
-      this.$get('/rar/listByDrId', { debitRecordId: this.id }).then(res => {
-        let record = res || []
-        record.forEach(item => {
-          item.createTimeText = format(item.createTime, 'YYYY-MM-DD')
+        wepy.login().then(loginRes => {
+          logger.info('小程序本地登录成功', loginRes)
+          loginData.code = loginRes.code
+          loginData.appId = 'wx99ac839378dbf468'
+          this.$login(loginData).then(res => {
+            this.token = res.token
+            this.isLogin = true
+            this.nickname = res.data.nickName
+            this.$apply()
+          })
+        }).catch(loginRes => {
+          logger.info('小程序本地登录失败', loginRes)
         })
-        this.record = record
-        wx.hideNavigationBarLoading()
-        this.$apply()
-      })
-
+      }
     }
 
   }

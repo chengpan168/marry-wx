@@ -338,6 +338,7 @@
 
     globalData = {
       userInfo: null,
+      isLogin: true,
       token: '',
       userId: '',
       avatarUrl: '',

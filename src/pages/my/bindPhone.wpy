@@ -29,6 +29,7 @@
         border-radius: 20px;
         width: 100%;
         padding: 0 20px;
+        font-size: 26px;
       }
     }
 
@@ -52,6 +53,8 @@
         font-weight: bold;
         color: rgba(255, 255, 255, 1);
         text-align: center;
+        outline: none;
+        border: none;
       }
     }
 
@@ -71,13 +74,15 @@
 
     <view class="form">
       <view>
-        <input bindinput="onNameChange" value="{{ formData.name }}"
+        <input bindinput="onPhoneChange" value="{{ formData.phone }}"
                placeholder="输入手机号" placeholder-class="placeholder"></input>
       </view>
       <view class="code">
-        <input bindinput="onNameChange" value="{{ formData.name }}"
+        <input bindinput="onCodeChange" value="{{ formData.code }}"
                placeholder="验证码" placeholder-class="placeholder"></input>
-        <button class="send-code">验证码</button>
+        <button class="send-code" @tap="onSendCode">{{sendCodeTimeout > 0 ? sendCodeTimeout + '秒' :
+          '验证码'}}
+        </button>
       </view>
       <!--<view @tap="onChooseLocation">
         <label>店铺地址</label>
@@ -101,6 +106,7 @@
   import loadMore from '../../components/loadMore'
   import schema from 'async-validator'
   import _get from 'lodash/get'
+  import isMobilePhone from 'validator/lib/isMobilePhone'
 
   const { $Toast } = require('@/components/iview/base/index')
 
@@ -123,19 +129,15 @@
       loading: false,
       hasNext: true,
       id: '',
-      receiveModalVisible: false,
-      receiveRecordModalVisible: false,
-      deleteModalVisible: false,
-      submitConfirm: false,
-      iou: {},
-      record: [],
+      sendCodeTimeout: 0,
+      sendCodeTimer: 0,
       formData: {
         phone: '',
-        code: ''
+        code: '',
       },
       formValidator: {
         phone: [
-          { required: true, message: '请填写手机号', trigger: 'blur' },
+          { required: true, message: '手机号不能为空', trigger: 'blur' },
           { pattern: /^1[0-9]{10}$/, message: '请填写正确的手机号码', trigger: 'blur' }
         ],
         code: [
@@ -176,11 +178,36 @@
     }
 
     methods = {
-      onShowReceiveModal () {
-        this.receiveModalVisible = true
-      },
-      onCloseReceiveModal () {
-        this.receiveModalVisible = false
+      onSendCode () {
+        if (!isMobilePhone(this.formData.phone, 'zh-CN')) {
+          $Toast({
+            content: '手机号格式不正确'
+          })
+          return
+        }
+        if (this.sendCodeTimeout > 0) {
+          $Toast({
+            content: '请求过于频繁, 请稍后发送'
+          })
+          return
+        }
+
+        this.$get('/sys/sendMsgCode', { phone: this.formData.phone, type: 'bindPhone' }).then(res => {
+          this.sendCodeTimeout = 60
+
+          this.sendCodeTimer = setInterval(() => {
+            if (this.sendCodeTimeout <= 0) {
+              clearInterval(this.sendCodeTimer)
+            } else {
+              this.sendCodeTimeout = this.sendCodeTimeout - 1
+              this.$apply()
+            }
+          }, 1000)
+
+          $Toast({
+            content: '验证码发送成功'
+          })
+        })
       },
       onSubmit () {
         const validator = new schema(this.formValidator)
@@ -190,23 +217,30 @@
               content: errors[0].message
             })
           } else {
-            //
-            this.$post('/user/bindPhone', this.formData).then(res => {
-              $Toast({
-                content: '绑定成功',
-                duration: 0
-              })
-              setTimeout(() => {
-                $Toast.hide();
+
+            return this.$post('/user/bindPhone', this.formData).then(res => {
+              if (res) {
+                $Toast({
+                  content: '绑定成功'
+                })
+
                 wx.navigateBack({
                   delta: 2
                 })
-              }, 1000)
+              }
+
             })
+
           }
 
         })
-      }
+      },
+      onPhoneChange ({ detail }) {
+        this.formData.phone = detail.value
+      },
+      onCodeChange ({ detail }) {
+        this.formData.code = detail.value
+      },
     }
 
     getRecord () {
