@@ -144,7 +144,7 @@
 <template>
   <view class="page">
     <view class="shop-list">
-      <view class="item" wx:for="{{record}}" wx:key="{{index}}" @tap="navTo('/pages/shop/detail?id={{item.id}}')">
+      <view class="item" wx:for="{{list}}" wx:key="{{index}}" @tap="navTo('/pages/shop/detail?id={{item.id}}')">
         <image
           src="{{item.coverFileDto.url}}"
           mode="aspectFill"/>
@@ -161,7 +161,7 @@
         </view>
       </view>
 
-      <loadMore loading="{{loading}}" hasNext="{{hasNext}}" list="{{record}}"/>
+      <loadMore :loading.sync="loading" :hasNext.sync="hasNext" :list.sync="list" @on-next-page.user="onNextPage"/>
     </view>
     <!--分隔线-->
     <i-toast id="toast"/>
@@ -194,7 +194,7 @@
       loading: false,
       hasNext: true,
       categoryId: '',
-      record: []
+      list: []
     }
 
     computed = {}
@@ -212,9 +212,12 @@
     }
 
     onReachBottom (e) {
-      if (!this.data.hasNext || this.data.loading) {
+      if (!this.hasNext || this.loading) {
         return
       }
+
+      this.queryParam.current = this.queryParam.current + 1
+      this.getList()
     }
 
     onShareAppMessage (e) {
@@ -227,16 +230,20 @@
     }
 
     init () {
+
+      this.queryParam.current = 1
       this.getList()
     }
 
     methods = {
-      onShowReceiveModal () {
-        this.receiveModalVisible = true
+      onNextPage () {
+        if (!this.hasNext) {
+          return
+        }
+
+        this.queryParam.current = this.queryParam.current + 1
+        this.getList()
       },
-      onCloseReceiveModal () {
-        this.receiveModalVisible = false
-      }
     }
 
     getList () {
@@ -244,11 +251,17 @@
 
       this.loading = true
       this.$get('/seller/queryPageList', { categoryId: this.categoryId }).then(res => {
-        let record = res.records || []
-        record.forEach(item => {
+        let list = res.records || []
+        list.forEach(item => {
           item.createTimeText = format(item.createTime, 'YYYY-MM-DD')
         })
-        this.record = record
+
+
+        if (this.queryParam.current == 1) {
+          this.list = list
+        } else {
+          this.list.concat(list)
+        }
 
         this.hasNext = res.current < res.pages
         this.loading = false

@@ -96,9 +96,12 @@
     }
 
     onReachBottom (e) {
-      if (!this.data.hasNext || this.data.loading) {
+      if (!this.hasNext || this.loading) {
         return
       }
+
+      this.queryParam.current = this.queryParam.current + 1
+      this.getList()
     }
 
     onShareAppMessage (e) {
@@ -138,7 +141,13 @@
         list.forEach(item => {
           item.createTimeText = format(item.createTime, 'YYYY-MM-DD')
         })
-        this.list = list
+
+        if (this.queryParam.current == 1) {
+          this.list = list
+        } else {
+          this.list.concat(list)
+        }
+
         this.hasNext = res.current < res.pages
 
         this.loading = false

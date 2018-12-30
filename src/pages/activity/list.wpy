@@ -127,9 +127,12 @@
     }
 
     onReachBottom (e) {
-      if (!this.data.hasNext || this.data.loading) {
+      if (!this.hasNext || this.loading) {
         return
       }
+
+      this.queryParam.current = this.queryParam.current + 1
+      this.getList()
     }
 
     onShareAppMessage (e) {
