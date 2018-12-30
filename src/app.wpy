@@ -71,7 +71,7 @@
     text-align: right;
   }
 
-  .quill-img {
+  .rich-text-img {
     max-width: 100%;
   }
 
@@ -223,6 +223,20 @@
     color:rgba(84,84,84,1);
     line-height: 1.5;
     text-align: center;
+
+    .error-icon {
+      width:195px;
+      height:151px;
+      margin: 0 auto 20px auto;
+    }
+    .success-icon {
+      width:118px;
+      height:118px;
+      margin: 0 auto 20px auto;
+    }
+
+    .text {
+    }
 
     .btns {
       display: flex;

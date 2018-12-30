@@ -388,7 +388,8 @@
         <view class="tab-item {{tabName == 'comment' ? 'active' : ''}}" @tap="onTabChange('comment')">用户点评</view>
       </view>
       <view class="tab-content three" wx:if="{{tabContentType == 'tc3'}}">
-        <view class="item" wx:for="{{list}}" wx:key="{{index}}">
+        <view class="item" wx:for="{{list}}" wx:key="{{index}}"
+              @tap="navTo('/pages/product/detail?id={{item.id}}&type=weddingMenu')">
           <view class="name">{{item.name}}</view>
           <view class="price">¥ {{item.currentAmount}}/桌</view>
           <text class="iconfont icon-enter"></text>
@@ -422,8 +423,10 @@
         </view>
       </view>
 
+      <!--宴会厅-->
       <view class="tab-content two" wx:if="{{tabContentType == 'tc2'}}">
-        <view class="item" wx:for="{{list}}" wx:key="{{index}}">
+        <view class="item" wx:for="{{list}}" wx:key="{{index}}"
+              @tap="navTo('/pages/product/detail?id={{item.id}}&type=banquetHall')">
           <image class="banner" src="{{item.coverFileDto.url}}" mode="aspectFill"/>
           <view class="info">
             <text class="name">{{item.name}}</text>
@@ -435,6 +438,7 @@
         </view>
       </view>
 
+      <!--全部套系-->
       <view class="tab-content one" wx:if="{{tabContentType == 'tc1'}}">
         <view class="item" wx:for="{{list}}" wx:key="{{index}}" @tap="navTo('/pages/product/detail?id={{item.id}}')">
           <image class="banner"
@@ -451,13 +455,13 @@
           <text class="iconfont icon-shouye"></text>
           <view class="name">首页</view>
         </view>
-        <view class="item">
+        <view class="item" @tap="navTo('/pages/shop/commentEdit?id={{detail.id}}')">
           <text class="iconfont icon-pinglun"></text>
           <view class="name">点评</view>
         </view>
         <view class="item" @tap="onLikeTap">
-          <text class="iconfont icon-ziyuan" wx:if="{{false}}"></text>
-          <text class="iconfont icon-shoucang" wx:else></text>
+          <text class="iconfont icon-shoucang" wx:if="{{detail.hasCollect}}"></text>
+          <text class="iconfont icon-ziyuan" wx:else></text>
           <view class="name">收藏</view>
         </view>
         <view class="item">
@@ -466,7 +470,7 @@
             <view class="name">分享</view>
           </button>
         </view>
-        <view class="btn">
+        <view class="btn" @tap="onPreSubmit">
           免费预约
         </view>
       </view>
@@ -476,17 +480,23 @@
     <i-modal visible="{{ settingModalVisible }}" bind:close="onCloseSettingModal" show-ok="{{false}}"
              show-cancel="{{false}}">
       <view class="modal setting-modal">
-        <view class="text">报名参与活动需要绑定手机号 请前往设置</view>
+        <image class="error-icon" src="/assets/images/icon_wrong@2x.png" mode="aspectFill"/>
+        <view class="text" wx:if="{{!user.phone}}">报名参与活动需要绑定手机号 请前往设置</view>
+        <view class="text" wx:elif="{{!user.marryTime}}">免费预约需要设置结婚日期 请前往设置</view>
 
         <view class="btns">
-          <button class="cancel" bindtap="onCloseSettingModal" hover-class="none">取消</button>
-          <button class="ok" hover-class="none" @tap="navTo('/pages/my/setting')">前往设置</button>
+          <button class="cancel" @tap="onCloseSettingModal" hover-class="none">取消</button>
+          <button class="ok" hover-class="none" wx:if="{{!user.phone}}" @tap="navTo('/pages/my/bindPhone')">前往设置
+          </button>
+          <button class="ok" hover-class="none" wx:else="{{!user.marryTime}}" @tap="navTo('/pages/my/setting')">前往设置
+          </button>
         </view>
       </view>
     </i-modal>
     <i-modal visible="{{ successModalVisible }}" bind:close="onCloseSuccessModal" show-ok="{{false}}"
              show-cancel="{{false}}">
       <view class="modal success-modal">
+        <image class="success-icon" src="/assets/images/icon_success@2x.png" mode="aspectFill"/>
         <view class="name">预约成功，商家会尽快联系您</view>
         <view class="text">也可以添加19楼客服微信:jiaxing19lou 了解具体活动详情。</view>
 
@@ -524,6 +534,7 @@
       token: '',
       loading: false,
       id: '',
+      user: {},
       detail: {},
       tabName: '',
       tabTypes: {
@@ -605,8 +616,24 @@
         }
       },
       onLikeTap () {
-        this.$post('/vw/queryPageList').then(res => {
+
+        let path = '/ar/submit'
+        if (this.detail.hasCollect) {
+          path = '/ar/cancel'
+        }
+
+        this.$post(path, {
+          objectId: this.id,
+          objectType: 'seller',
+          actionType: 'collect'
+        }).then(res => {
           if (res) {
+
+            this.detail.hasCollect = !this.detail.hasCollect
+            $Toast({
+              content: this.detail.hasCollect ? '收藏成功' : '取消收藏成功',
+              duration: 1
+            })
 
           } else {
 
@@ -632,6 +659,17 @@
             duration: 1
           })
 
+          this.$apply()
+        })
+      },
+      onPreSubmit () {
+        this.$getUser().then(res => {
+          this.user = res || {}
+          if (!res.phone || !res.marryTime) {
+            this.settingModalVisible = true
+          } else {
+            this.submit()
+          }
           this.$apply()
         })
       }
@@ -767,8 +805,16 @@
 
     submit () {
       this.$post('/subscribe/submit', { sellerId: this.id }).then(res => {
+        if (res) {
+          this.settingModalVisible = false
+          this.successModalVisible = true
+        } else {
+          $Toast({
+            content: '预约失败',
+            duration: 1
+          })
+        }
 
-        this.successModalVisible = true
         this.$apply()
       })
     }

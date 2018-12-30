@@ -176,7 +176,7 @@
           <view class="name">{{item.title}}</view>
         </view>
       </view>
-      <view class="box-footer">
+      <view class="box-footer" @tap="navTo('/pages/shop/hot')">
         <text>查看更多</text>
         <text class="iconfont icon-enter"></text>
       </view>
@@ -190,7 +190,7 @@
           <view class="name">{{item.title}}</view>
         </view>
       </view>
-      <view class="box-footer">
+      <view class="box-footer" @tap="navTo('/pages/shop/like')">
         <text>查看更多</text>
         <text class="iconfont icon-enter"></text>
       </view>

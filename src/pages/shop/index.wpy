@@ -164,7 +164,7 @@
       </view>
     </view>
     <view class="shop-list">
-      <view class="item" wx:for="{{list}}" wx:key="{{index}}">
+      <view class="item" wx:for="{{list}}" wx:key="{{index}}" @tap="navTo('/pages/shop/detail?id={{item.id}}')">
         <image
           src="{{item.coverFileDto.url}}"
           mode="aspectFill"/>

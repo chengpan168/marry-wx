@@ -66,7 +66,7 @@
   <view class="page">
 
     <view class="activity-list">
-      <view class="item" wx:for="{{[1,3,4]}}" wx:key="{{index}}">
+      <view class="item" wx:for="{{list}}" wx:key="{{index}}">
         <view class="surplus">仅剩28名</view>
         <image
           src="https://cdn.pingwest.com/portal/2018/11/28/Fgy_8EAlLpNObQD_7mFN_oZ1DQzD.jpg?imageView2/2/w/1440/q/100"
@@ -108,25 +108,13 @@
       loading: false,
       hasNext: true,
       id: '',
-      receiveModalVisible: false,
-      receiveRecordModalVisible: false,
-      deleteModalVisible: false,
-      submitConfirm: false,
-      iou: {},
-      record: [],
-      formData: {
-        debitRecordId: '',
-        receiveAmount: ''
+      queryParam: {
+        sellerId: '',
+        type: 'activity',
+        current: 1,
+        size: 10
       },
-      formValidator: {
-        receiveAmount: [
-          { required: true, message: '请填写收款金额', trigger: 'blur' }
-        ],
-        debitRecordId: [
-          { required: true, message: '请填写收款金额', trigger: 'blur' }
-        ]
-      }
-
+      list: []
     }
 
     computed = {}
@@ -155,32 +143,45 @@
     }
 
     init () {
-      // this.getDetail()
-      // this.getRecord()
+      this.getProducts()
     }
 
     methods = {
-      onShowReceiveModal () {
-        this.receiveModalVisible = true
-      },
-      onCloseReceiveModal () {
-        this.receiveModalVisible = false
-      }
     }
 
-    getRecord () {
-      wx.showNavigationBarLoading()
+    getProducts (type) {
 
-      this.$get('/rar/listByDrId', { debitRecordId: this.id }).then(res => {
-        let record = res || []
-        record.forEach(item => {
+      this.queryParam.type = type
+
+      if (type == 'banquetHall') {
+        this.tabContentType = 'tc2'
+      } else if (['allSet', 'discountSetMeal', 'selectedWorks'].indexOf(type) > -1) {
+        this.tabContentType = 'tc1'
+      }
+      // 婚礼菜单
+      else if (type == 'weddingMenu') {
+        this.tabContentType = 'tc3'
+      }
+
+      this.loading = true
+      wx.showNavigationBarLoading()
+      this.$get('/product/queryPageList', this.queryParam).then(res => {
+        let list = res.records || []
+
+        list.forEach(item => {
+          if (type == 'banquetHall' && item.extProperty) {
+            item.extProperty = JSON.parse(item.extProperty)
+          }
+
           item.createTimeText = format(item.createTime, 'YYYY-MM-DD')
         })
-        this.record = record
+
+        this.list = list
+
+        this.loading = false
         wx.hideNavigationBarLoading()
         this.$apply()
       })
-
     }
 
   }

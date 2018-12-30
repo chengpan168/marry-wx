@@ -144,7 +144,7 @@
 <template>
   <view class="page">
     <view class="shop-list">
-      <view class="item" wx:for="{{record}}" wx:key="{{index}}">
+      <view class="item" wx:for="{{record}}" wx:key="{{index}}" @tap="navTo('/pages/shop/detail?id={{item.id}}')">
         <image
           src="{{item.coverFileDto.url}}"
           mode="aspectFill"/>

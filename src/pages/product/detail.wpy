@@ -2,6 +2,7 @@
   @import "../../assets/css/global";
 
   page {
+    background: #ffffff;
   }
 
   .page {
@@ -17,39 +18,161 @@
     background-color: #fff;
     margin-top: 10px;
 
-    .title {
-      line-height: 1;
-      font-size: 30px;
-      font-weight: bold;
-      color: rgba(0, 0, 0, 1);
-    }
-
-    .price {
+    .info {
+      position: relative;
       border-bottom: 1px solid #E6E6E6;
+      padding-bottom: 18px;
 
-      text {
-        display: inline-block;
-        padding: 20px 0;
+      .bottom-border {
+        width: 150px;
+        height: 7px;
+        background: rgba(188, 197, 202, 1);
+        position: absolute;
+        left: 0;
+        bottom: 0;
       }
-      .current {
-        font-size: 36px;
+
+      .title {
+        line-height: 1;
+        font-size: 30px;
         font-weight: bold;
-        color: rgba(205, 92, 91, 1);
-        margin-right: 20px;
-        border-bottom: 6px solid #BCC5CA;
+        color: rgba(0, 0, 0, 1);
       }
 
-      .origin {
+      /*套系*/
+
+      .price {
+        margin-top: 20px;
+        line-height: 1;
+
+        .current {
+          font-size: 36px;
+          font-weight: bold;
+          color: rgba(205, 92, 91, 1);
+          margin-right: 20px;
+        }
+
+        .origin {
+          font-size: 22px;
+          font-weight: bold;
+          color: rgba(188, 197, 202, 1);
+          text-decoration: line-through;
+        }
+      }
+
+      /*案会厅*/
+
+      .lobby {
+        margin-top: 20px;
         font-size: 22px;
         font-weight: bold;
-        color: rgba(188, 197, 202, 1);
-        text-decoration: line-through;
+        color: rgba(84, 84, 84, 1);
+
+        view {
+          line-height: 1.5;
+        }
       }
     }
+
   }
 
   .rich-text {
     padding: 20px 0px;
+  }
+
+  .share {
+    position: fixed;
+    right: 24px;
+    bottom: 40px;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(252, 214, 1, 1);
+
+    button {
+      outline: none;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .iconfont {
+      font-size: 60px;
+      color: #ffffff;
+    }
+  }
+
+  .product-menu {
+    margin-top: 10px;
+
+    .info {
+      padding: 0 24px;
+      margin-bottom: 10px;
+      height: 80px;
+      background: rgba(252, 214, 1, 1);
+      display: flex;
+      align-items: center;
+
+      .name {
+        flex-grow: 1;
+        font-size: 30px;
+        font-weight: bold;
+        color: rgba(255, 255, 255, 1);
+      }
+
+      .price {
+        flex-grow: 0;
+        font-size: 30px;
+        font-weight: bold;
+        color: rgba(255, 255, 255, 1);
+      }
+
+      .iconfont {
+        flex-grow: 0;
+        font-size: 36px;
+        color: #ffffff;
+        margin-left: 18px;
+      }
+
+    }
+
+    .total {
+      margin: 20px 24px 0 24px;
+      height: 48px;
+      line-height: 48px;
+      background: rgba(252, 214, 1, 1);
+      border-radius: 24px;
+      padding: 0 32px;
+      font-size: 30px;
+      font-weight: bold;
+      color: rgba(255, 255, 255, 1);
+      display: inline-block;
+    }
+
+    .foot-detail {
+      display: flex;
+      align-items: center;
+      margin-top: 20px;
+      padding: 0 24px;
+
+      & > view {
+        display: inline-block;
+        height: 48px;
+        line-height: 48px;
+        background: rgba(188, 197, 202, 1);
+        border-radius: 24px;
+        font-size: 24px;
+        font-weight: bold;
+        color: rgba(255, 255, 255, 1);
+        margin-right: 10px;
+        padding: 0 14px;
+      }
+    }
+
   }
 
 </style>
@@ -59,15 +182,48 @@
            src="{{detail.coverFileDto.url}}"
            mode="aspectFill"/>
 
-    <view class="product-detail">
-      <view class="title">{{detail.name}}</view>
-      <view class="price">
-        <text class="current">￥{{detail.currentAmount}}</text>
-        <text class="origin">￥{{detail.originalAmount}}</text>
+    <view wx:if="{{type == 'weddingMenu'}}" class="product-menu">
+      <view class="info">
+        <view class="name">{{detail.name}}</view>
+        <view class="price">
+          <text>￥{{detail.currentAmount}}/桌</text>
+          <text class="iconfont icon-enter"></text>
+        </view>
+      </view>
+      <view class="total">共{{detail.foodNum || 0}}个菜</view>
+      <view class="foot-detail">
+        <view>{{detail.hotFoodNum || 0}}个热菜</view>
+        <view>{{detail.coldNum || 0}}个冷菜</view>
+        <view>{{detail.dessertNum || 0}}个点心</view>
+        <view>{{detail.fruitsNum || 0}}个水果</view>
+      </view>
+    </view>
+    <view wx:else class="product-detail">
+      <view class="info">
+        <view class="title">{{detail.name}}</view>
+        <view class="price" wx:if="{{type == 'allSet'}}">
+          <text class="current">￥{{detail.currentAmount}}</text>
+          <text class="origin">￥{{detail.originalAmount}}</text>
+        </view>
+        <view class="lobby" wx:if="{{type == 'banquetHall'}}">
+          <view>起订桌数：5桌，最大桌数：50桌</view>
+          <view>面积：500平米，棚高:4.5米</view>
+        </view>
+        <view class="lobby" wx:if="{{type == 'weddingCase'}}">
+          <view>婚礼策划：小白婚礼创意</view>
+        </view>
+
+        <view class="bottom-border"></view>
       </view>
       <view class="rich-text">
         <rich-text nodes="{{detail.description}}"></rich-text>
       </view>
+    </view>
+
+    <view class="share">
+      <button open-type="share" plain="true">
+        <text class="iconfont icon-fenxiang2"></text>
+      </button>
     </view>
     <!--分隔线-->
 
@@ -77,7 +233,6 @@
 </template>
 
 <script>
-  import wepy from 'wepy'
   import page from '@/common/page'
   import format from 'date-fns/format'
   import loadMore from '../../components/loadMore'
@@ -141,63 +296,22 @@
       this.getDetail()
     }
 
-    methods = {
-      onTabChange (tabName) {
-        this.tabName = tabName
-
-        this.queryParam.current = 1
-
-        if ('weddingCase' == tabName) {
-          // FIXME 婚礼案礼
-          this.getWeddingCase()
-        } else if ('comment' == tabName) {
-          // 评论
-          this.getComments()
-        } else if ('video' == tabName) {
-          // 视频
-          this.getVideos()
-        } else {
-          this.getProducts(tabName)
-        }
-      },
-      onLikeTap () {
-        this.$post('/vw/queryPageList').then(res => {
-          if (res) {
-
-          } else {
-
-          }
-          this.$apply()
-        })
-      },
-      onCloseSettingModal () {
-        this.settingModalVisible = false
-      },
-      onCloseSuccessModal () {
-        this.successModalVisible = false
-      },
-      setClipboard () {
-
-        wepy.setClipboardData({
-          data: 'jiaxing19lou'
-        }).then(res => {
-          wx.hideToast()
-          this.successModalVisible = false
-          $Toast({
-            content: '复制成功',
-            duration: 1
-          })
-
-          this.$apply()
-        })
-      }
-    }
+    methods = {}
 
     getDetail () {
       wx.showNavigationBarLoading()
 
-      this.$get('/product/queryById', { id: this.id }).then(res => {
+      let path = '/product/queryById'
+      if (this.type == 'weddingCase') {
+        let path = '/wc/queryById'
+      }
+
+      this.$get(path, { id: this.id }).then(res => {
         let detail = res || {}
+
+        if (['banquetHall', 'weddingMenu'].indexOf(this.type) > -1 && detail.extProperty) {
+          detail.extProperty = JSON.parse(detail.extProperty)
+        }
 
         this.detail = detail
         wx.hideNavigationBarLoading()
