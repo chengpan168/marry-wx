@@ -175,13 +175,13 @@
           <text class="iconfont icon-enter"></text>
         </view>
       </view>
-      <view class="menu-item">
+      <!--<view class="menu-item">
         <text class="iconfont icon-dingdan"></text>
         <text class="name">我的订单</text>
         <text class="enter">
           <text class="iconfont icon-enter"></text>
         </text>
-      </view>
+      </view>-->
       <view class="menu-item" @tap="navTo('/pages/my/favorite')">
         <text class="iconfont icon-ziyuan"></text>
         <text class="name">我的收藏</text>

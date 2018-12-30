@@ -37,6 +37,12 @@
         color: rgba(0, 0, 0, 1);
       }
 
+      .picker {
+        font-size: 24px;
+        font-weight: bold;
+        color: rgba(84, 84, 84, 1);
+      }
+
       .enter {
         display: flex;
         align-items: center;
@@ -44,6 +50,14 @@
         font-size: 24px;
         font-weight: bold;
         color: rgba(84, 84, 84, 1);
+
+        text {
+          display: inline-block;
+          max-width: 500px;
+          overflow: hidden;
+          text-overflow:ellipsis;
+          white-space: nowrap;
+        }
 
         .value {
           font-size: 24px;
@@ -82,9 +96,9 @@
 
 
       .avatar {
-        width:84px;
-        height:84px;
-        border-radius:50%;
+        width: 84px;
+        height: 84px;
+        border-radius: 50%;
       }
     }
 
@@ -113,6 +127,18 @@
     }
   }
 
+  .btns {
+    padding: 50px 0;
+
+    .submit {
+      width: 500px;
+      margin: 0 auto;
+      font-size: 36px;
+      font-weight: bold;
+      color: rgba(255, 255, 255, 1);
+      background:rgba(252,214,1,1);
+    }
+  }
 
 </style>
 <template>
@@ -122,34 +148,44 @@
       <view class="menu-item avatar-wrapper">
         <text class="name">头像</text>
         <view class="enter">
-          <image class="avatar" src="/assets/icon/icon_loading.gif" mode="aspectFill"/>
+          <image class="avatar" src="{{avatarUrl}}" mode="aspectFill"/>
         </view>
       </view>
       <view class="menu-item">
         <text class="name">用户名</text>
         <text class="enter">
-          <text class="value">cccc</text>
+          <text class="value">{{formData.nickName}}</text>
           <text class="iconfont icon-enter"></text>
         </text>
       </view>
-      <view class="menu-item">
+      <view class="menu-item" @tap="navTo('/pages/my/bindPhone')">
         <text class="name">绑定手机</text>
         <text class="enter">
+          <text>{{phone}}</text>
           <text class="iconfont icon-enter"></text>
         </text>
       </view>
-      <view class="menu-item">
+      <view class="menu-item" @tap="onAddressChange">
         <text class="name">我的地址</text>
         <text class="enter">
+          <text>{{formData.address}}</text>
           <text class="iconfont icon-enter"></text>
         </text>
       </view>
       <view class="menu-item">
         <text class="name">大婚日</text>
+        <picker bindchange="bindMarryTimeChange" mode="date" value="{{formData.marryTime}}" start="{{marryTimeStart}}">
+          <view class="picker">
+            {{formData.marryTime}}
+          </view>
+        </picker>
         <text class="enter">
           <text class="iconfont icon-enter"></text>
         </text>
       </view>
+    </view>
+    <view class="btns">
+      <button class="submit" @tap="onSubmit">确定</button>
     </view>
 
 
@@ -159,8 +195,10 @@
 </template>
 
 <script>
-  import page from '@/common/page'
+  import schema from 'async-validator'
+  import wepy from 'wepy'
   import format from 'date-fns/format'
+  import page from '@/common/page'
   import loadMore from '../../components/loadMore'
 
   const { $Toast } = require('@/components/iview/base/index')
@@ -184,22 +222,18 @@
       loading: false,
       hasNext: true,
       id: '',
-      receiveModalVisible: false,
-      receiveRecordModalVisible: false,
-      deleteModalVisible: false,
-      submitConfirm: false,
-      iou: {},
-      record: [],
+      avatarUrl: '',
+      phone: '',
+      address: '',
+      marryTimeStart: format(Date.now(), 'YYYY-MM-DD'),
       formData: {
-        debitRecordId: '',
-        receiveAmount: ''
+        nickName: '',
+        address: '',
+        marryTime: ''
       },
       formValidator: {
-        receiveAmount: [
-          { required: true, message: '请填写收款金额', trigger: 'blur' }
-        ],
-        debitRecordId: [
-          { required: true, message: '请填写收款金额', trigger: 'blur' }
+        nickName: [
+          { required: true, message: '请填写昵称', trigger: 'blur' }
         ]
       }
 
@@ -208,7 +242,6 @@
     computed = {}
 
     onLoad (opt) {
-      this.id = opt.id
     }
 
     onShow () {
@@ -216,7 +249,7 @@
     }
 
     onReachBottom (e) {
-      if (!this.data.hasNext || this.data.loading) {
+      if (!this.hasNext || this.loading) {
         return
       }
     }
@@ -231,32 +264,71 @@
     }
 
     init () {
-      // this.getDetail()
-      // this.getRecord()
+      this.$getUser().then(res => {
+        this.avatarUrl = res.avatarUrl
+        this.phone = res.phone
+        this.formData.nickName = res.nickName
+        this.formData.address = res.address
+        if (res.marryTime) {
+          this.formData.marryTime = format(res.marryTime, 'YYYY-MM-DD')
+        }
+        this.$apply()
+      })
     }
 
     methods = {
-      onShowReceiveModal () {
-        this.receiveModalVisible = true
+      bindMarryTimeChange ({ detail }) {
+        this.formData.marryTime = detail.value
       },
-      onCloseReceiveModal () {
-        this.receiveModalVisible = false
-      }
-    }
+      onAddressChange () {
+        wepy.chooseAddress().then(res => {
+          let address = {
+            countyName: res.countyName,
+            provinceName: res.provinceName,
+            cityName: res.cityName,
+            telNumber: res.telNumber,
+            detailInfo: res.detailInfo,
+            postalCode: res.postalCode,
+            nationalCode: res.nationalCode,
+            userName: res.userName
+          }
 
-    getRecord () {
-      wx.showNavigationBarLoading()
-
-      this.$get('/rar/listByDrId', { debitRecordId: this.id }).then(res => {
-        let record = res || []
-        record.forEach(item => {
-          item.createTimeText = format(item.createTime, 'YYYY-MM-DD')
+          this.formData.address = `${res.provinceName} ${res.cityName} ${res.detailInfo} ${res.userName} ${res.telNumber}`
+          this.address = res.userName
+          this.$apply()
+        }).catch(err => {
+          console.log(e)
+          if (err.errMsg.indexOf('deny') > -1 || err.errMsg.indexOf('denied') > -1) {
+            wx.openSetting()
+          }
         })
-        this.record = record
-        wx.hideNavigationBarLoading()
-        this.$apply()
-      })
+      },
+      onSubmit () {
+        const validator = new schema(this.formValidator)
+        validator.validate(this.formData, (errors, fields) => {
+          if (errors) {
+            $Toast({
+              content: errors[0].message
+            })
+          } else {
 
+            return this.$post('/user/update', this.formData).then(res => {
+              if (res) {
+                $Toast({
+                  content: '修改成功'
+                })
+
+                wx.navigateBack({
+                  delta: 2
+                })
+              }
+
+            })
+
+          }
+
+        })
+      },
     }
 
   }
