@@ -201,6 +201,7 @@
       </view>
     </view>
 
+    <loadMore :loading.sync="loading" :hasNext.sync="hasNext" :list.sync="list" @on-next-page.user="onNextPage"/>
     <!--分隔线-->
     <i-toast id="toast"/>
   </view>
@@ -233,26 +234,12 @@
       loading: false,
       hasNext: true,
       id: '',
-      receiveModalVisible: false,
-      receiveRecordModalVisible: false,
-      deleteModalVisible: false,
-      submitConfirm: false,
-      iou: {},
-      record: [],
-      formData: {
-        phone: '',
-        code: ''
+      queryParam: {
+        type: '',
+        current: 1,
+        size: 10
       },
-      formValidator: {
-        phone: [
-          { required: true, message: '请填写手机号', trigger: 'blur' },
-          { pattern: /^1[0-9]{10}$/, message: '请填写正确的手机号码', trigger: 'blur' }
-        ],
-        code: [
-          { required: true, message: '请填写验证码', trigger: 'blur' }
-        ]
-      }
-
+      list: []
     }
 
     computed = {}
@@ -266,9 +253,12 @@
     }
 
     onReachBottom (e) {
-      if (!this.data.hasNext || this.data.loading) {
+      if (!this.hasNext || this.loading) {
         return
       }
+
+      this.queryParam.current = this.queryParam.current + 1
+      this.getList()
     }
 
     onShareAppMessage (e) {
@@ -281,57 +271,54 @@
     }
 
     init () {
-      // this.getDetail()
-      // this.getRecord()
+      this.getList()
     }
 
     methods = {
-      onShowReceiveModal () {
-        this.receiveModalVisible = true
-      },
-      onCloseReceiveModal () {
-        this.receiveModalVisible = false
-      },
-      onSubmit () {
-        const validator = new schema(this.formValidator)
-        validator.validate(this.formData, (errors, fields) => {
-          if (errors) {
-            $Toast({
-              content: errors[0].message
-            })
-          } else {
-            //
-            this.$post('/user/bindPhone', this.formData).then(res => {
-              $Toast({
-                content: '绑定成功',
-                duration: 0
-              })
-              setTimeout(() => {
-                $Toast.hide()
-                wx.navigateBack({
-                  delta: 2
-                })
-              }, 1000)
-            })
-          }
+      onNextPage () {
+        if (!this.hasNext) {
+          return
+        }
 
-        })
+        this.queryParam.current = this.queryParam.current + 1
+        this.getList()
       }
     }
 
-    getRecord () {
-      wx.showNavigationBarLoading()
+    getList () {
 
-      this.$get('/rar/listByDrId', { debitRecordId: this.id }).then(res => {
-        let record = res || []
-        record.forEach(item => {
+      this.loading = true
+      wx.showNavigationBarLoading()
+      this.$get('/ar/queryPageList', this.queryParam).then(res => {
+        let list = res.records || []
+
+        list.forEach(item => {
+          if (item.extProperty) {
+            item.extProperty = JSON.parse(item.extProperty)
+          }
+
+          if (item.productActivityExtDto) {
+            if (item.productActivityExtDto.activitySignUpNum >= item.productActivityExtDto.activityNum) {
+              item.remainSign = '告罄'
+            } else {
+              item.remainSign = '仅剩'+ (item.productActivityExtDto.activityNum - (item.productActivityExtDto.activitySignUpNum || 0)) +'名'
+            }
+          }
+
           item.createTimeText = format(item.createTime, 'YYYY-MM-DD')
         })
-        this.record = record
+
+        if (this.queryParam.current == 1) {
+          this.list = list
+        } else {
+          this.list.concat(list)
+        }
+
+        this.loading = false
+        this.hasNext = res.current < res.pages
         wx.hideNavigationBarLoading()
         this.$apply()
       })
-
     }
 
   }
