@@ -82,6 +82,14 @@
         font-weight: bold;
         color: rgba(84, 84, 84, 1);
       }
+
+
+      button {
+        outline: none;
+        border: none;
+        line-height: 1;
+        font-size: 0;
+      }
     }
 
     .sign-up {
@@ -95,40 +103,126 @@
       text-align: center;
     }
   }
+
+  .sign-up-wrapper {
+    background: #ffffff;
+    position: fixed;
+    bottom: 0;
+    width: 750px;
+    padding: 0 24px;
+
+    .item {
+      position: relative;
+      height: 82px;
+      border-bottom: 1px solid #E6E6E6;
+      display: flex;
+      align-items: center;
+
+      .iconfont {
+        font-size: 40px;
+        color: #545454;
+        position: absolute;
+        top: 10px;
+        right: 0px;
+      }
+
+      .name {
+        font-size: 26px;
+        font-weight: bold;
+        color: rgba(0, 0, 0, 1);
+      }
+
+      label {
+        flex-grow: 1;
+        font-size: 24px;
+        font-weight: bold;
+        color: rgba(0, 0, 0, 1);
+      }
+
+      .value {
+        flex-grow: 0;
+        font-size: 30px;
+        font-weight: bold;
+        color: rgba(0, 0, 0, 1);
+      }
+
+      .num {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+
+        .op {
+          width: 60px;
+          height: 40px;
+          line-height: 36px;
+          border: 2px solid rgba(188, 197, 202, 1);
+          text-align: center;
+          font-size: 24px;
+          font-weight: bold;
+          color: rgba(0, 0, 0, 1);
+        }
+
+        input {
+          width: 80px;
+          height: 50px;
+          line-height: 46px;
+          border: 2px solid rgba(188, 197, 202, 1);
+          font-size: 24px;
+          font-weight: bold;
+          color: rgba(0, 0, 0, 1);
+          text-align: center;
+          margin: 0 10px;
+        }
+      }
+    }
+
+    .submit {
+      width: 750px;
+      height: 80px;
+      background: rgba(252, 214, 1, 1);
+      justify-content: center;
+      font-size: 36px;
+      font-weight: bold;
+      color: rgba(255, 255, 255, 1);
+      border: none;
+      margin-left: -24px;
+    }
+
+  }
 </style>
 <template>
   <view class="page">
 
     <view class="activity-detail">
-      <view class="title">{{detail.title}}</view>
+      <view class="title">{{detail.name}}</view>
       <view class="info">
         <view class="item">
           <label>主办：</label>
-          <text>嘉兴十九楼</text>
+          <text>{{detail.sellerDto.name}}</text>
         </view>
         <view class="item">
           <label>报名时间：</label>
-          <text>2018-11-30 12:00之前有效</text>
+          <text>{{detail.productActivityExtDto.endTime}}之前有效</text>
         </view>
         <view class="item">
           <label>活动价格：</label>
-          <text>68</text>
+          <text>{{detail.currentAmount}}</text>
         </view>
         <view class="item">
           <label>剩余名额：</label>
-          <text>68</text>
+          <text>{{detail.productActivityExtDto.activityNum - detail.productActivityExtDto.activitySignUpNum}}</text>
         </view>
       </view>
 
       <view class="detail">
         <view class="rich-text">
-          <rich-text nodes="{{detail.detail}}"></rich-text>
+          <rich-text nodes="{{detail.description}}"></rich-text>
         </view>
         <view class="content-end">—— END ——</view>
       </view>
     </view>
     <view class="activity-footer">
-      <view class="item">
+      <view class="item" @tap="tabTo('/pages/index')">
         <text class="iconfont icon-shouye"></text>
         <view class="name">首页</view>
       </view>
@@ -136,15 +230,39 @@
         <text class="iconfont icon-kefu"></text>
         <view class="name">咨询</view>
       </view>
-      <view class="item">
-        <text class="iconfont icon-ziyuan"></text>
+      <view class="item" @tap="onLikeTap">
+        <text class="iconfont icon-shoucang" wx:if="{{detail.hasCollect}}"></text>
+        <text class="iconfont icon-ziyuan" wx:else></text>
         <view class="name">收藏</view>
       </view>
       <view class="item">
-        <text class="iconfont icon-fenxiang2"></text>
-        <view class="name">分享</view>
+        <button open-type="share" plain="true">
+          <text class="iconfont icon-fenxiang2"></text>
+          <view class="name">分享</view>
+        </button>
       </view>
       <view class="sign-up">立即报名</view>
+    </view>
+
+
+    <view class="sign-up-wrapper">
+      <view class="item">
+        <view class="name">{{detail.name}}</view>
+        <text class="iconfont icon-guanbi"></text>
+      </view>
+      <view class="item">
+        <label>数量</label>
+        <view class="num">
+          <view class="op" @tap="onAddNum(-1)">-</view>
+          <input bindinput="onNumChange" type="number" maxlength="4" value="{{ formData.num }}"></input>
+          <view class="op" @tap="onAddNum(1)">+</view>
+        </view>
+      </view>
+      <view class="item">
+        <label for="">总计</label>
+        <view class="value">￥{{detail.currentAmount * formData.num}}</view>
+      </view>
+      <view class="item submit">支付</view>
     </view>
     <!--分隔线-->
     <i-toast id="toast"/>
@@ -153,7 +271,6 @@
 
 <script>
   import page from '@/common/page'
-  import format from 'date-fns/format'
 
   const { $Toast } = require('@/components/iview/base/index')
 
@@ -173,17 +290,14 @@
       token: '',
       loading: false,
       id: '',
-      detail: {
-        title: '2018年穿着婚纱去春游报名啦2018年穿着婚纱去春游报名啦！！',
-        detail: '<strong>即便是中国互联网的第一代资深网民</strong>，<img style="width: 100%" src="https://cdn.pingwest.com/portal/2018/11/28/Fi1oqaSDdzFWK5IY4oemCmsBurSp.jpeg?imageView2/2/w/1440/q/100|watermark/1/image/aHR0cHM6Ly9jZG4ucGluZ3dlc3QuY29tL3B3LWNvcHlyaWdodC5wbmc=/dissolve/100/gravity/SouthEast/dx/30/dy/30" alt="">父母们也意识到自己有些看不懂现在儿女们的网络世界了。这群“自我意识强、内心孤独、喜欢幻想和表演”的年轻人，挣脱现实中的道德约束，在网络上寻求浪漫和刺激。而一旦跳脱出网络这一环境，他们也会意识到现实还是现实。'
-      },
+      detail: {},
       deleteModalVisible: false,
       submitConfirm: false,
       iou: {},
       record: [],
       formData: {
-        debitRecordId: '',
-        receiveAmount: ''
+        productId: '',
+        num: 1
       },
       formValidator: {
         receiveAmount: [
@@ -207,7 +321,7 @@
     }
 
     onReachBottom (e) {
-      if (!this.data.hasNext || this.data.loading) {
+      if (!this.hasNext || this.loading) {
         return
       }
     }
@@ -222,32 +336,66 @@
     }
 
     init () {
-      // this.getDetail()
-      // this.getRecord()
+      this.getDetail()
     }
 
     methods = {
-      onShowReceiveModal () {
-        this.receiveModalVisible = true
+      onLikeTap () {
+
+        let path = '/ar/submit'
+        if (this.detail.hasCollect) {
+          path = '/ar/cancel'
+        }
+
+        this.$post(path, {
+          objectId: this.id,
+          objectType: 'product',
+          actionType: 'collect'
+        }).then(res => {
+          if (res) {
+
+            this.detail.hasCollect = !this.detail.hasCollect
+            $Toast({
+              content: this.detail.hasCollect ? '收藏成功' : '取消收藏成功',
+              duration: 1
+            })
+
+          } else {
+
+          }
+          this.$apply()
+        })
       },
-      onCloseReceiveModal () {
-        this.receiveModalVisible = false
+      onAddNum (n) {
+        if (this.formData.num <= 1 && n == -1) {
+          return
+        }
+        this.formData.num = parseInt(this.formData.num) + parseInt(n)
+      },
+      onNumChange (n) {
+        if (this.formData.num <= 1 && n == -1) {
+          return
+        }
+        this.formData.num = parseInt(this.formData.num) + parseInt(n)
       }
     }
 
-    getRecord () {
+    getDetail () {
       wx.showNavigationBarLoading()
 
-      this.$get('/rar/listByDrId', { debitRecordId: this.id }).then(res => {
-        let record = res || []
-        record.forEach(item => {
-          item.createTimeText = format(item.createTime, 'YYYY-MM-DD')
-        })
-        this.record = record
+      let path = '/product/queryById'
+
+      this.$get(path, { id: this.id }).then(res => {
+        let detail = res || {}
+
+        if (detail.extProperty) {
+          detail.extProperty = JSON.parse(detail.extProperty)
+        }
+
+        this.detail = detail
         wx.hideNavigationBarLoading()
         this.$apply()
       })
-
     }
 
   }

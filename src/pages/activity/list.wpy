@@ -66,16 +66,15 @@
   <view class="page">
 
     <view class="activity-list">
-      <view class="item" wx:for="{{list}}" wx:key="{{index}}">
-        <view class="surplus">仅剩28名</view>
-        <image
-          src="https://cdn.pingwest.com/portal/2018/11/28/Fgy_8EAlLpNObQD_7mFN_oZ1DQzD.jpg?imageView2/2/w/1440/q/100"
-          mode="aspectFill"/>
-        <view class="name">2018年穿着婚纱去春游报名啦！</view>
+      <view class="item" wx:for="{{list}}" wx:key="{{index}}" @tap="navTo('/pages/activity/detail?id={{item.id}}')">
+        <view class="surplus" wx:if="{{item.remainSign}}">{{item.remainSign}}</view>
+        <image src="{{item.coverFileDto.url}}" mode="aspectFill"/>
+        <view class="name">{{item.name}}</view>
         <view class="sub-name" wx:if="{{index == 2}}">仅售3999元|4D实景|底片全送|送婚纱</view>
-        <view class="price" wx:if="{{index == 2}}">￥4999</view>
+        <view class="price" wx:if="{{detail.currentAmount}}">￥{{detail.currentAmount}}</view>
       </view>
-      <loadMore :loading="loading"/>
+
+      <loadMore :loading.sync="loading" :hasNext.sync="hasNext" :list.sync="list" @on-next-page.user="onNextPage"/>
     </view>
     <!--分隔线-->
     <i-toast id="toast"/>
@@ -143,25 +142,21 @@
     }
 
     init () {
-      this.getProducts()
+      this.getList()
     }
 
     methods = {
+      onNextPage () {
+        if (!this.hasNext) {
+          return
+        }
+
+        this.queryParam.current = this.queryParam.current + 1
+        this.getList()
+      }
     }
 
-    getProducts (type) {
-
-      this.queryParam.type = type
-
-      if (type == 'banquetHall') {
-        this.tabContentType = 'tc2'
-      } else if (['allSet', 'discountSetMeal', 'selectedWorks'].indexOf(type) > -1) {
-        this.tabContentType = 'tc1'
-      }
-      // 婚礼菜单
-      else if (type == 'weddingMenu') {
-        this.tabContentType = 'tc3'
-      }
+    getList (type) {
 
       this.loading = true
       wx.showNavigationBarLoading()
@@ -169,16 +164,29 @@
         let list = res.records || []
 
         list.forEach(item => {
-          if (type == 'banquetHall' && item.extProperty) {
+          if (item.extProperty) {
             item.extProperty = JSON.parse(item.extProperty)
+          }
+
+          if (item.productActivityExtDto) {
+            if (item.productActivityExtDto.activitySignUpNum >= item.productActivityExtDto.activityNum) {
+              item.remainSign = '告罄'
+            } else {
+              item.remainSign = '仅剩'+ (item.productActivityExtDto.activityNum - (item.productActivityExtDto.activitySignUpNum || 0)) +'名'
+            }
           }
 
           item.createTimeText = format(item.createTime, 'YYYY-MM-DD')
         })
 
-        this.list = list
+        if (this.queryParam.current == 1) {
+          this.list = list
+        } else {
+          this.list.concat(list)
+        }
 
         this.loading = false
+        this.hasNext = res.current < res.pages
         wx.hideNavigationBarLoading()
         this.$apply()
       })

@@ -75,5 +75,11 @@
       list: Array
     }
 
+    methods = {
+      onNextPage () {
+        this.$emit('on-next-page')
+      }
+    }
+
   }
 </script>
