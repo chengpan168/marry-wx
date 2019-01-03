@@ -5,6 +5,7 @@
   }
 
   .page {
+    position: relative;
   }
 
   .login {
@@ -24,6 +25,17 @@
       font-weight: bold;
       color: rgba(255, 255, 255, 1);
     }
+  }
+
+  .version {
+    position: fixed;
+    width: 750px;
+    bottom: 0;
+    left: 0;
+    font-size: 24px;
+    color: #666666;
+    text-align: center;
+    padding: 20px 0;
   }
 
   .menu-group {
@@ -155,6 +167,7 @@
       </view>
     </view>
 
+
     <view class="menu-group">
       <view class="menu-item">
         <text class="iconfont icon-rili"></text>
@@ -203,6 +216,7 @@
       </view>
     </view>
 
+    <view class="version">version: {{version}}</view>
     <!--分隔线-->
     <i-toast id="toast"/>
   </view>
@@ -215,12 +229,13 @@
   import _parse from 'date-fns/parse'
   import _isPast from 'date-fns/is_past/index.js'
   import loadMore from '../../components/loadMore'
+  import config from '../../mixins/config'
 
   const { $Toast } = require('@/components/iview/base/index')
 
   export default class MyIndex extends page {
     config = {
-      'navigationBarTitleText': '严选商家',
+      'navigationBarTitleText': '我的',
       'enablePullDownRefresh': false,
       'navigationBarBackgroundColor': '#FFFFFF',
       'usingComponents': {
@@ -241,7 +256,8 @@
       avatarUrl: '',
       id: '',
       user: {},
-      messageCount: ''
+      messageCount: '',
+      version: config.version
     }
 
     computed = {
@@ -274,7 +290,7 @@
     }
 
     onReachBottom (e) {
-      if (!this.data.hasNext || this.data.loading) {
+      if (!this.hasNext || this.loading) {
         return
       }
     }
@@ -317,6 +333,7 @@
             this.token = res.token
             this.isLogin = true
             this.nickname = res.data.nickName
+            this.avatarUrl = res.data.avatarUrl
             this.$apply()
           })
         }).catch(loginRes => {
