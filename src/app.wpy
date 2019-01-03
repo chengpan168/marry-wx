@@ -311,25 +311,25 @@
           {
             'pagePath': 'pages/index',
             'iconPath': '/assets/icon/Navigation-home-default@2x.png',
-            'selectedIconPath': '/assets/icon/Navigation-home-selection@2x.png',
+            'selectedIconPath': '/assets/icon/Navigation-home@2x.png',
             'text': '首页'
           },
           {
             'pagePath': 'pages/shop/index',
             'iconPath': '/assets/icon/Navigation-shop-default@2x.png',
-            'selectedIconPath': '/assets/icon/Navigation-shop-selection@2x.png',
+            'selectedIconPath': '/assets/icon/Navigation-shop@2x.png',
             'text': '商铺'
           },
           {
             'pagePath': 'pages/activity/list',
             'iconPath': '/assets/icon/Navigation-activity-default@2x.png',
-            'selectedIconPath': '/assets/icon/Navigation-activity-selection@2x.png',
+            'selectedIconPath': '/assets/icon/Navigation-activity@2x.png',
             'text': '活动'
           },
           {
             'pagePath': 'pages/my/index',
             'iconPath': '/assets/icon/Navigation-my-default@2x.png',
-            'selectedIconPath': '/assets/icon/Navigation-my-selection@2x.png',
+            'selectedIconPath': '/assets/icon/Navigation-my@2x.png',
             'text': '我的'
           }
         ]

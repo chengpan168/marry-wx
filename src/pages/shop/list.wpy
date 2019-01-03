@@ -195,14 +195,18 @@
       token: '',
       loading: false,
       hasNext: true,
-      categoryId: '',
+      queryParam: {
+        current: 1,
+        size: 10,
+        categoryId: '',
+      },
       list: []
     }
 
     computed = {}
 
     onLoad (opt) {
-      this.categoryId = opt.categoryId || ''
+      this.queryParam.categoryId = opt.categoryId || ''
       wx.setNavigationBarTitle({
         title: opt.categoryName || '严选商家'
       })
@@ -252,7 +256,7 @@
       wx.showNavigationBarLoading()
 
       this.loading = true
-      this.$get('/seller/queryPageList', { categoryId: this.categoryId }).then(res => {
+      this.$get('/seller/queryPageList', this.queryParam).then(res => {
         let list = res.records || []
         list.forEach(item => {
           item.createTimeText = format(item.createTime, 'YYYY-MM-DD')

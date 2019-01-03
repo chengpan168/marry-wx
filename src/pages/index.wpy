@@ -147,13 +147,13 @@
               class="swiper">
         <block wx:for="{{banners}}" wx:key="unique">
           <swiper-item>
-            <image mode="aspectFill" src="{{item.fileDto.url}}" class="img"></image>
+            <image mode="aspectFill" src="{{item.imageUrl}}" class="img"></image>
           </swiper-item>
         </block>
       </swiper>
 
       <view class="footer">
-        <text class="txt">{{banners[swiperCurrent].title}}</text>
+        <text class="txt" wx:if="{{banners[swiperCurrent].title}}">{{banners[swiperCurrent].title}}</text>
         <view class="dots">
           <block wx:for="{{banners}}" wx:key="unique">
             <view class="dot{{index == swiperCurrent ? ' active' : ''}}"></view>
@@ -171,8 +171,8 @@
     <view class="box week-hot">
       <view class="box-header">本周热推</view>
       <view class="box-content">
-        <view class="item"  wx:for="{{weekhot}}" wx:key="{{index}}">
-          <image src="{{item.fileDto.url}}" mode="aspectFill"/>
+        <view class="item"  @tap="navTo('/pages/product/detail?id={{item.id}}')"  wx:for="{{weekhot}}" wx:key="{{index}}">
+          <image src="{{item.imageUrl}}" mode="aspectFill"/>
           <view class="name">{{item.title}}</view>
         </view>
       </view>
@@ -185,8 +185,8 @@
     <view class="box you-like">
       <view class="box-header">猜你喜欢</view>
       <view class="box-content">
-        <view class="item"  wx:for="{{guessLike}}" wx:key="{{index}}">
-          <image src="{{item.fileDto.url}}" mode="aspectFill"/>
+        <view class="item" @tap="navTo('/pages/product/detail?id={{item.id}}')"  wx:for="{{guessLike}}" wx:key="{{index}}">
+          <image src="{{item.imageUrl}}" mode="aspectFill"/>
           <view class="name">{{item.title}}</view>
         </view>
       </view>
@@ -203,6 +203,7 @@
 <script>
   import page from '@/common/page'
   import format from 'date-fns/format'
+  import _get from 'lodash/get'
 
   const { $Toast } = require('@/components/iview/base/index')
 
@@ -287,19 +288,46 @@
 
     getBanner () {
       this.$get('/plate/queryPageList', {type: 'banner'}).then(res => {
-        this.banners = res.records || []
+        let banners = res.records || []
+
+          banners.forEach(item => {
+            item.imageUrl = _get(item, 'imageFileDto.url')
+          })
+        this.banners = banners
         this.$apply()
       })
     }
     getWeekhot () {
       this.$get('/plate/queryPageList', {type: 'weekHot', size: 3}).then(res => {
-        this.weekhot = res.records || []
+        let weekhot = res.records || []
+
+        weekhot.forEach(item => {
+          if (item.objectType == 'seller') {
+            item.imageUrl = _get(item, 'sellerDto.coverFileDto.url')
+          } else if (item.objectType == 'product') {
+            item.imageUrl = _get(item, 'productDto.coverFileDto.url')
+          }
+        })
+
+        this.weekhot = weekhot
+
         this.$apply()
       })
     }
     getGuessLike () {
       this.$get('/plate/queryPageList', {type: 'guessLike', size: 2}).then(res => {
-        this.guessLike = res.records || []
+        let guessLike = res.records || []
+
+
+        guessLike.forEach(item => {
+          if (item.objectType == 'seller') {
+            item.imageUrl = _get(item, 'sellerDto.coverFileDto.url')
+          } else if (item.objectType == 'product') {
+            item.imageUrl = _get(item, 'productDto.coverFileDto.url')
+          }
+        })
+
+        this.guessLike = guessLike
         this.$apply()
       })
     }

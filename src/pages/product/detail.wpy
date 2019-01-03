@@ -206,11 +206,11 @@
           <text class="origin">￥{{detail.originalAmount}}</text>
         </view>
         <view class="lobby" wx:if="{{type == 'banquetHall'}}">
-          <view>起订桌数：5桌，最大桌数：50桌</view>
-          <view>面积：500平米，棚高:4.5米</view>
+          <view>起订桌数：{{detail.extProperty.startTableNum || 0}}桌，最大桌数：{{detail.extProperty.maxTableNum || 0}}桌</view>
+          <view>面积：{{detail.extProperty.area || 0}}平米，棚高：{{detail.extProperty.shedHeight || 0}}米</view>
         </view>
         <view class="lobby" wx:if="{{type == 'weddingCase'}}">
-          <view>婚礼策划：小白婚礼创意</view>
+          <!--<view>婚礼策划：小白婚礼创意</view>-->
         </view>
 
         <view class="bottom-border"></view>
@@ -341,7 +341,10 @@
         list.forEach(item => {
           if (type == 'banquetHall' && item.extProperty) {
             item.extProperty = JSON.parse(item.extProperty)
+          } else {
+            item.extProperty = {}
           }
+
 
           item.createTimeText = format(item.createTime, 'YYYY-MM-DD')
         })

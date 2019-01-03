@@ -41,6 +41,10 @@
         font-size: 24px;
         font-weight: bold;
         color: rgba(84, 84, 84, 1);
+        min-width: 200px;
+        height:100px;
+        line-height:100px;
+        text-align:right;
       }
 
       .enter {
@@ -224,7 +228,6 @@
       id: '',
       avatarUrl: '',
       phone: '',
-      address: '',
       marryTimeStart: format(Date.now(), 'YYYY-MM-DD'),
       formData: {
         nickName: '',
@@ -242,6 +245,16 @@
     computed = {}
 
     onLoad (opt) {
+      this.$getUser().then(res => {
+        this.avatarUrl = res.avatarUrl
+        this.phone = res.phone
+        this.formData.nickName = res.nickName
+        this.formData.address = res.address || ''
+        if (res.marryTime) {
+          this.formData.marryTime = format(res.marryTime, 'YYYY-MM-DD')
+        }
+        this.$apply()
+      })
     }
 
     onShow () {
@@ -264,16 +277,6 @@
     }
 
     init () {
-      this.$getUser().then(res => {
-        this.avatarUrl = res.avatarUrl
-        this.phone = res.phone
-        this.formData.nickName = res.nickName
-        this.formData.address = res.address
-        if (res.marryTime) {
-          this.formData.marryTime = format(res.marryTime, 'YYYY-MM-DD')
-        }
-        this.$apply()
-      })
     }
 
     methods = {
@@ -282,7 +285,7 @@
       },
       onAddressChange () {
         wepy.chooseAddress().then(res => {
-          let address = {
+          /*let address = {
             countyName: res.countyName,
             provinceName: res.provinceName,
             cityName: res.cityName,
@@ -291,10 +294,11 @@
             postalCode: res.postalCode,
             nationalCode: res.nationalCode,
             userName: res.userName
-          }
+          }*/
 
-          this.formData.address = `${res.provinceName} ${res.cityName} ${res.detailInfo} ${res.userName} ${res.telNumber}`
-          this.address = res.userName
+          let address = `${res.provinceName} ${res.cityName} ${res.detailInfo} ${res.userName} ${res.telNumber}`
+          console.log(address)
+          this.formData.address = address
           this.$apply()
         }).catch(err => {
           console.log(e)

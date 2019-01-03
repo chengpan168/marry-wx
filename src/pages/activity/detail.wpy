@@ -239,8 +239,10 @@
         <view class="name">首页</view>
       </view>
       <view class="item">
-        <text class="iconfont icon-kefu"></text>
-        <view class="name">咨询</view>
+        <button open-type="contact" plain="true">
+          <text class="iconfont icon-kefu"></text>
+          <view class="name">咨询</view>
+        </button>
       </view>
       <view class="item" @tap="onLikeTap">
         <text class="iconfont icon-shoucang" wx:if="{{detail.hasCollect}}"></text>
@@ -276,7 +278,7 @@
         <label for="">总计</label>
         <view class="value">￥{{amount}}</view>
       </view>
-      <view class="item submit"  @tap="onPreConfirmSubmit">支付</view>
+      <view class="item submit" @tap="onPreConfirmSubmit">支付</view>
     </view>
 
 
@@ -487,6 +489,8 @@
 
         if (detail.extProperty) {
           detail.extProperty = JSON.parse(detail.extProperty)
+        } else {
+          detail.extProperty = {}
         }
 
         this.detail = detail
@@ -499,7 +503,6 @@
       if (this.loading) {
         return
       }
-
 
       this.loading = true
       this.formData.productId = this.id
@@ -555,14 +558,14 @@
               content: '支付成功'
             })
             this.successModalVisible = true
-           /* setTimeout(
-              () => {
-                wx.navigateBack({
-                  delta: 2
-                })
-              },
-              2000
-            )*/
+            /* setTimeout(
+               () => {
+                 wx.navigateBack({
+                   delta: 2
+                 })
+               },
+               2000
+             )*/
           },
           'fail': function(res) {
             console.log(res)

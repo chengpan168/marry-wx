@@ -48,9 +48,9 @@ module.exports = {
   appConfig: {
     noPromiseAPI: ['createSelectorQuery'],
     baseUrl: process.env.NODE_ENV === 'production'
-      ? 'http://47.96.7.128:8888'
+      ? 'https://api.ing3.cc'
       // : 'https://api.werwee.com'
-      : 'http://47.96.7.128:8888'
+      : 'https://api.ing3.cc'
   }
 };
 

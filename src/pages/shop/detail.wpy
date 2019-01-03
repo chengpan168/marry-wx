@@ -368,7 +368,7 @@
       <view class="tab-wrapper" wx:if="{{detail.tabType == 'tab2'}}">
         <view class="tab-item {{tabName == 'allSet' ? 'active' : ''}}" @tap="onTabChange('allSet')">全部套系</view>
         <view class="tab-item {{tabName == 'discountSetMeal' ? 'active' : ''}}" @tap="onTabChange('discountSetMeal')">
-          作品精选
+          优惠套餐
         </view>
         <view class="tab-item {{tabName == 'selectedWorks' ? 'active' : ''}}" @tap="onTabChange('selectedWorks')">作品精选
         </view>
