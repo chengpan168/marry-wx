@@ -91,7 +91,7 @@
 
     .box-content {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: space-between;
     }
 
@@ -171,7 +171,7 @@
     <view class="box week-hot">
       <view class="box-header">本周热推</view>
       <view class="box-content">
-        <view class="item"  @tap="navTo('/pages/product/detail?id={{item.id}}')"  wx:for="{{weekhot}}" wx:key="{{index}}">
+        <view class="item"  @tap="navTo('/pages/product/detail?id={{item.productDto.id}}')"  wx:for="{{weekhot}}" wx:key="{{index}}">
           <image src="{{item.imageUrl}}" mode="aspectFill"/>
           <view class="name">{{item.title}}</view>
         </view>
@@ -185,7 +185,7 @@
     <view class="box you-like">
       <view class="box-header">猜你喜欢</view>
       <view class="box-content">
-        <view class="item" @tap="navTo('/pages/product/detail?id={{item.id}}')"  wx:for="{{guessLike}}" wx:key="{{index}}">
+        <view class="item" @tap="navTo('/pages/product/detail?id={{item.productDto.id}}')"  wx:for="{{guessLike}}" wx:key="{{index}}">
           <image src="{{item.imageUrl}}" mode="aspectFill"/>
           <view class="name">{{item.title}}</view>
         </view>

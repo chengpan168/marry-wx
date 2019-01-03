@@ -201,9 +201,9 @@
     <view wx:else class="product-detail">
       <view class="info">
         <view class="title">{{detail.name}}</view>
-        <view class="price" wx:if="{{type == 'allSet'}}">
-          <text class="current">￥{{detail.currentAmount}}</text>
-          <text class="origin">￥{{detail.originalAmount}}</text>
+        <view class="price">
+          <text class="current" wx:if="{{detail.currentAmount}}">￥{{detail.currentAmount}}</text>
+          <text class="origin" wx:if="{{detail.originalAmount}}">￥{{detail.originalAmount}}</text>
         </view>
         <view class="lobby" wx:if="{{type == 'banquetHall'}}">
           <view>起订桌数：{{detail.extProperty.startTableNum || 0}}桌，最大桌数：{{detail.extProperty.maxTableNum || 0}}桌</view>
@@ -319,105 +319,7 @@
       })
     }
 
-    getProducts (type) {
 
-      this.queryParam.type = type
-
-      if (type == 'banquetHall') {
-        this.tabContentType = 'tc2'
-      } else if (['allSet', 'discountSetMeal', 'selectedWorks'].indexOf(type) > -1) {
-        this.tabContentType = 'tc1'
-      }
-      // 婚礼菜单
-      else if (type == 'weddingMenu') {
-        this.tabContentType = 'tc3'
-      }
-
-      this.loading = true
-      wx.showNavigationBarLoading()
-      this.$get('/product/queryPageList', this.queryParam).then(res => {
-        let list = res.records || []
-
-        list.forEach(item => {
-          if (type == 'banquetHall' && item.extProperty) {
-            item.extProperty = JSON.parse(item.extProperty)
-          } else {
-            item.extProperty = {}
-          }
-
-
-          item.createTimeText = format(item.createTime, 'YYYY-MM-DD')
-        })
-
-        this.list = list
-
-        this.loading = false
-        wx.hideNavigationBarLoading()
-        this.$apply()
-      })
-    }
-
-    getWeddingCase () {
-
-      this.tabContentType = 'tc1'
-
-      this.loading = true
-      wx.showNavigationBarLoading()
-      this.$get('/wc/queryPageList', this.queryParam).then(res => {
-        let list = res.records || []
-
-        this.list = list
-        this.loading = false
-        wx.hideNavigationBarLoading()
-        this.$apply()
-      })
-    }
-
-    getComments () {
-
-      this.tabContentType = 'tcComment'
-      this.queryParam.type = ''
-
-      this.loading = true
-      wx.showNavigationBarLoading()
-
-      let param = {
-        objectType: 'seller',
-        objectId: this.id,
-        current: this.queryParam.current,
-        size: this.queryParam.size
-      }
-      this.$get('/comment/queryPageList', param).then(res => {
-        let list = res.records || []
-
-        this.list = list
-        this.loading = false
-        wx.hideNavigationBarLoading()
-        this.$apply()
-      })
-    }
-
-    getVideos () {
-
-      this.tabContentType = 'tcVideo'
-
-      this.loading = true
-      wx.showNavigationBarLoading()
-
-      let param = {
-        sellerId: this.id,
-        current: this.queryParam.current,
-        size: this.queryParam.size
-      }
-      this.$get('/vw/queryPageList', param).then(res => {
-        let list = res.records || []
-
-        this.list = list
-        this.loading = false
-        wx.hideNavigationBarLoading()
-        this.$apply()
-      })
-    }
 
     submit () {
       this.$post('/subscribe/submit', { sellerId: this.id }).then(res => {

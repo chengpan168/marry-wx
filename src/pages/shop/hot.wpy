@@ -13,7 +13,7 @@
     padding: 0 24px;
 
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
     flex-wrap: wrap;
 
@@ -42,7 +42,8 @@
   <view class="page">
     <view class="week-hot">
       <view class="item"  wx:for="{{list}}" wx:key="{{index}}">
-        <image src="{{item.fileDto.url}}" mode="aspectFill"/>
+        <image wx:if="{{item.objectType == 'product'}}"  @tap="navTo('/pages/product/detail?id={{item.productDto.id}}')" src="{{item.productDto.coverFileDto.url}}" mode="aspectFill"/>
+        <image wx:if="{{item.objectType == 'seller'}}" @tap="navTo('/pages/shop/detail?id={{item.sellerDto.id}}')"  src="{{item.sellerDto.coverFileDto.url}}" mode="aspectFill"/>
         <view class="name">{{item.title}}</view>
       </view>
     </view>

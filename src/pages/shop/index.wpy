@@ -176,12 +176,12 @@
           </view>
           <view class="address">
             <text class="iconfont icon-zuobiao"></text>
-            <text>西湖</text>
+            <text>{{item.address}}</text>
           </view>
         </view>
       </view>
 
-      <loadMore :loading.sync="loading" :hasNext.sync="hasNext" :list.sync="list"/>
+      <loadMore :loading.sync="loading" :hasNext.sync="hasNext" :list.sync="list" @on-next-page.user="onNextPage"/>
     </view>
 
     <!--分隔线-->
@@ -264,6 +264,15 @@
       onSortTap (sortType) {
         this.queryParam.sortType = sortType
         this.queryParam.current = 1
+        this.getList()
+      },
+
+      onNextPage () {
+        if (!this.hasNext) {
+          return
+        }
+
+        this.queryParam.current = this.queryParam.current + 1
         this.getList()
       }
     }
