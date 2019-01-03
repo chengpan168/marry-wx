@@ -9,8 +9,43 @@
   }
 
   .banner {
+    position: relative;
     height: 260px;
     width: 100%;
+
+    image {
+      width: 100%;
+      height: 260px;
+    }
+
+    .seller {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      text-align: center;
+
+      image {
+        margin-top: 30px;
+        width: 140px;
+        height: 140px;
+        border-radius: 50%;
+      }
+
+      .name {
+        margin-top: 10px;
+        font-size: 30px;
+        font-weight: bold;
+        color: rgba(255, 255, 255, 1);
+      }
+
+      .like {
+        margin-top: 5px;
+        font-size: 24px;
+        font-weight: bold;
+        color: rgba(255, 255, 255, 1);
+      }
+    }
   }
 
   .product-detail {
@@ -178,9 +213,14 @@
 </style>
 <template>
   <view class="page">
-    <image class="banner"
-           src="{{detail.coverFileDto.url}}"
-           mode="aspectFill"/>
+    <view class="banner">
+      <image src="{{detail.coverFileDto.url}}" mode="aspectFill"/>
+      <view class="seller">
+        <image src="{{detail.sellerDto.coverFileDto.url}}" mode="aspectFill"/>
+        <view class="name">{{detail.sellerDto.name}}</view>
+        <view class="like">{{detail.sellerDto.name}}</view>
+      </view>
+    </view>
 
     <view wx:if="{{type == 'weddingMenu'}}" class="product-menu">
       <view class="info">
@@ -234,7 +274,6 @@
 
 <script>
   import page from '@/common/page'
-  import format from 'date-fns/format'
   import loadMore from '../../components/loadMore'
 
   const { $Toast } = require('@/components/iview/base/index')
@@ -318,8 +357,6 @@
         this.$apply()
       })
     }
-
-
 
     submit () {
       this.$post('/subscribe/submit', { sellerId: this.id }).then(res => {
