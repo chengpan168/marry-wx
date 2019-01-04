@@ -71,7 +71,7 @@
     text-align: right;
   }
 
-  .rich-text-img {
+  .quill-img {
     max-width: 100%;
   }
 
