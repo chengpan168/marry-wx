@@ -512,7 +512,7 @@
 
       <!--全部套系-->
       <view class="tab-content one" wx:if="{{tabContentType == 'tc1'}}">
-        <view class="item" wx:for="{{list}}" wx:key="{{index}}" @tap="navTo('/pages/product/detail?id={{item.id}}')">
+        <view class="item" wx:for="{{list}}" wx:key="{{index}}" @tap="navTo('/pages/product/detail?id={{item.id}}&type={{tabName}}')">
           <image class="banner"
                  src="{{item.coverFileDto.url}}"
                  mode="aspectFill"/>
@@ -679,7 +679,7 @@
         this.queryParam.current = 1
 
         if ('weddingCase' == tabName) {
-          // FIXME 婚礼案礼
+          // 婚礼案礼
           this.getWeddingCase()
         } else if ('comment' == tabName) {
           // 评论

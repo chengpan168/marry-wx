@@ -309,6 +309,7 @@
         this.user = res
         this.$apply()
       })
+      this.getMessageCount()
     }
 
     methods = {
@@ -343,7 +344,7 @@
     }
 
     getMessageCount () {
-      this.$get(' /message/totalMyUnReadMsg').then(res => {
+      this.$get('/message/totalMyUnReadMsg').then(res => {
         this.messageCount = res || ''
         this.$apply()
       })

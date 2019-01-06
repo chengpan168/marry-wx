@@ -149,7 +149,7 @@
         let list = res.records || []
 
         list.forEach(item => {
-          item.createTimeText = format(item.createTime, 'YYYY-MM-DD')
+          item.createTimeText = format(item.createTime, 'YYYY-MM-DD HH:mm')
         })
 
         if (this.queryParam.current == 1) {
@@ -170,7 +170,7 @@
     }
 
     markRead () {
-      this.$get(' /message/read')
+      this.$get('/message/read')
     }
 
   }

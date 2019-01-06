@@ -196,7 +196,7 @@
           mode="aspectFill"/>
         <view class="name">{{item.productDto.name}}</view>
         <view class="desc">{{item.productDto.description}}</view>
-        <view class="price">￥ {{item.productDto.currentAmount}}}</view>
+        <view class="price">￥ {{item.productDto.currentAmount}}</view>
       </view>
     </view>
 

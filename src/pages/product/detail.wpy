@@ -225,10 +225,11 @@
 <template>
   <view class="page">
     <view class="banner">
-      <image src="{{detail.coverFileDto.url}}" mode="aspectFill"/>
+      <image wx:if="{{type == 'weddingMenu'}}"  src="{{detail.sellerDto.coverFileDto.url}}" mode="aspectFill"/>
+      <image wx:else src="{{detail.coverFileDto.url}}" mode="aspectFill"/>
       <view class="seller">
         <view class="logo">
-          <image src="{{detail.sellerDto.coverFileDto.url}}" mode="aspectFill"/>
+          <image src="{{detail.sellerDto.logoFileDto.url}}" mode="aspectFill"/>
         </view>
         <view class="name">{{detail.sellerDto.name}}</view>
         <view class="like">{{detail.sellerDto.collectNum || 0}} 人收藏</view>
@@ -243,12 +244,12 @@
           <text class="iconfont icon-enter"></text>
         </view>
       </view>
-      <view class="total">共{{detail.foodNum || 0}}个菜</view>
+      <view class="total">共{{detail.extProperty.foodNum || 0}}个菜</view>
       <view class="foot-detail">
-        <view>{{detail.hotFoodNum || 0}}个热菜</view>
-        <view>{{detail.coldNum || 0}}个冷菜</view>
-        <view>{{detail.dessertNum || 0}}个点心</view>
-        <view>{{detail.fruitsNum || 0}}个水果</view>
+        <view>{{detail.extProperty.hotFoodNum || 0}}个热菜</view>
+        <view>{{detail.extProperty.coldNum || 0}}个冷菜</view>
+        <view>{{detail.extProperty.dessertNum || 0}}个点心</view>
+        <view>{{detail.extProperty.fruitsNum || 0}}个水果</view>
       </view>
     </view>
     <view wx:else class="product-detail">
@@ -352,10 +353,9 @@
 
     getDetail () {
       wx.showNavigationBarLoading()
-
       let path = '/product/queryById'
       if (this.type == 'weddingCase') {
-        let path = '/wc/queryById'
+        path = '/wc/queryById'
       }
 
       this.$get(path, { id: this.id }).then(res => {
