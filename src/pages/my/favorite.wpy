@@ -125,29 +125,36 @@
         border-radius: 4px;
       }
 
-      .name {
-        margin-top: 20px;
-        font-size: 32px;
-        font-weight: bold;
-        color: rgba(0, 0, 0, 1);
-        text-align: left;
-      }
+      .info {
+        position: relative;
+        display: flex;
+        align-items: center;
 
-      .desc {
-        margin-top: 15px;
-        font-size: 24px;
-        font-weight: bold;
-        color: rgba(84, 84, 84, 1);
-        text-align: left;
-      }
+        .name-wrapper {
+          flex-grow: 1;
+          .name {
+            margin-top: 20px;
+            font-size: 32px;
+            font-weight: bold;
+            color: rgba(0, 0, 0, 1);
+            text-align: left;
+          }
 
-      .price {
-        position: absolute;
-        right: 24px;
-        bottom: 40px;
-        font-size: 36px;
-        font-weight: bold;
-        color: rgba(205, 92, 91, 1);
+          .desc {
+            margin-top: 15px;
+            font-size: 24px;
+            font-weight: bold;
+            color: rgba(84, 84, 84, 1);
+            text-align: left;
+          }
+        }
+
+        .price {
+          flex-grow: 0;
+          font-size: 36px;
+          font-weight: bold;
+          color: rgba(205, 92, 91, 1);
+        }
       }
     }
   }
@@ -169,12 +176,12 @@
         <view class="content">
           <view class="name">{{item.sellerDto.name}}</view>
           <view class="tags">
-            <view class="tag gray">文苑婚纱</view>
-            <view class="tag">文苑婚纱</view>
+            <view class="tag gray">{{item.sellerDto.weddingCaseNum}}个案例</view>
+            <view class="tag">{{item.sellerDto.collectNum}}人关注</view>
           </view>
           <view class="address">
             <text class="iconfont icon-zuobiao"></text>
-            <text>西湖</text>
+            <text>{{item.sellerDto.address}}</text>
           </view>
         </view>
       </view>
@@ -186,17 +193,23 @@
         <image
           src="https://cdn.pingwest.com/portal/2018/11/28/Fgy_8EAlLpNObQD_7mFN_oZ1DQzD.jpg?imageView2/2/w/1440/q/100"
           mode="aspectFill"/>
-        <view class="name">婚宴酒店婚宴酒店</view>
+        <view class="info">
+          <view class="name">婚宴酒店婚宴酒店</view>
+        </view>
       </view>
     </view>
 
     <view wx:if="{{queryParam.objectType == 'product'}}" class="product-activity-list">
       <view class="item" wx:for="{{list}}" wx:key="{{index}}">
         <image src="{{item.productDto.coverFileDto.url}}"
-          mode="aspectFill"/>
-        <view class="name">{{item.productDto.name}}</view>
-        <view class="desc">{{item.productDto.description}}</view>
-        <view class="price">￥ {{item.productDto.currentAmount}}</view>
+               mode="aspectFill"/>
+        <view class="info">
+          <view class="name-wrapper">
+            <view class="name">{{item.productDto.name}}</view>
+            <view class="desc" wx:if="{{item.productDto.avocationTitle}}">{{item.productDto.avocationTitle}}</view>
+          </view>
+          <view class="price">￥ {{item.productDto.currentAmount}}</view>
+        </view>
       </view>
     </view>
 

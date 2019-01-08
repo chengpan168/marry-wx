@@ -276,7 +276,7 @@
           <view>面积：{{detail.extProperty.area || 0}}平米，棚高：{{detail.extProperty.shedHeight || 0}}米</view>
         </view>
         <view class="lobby" wx:if="{{type == 'weddingCase'}}">
-          <view wx:if="{{detail.avocationTitle}}">婚礼策划：{{detail.avocationTitle}}</view>
+          <view wx:if="{{detail.planCompany}}">婚礼策划：{{detail.planCompany}}</view>
         </view>
 
         <view class="bottom-border"></view>

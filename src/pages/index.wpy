@@ -147,7 +147,7 @@
               class="swiper">
         <block wx:for="{{banners}}" wx:key="unique">
           <swiper-item>
-            <image mode="aspectFill" src="{{item.imageUrl}}" class="img"></image>
+            <image @tap="onBannerTap('{{index}}')" mode="aspectFill" src="{{item.imageUrl}}" class="img"></image>
           </swiper-item>
         </block>
       </swiper>
@@ -283,6 +283,18 @@
       onNextPage () {
         this.queryParam.current = this.queryParam.current + 1
         this.getList()
+      },
+      onBannerTap (index) {
+        let banner = this.banners[index]
+        if (banner.objectType == 'product') {
+          wx.navigateTo({
+            url: '/pages/product/detail?id=' + banner.productDto.id
+          })
+        } else if (banner.objectType == 'seller') {
+          wx.navigateTo({
+            url: '/pages/shop/detail?id=' + banner.productDto.id
+          })
+        }
       }
     }
 

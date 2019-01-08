@@ -102,6 +102,9 @@
       color: rgba(255, 255, 255, 1);
       text-align: center;
     }
+    .disable {
+      background: #e6e6e6;
+    }
   }
 
 
@@ -255,7 +258,8 @@
           <view class="name">分享</view>
         </button>
       </view>
-      <view class="sign-up" @tap="onPreSubmit">立即报名</view>
+      <view class="sign-up {{detail.isBuy ? 'disable' : ''}}" disabled="{{detail.isBuy}}" wx:if="{{detail.isBuy}}">已报名</view>
+      <view class="sign-up" @tap="onPreSubmit" wx:else>立即报名</view>
     </view>
 
 
@@ -477,7 +481,22 @@
       onConfirmSubmit () {
         this.confirmModalVisible = false
         this.submit()
-      }
+      },
+      setClipboard () {
+
+        wepy.setClipboardData({
+          data: 'jiaxing19lou'
+        }).then(res => {
+          this.successModalVisible = false
+          /*wx.hideToast()
+          $Toast({
+            content: '复制成功',
+            duration: 1
+          })*/
+
+          this.$apply()
+        })
+      },
     }
 
     getDetail () {
