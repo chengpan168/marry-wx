@@ -16,12 +16,12 @@ export default class httpMixin extends wepy.mixin {
         token: this.$parent.globalData.token
       }, header),
       url: config.host + path,
-      data: data || {}
+      data: data
     }).then(res => {
       let result = res.data
       // 成功处理
       if (result.status === 'ok') {
-        return Promise.resolve(result.data || {})
+        return Promise.resolve(result.data)
       }
       // 登录过期
       else if (result.status == '400') {

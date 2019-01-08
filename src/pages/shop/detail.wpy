@@ -328,6 +328,10 @@
             }
           }
 
+          video {
+            width: 100%;
+          }
+
           .name {
             font-size: 24px;
             font-weight: bold;
@@ -359,6 +363,9 @@
         .iconfont {
           font-size: 45px;
           color: #545454;
+        }
+        .icon-shoucang {
+          color: rgba(252, 214, 1, 1);
         }
 
         .name {
@@ -486,10 +493,11 @@
       </view>
       <view class="tab-content video" wx:if="{{tabContentType == 'tcVideo'}}">
         <view class="item" wx:for="{{list}}" wx:key="{{index}}">
-          <view class="cover">
+          <!--<view class="cover" @tap="onVideoPlay('{{item.videoFileDto.url}}')">
             <image src="{{item.coverFileDto.url}}" mode="aspectFill"/>
             <text class="iconfont icon-bofang-yuanshijituantubiao"></text>
-          </view>
+          </view>-->
+          <video src="{{item.videoFileDto.url}}" controls></video>
 
           <view class="name">{{item.title}}</view>
         </view>
@@ -502,9 +510,7 @@
           <image class="banner" src="{{item.coverFileDto.url}}" mode="aspectFill"/>
           <view class="info">
             <text class="name">{{item.name}}</text>
-            <text class="label green" wx:if="{{item.extProperty && item.extProperty.maxTableNum}}">
-              {{item.extProperty.maxTableNum}}桌
-            </text>
+            <text class="label green" wx:if="{{item.extProperty && item.extProperty.maxTableNum}}">{{item.extProperty.maxTableNum}}桌</text>
             <text class="label gray">{{item.extProperty.pillarNum ? item.extProperty.pillarNum : '无'}}柱</text>
           </view>
         </view>
@@ -759,6 +765,9 @@
             duration: 1
           })
         })
+      },
+      onVideoPlay (url) {
+
       }
     }
 

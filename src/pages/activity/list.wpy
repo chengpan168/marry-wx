@@ -188,7 +188,7 @@
         if (this.queryParam.current == 1) {
           this.list = list
         } else {
-          this.list.concat(list)
+          this.list = this.list.concat(list)
         }
 
         this.loading = false

@@ -209,7 +209,7 @@
         <text class="name">好用工具</text>
       </view>
       <view class="menu-item-sub">
-        <view class="item">
+        <view class="item" @tap="navTo('/pages/my/luckyDay')">
           <text class="iconfont icon-rili"></text>
           <view class="name">黄道吉日</view>
         </view>
@@ -345,7 +345,7 @@
 
     getMessageCount () {
       this.$get('/message/totalMyUnReadMsg').then(res => {
-        this.messageCount = res || ''
+        this.messageCount = res || 0
         this.$apply()
       })
     }

@@ -30,6 +30,7 @@
 
     .tags {
       .tag {
+        position: relative;
         display: inline-block;
         margin-left: 20px;
         margin-top: 10px;
@@ -45,6 +46,15 @@
 
         &:first-child {
           margin-left: 0;
+        }
+
+        .iconfont {
+          position: absolute;
+          right: -10px;
+          top: -10px;
+          font-size: 26px;
+          color: #666666;
+
         }
       }
     }
@@ -151,7 +161,9 @@
       </view>
       <view class="tags">
         <view class="tag" @tap="onKeywordTap('{{item.name}}')" wx:for="{{hotKeywords}}" wx:key="{{index}}">
-          {{item.name}}
+          <text>{{item.name}}</text>
+          <text class="iconfont icon-close-b" wx:if="{{queryParam.keywords == item.name}}"
+                @tap.stop="onKeywordTap('')"></text>
         </view>
       </view>
     </view>
@@ -237,6 +249,9 @@
       if (!this.hasNext || this.loading) {
         return
       }
+
+      this.queryParam.current = this.queryParam.current + 1
+      this.getList()
     }
 
     onShareAppMessage (e) {
@@ -294,7 +309,14 @@
       this.$get('/seller/queryPageList', this.queryParam).then(res => {
         let list = res.records || []
 
-        this.list = list
+        debugger
+        if (this.queryParam.current == 1) {
+          this.list = list
+        } else {
+          this.list = this.list.concat(list)
+        }
+
+
         this.hasNext = res.current < res.pages
 
         this.loading = false

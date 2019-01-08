@@ -1,0 +1,116 @@
+<style lang="less">
+  @import "../../assets/css/global";
+
+  page {
+    background: #ffffff;
+  }
+
+  .page {
+    padding: 0 24px;
+  }
+
+  .title {
+    font-size: 30px;
+    font-weight: bold;
+    color: rgba(252, 214, 1, 1);
+    padding: 20px 0;
+    border-bottom: 1px solid #E6E6E6;
+  }
+
+  .rich-text {
+    padding: 20px 0px;
+  }
+</style>
+<template>
+  <view class="page">
+    <view class="title">2019年黄道吉日</view>
+    <view class="rich-text">
+      <rich-text nodes="{{detail.val}}"></rich-text>
+    </view>
+    <!--分隔线-->
+    <i-toast id="toast"/>
+  </view>
+</template>
+
+<script>
+  import page from '@/common/page'
+  import loadMore from '../../components/loadMore'
+
+  const { $Toast } = require('@/components/iview/base/index')
+
+  export default class MyLuckyDay extends page {
+    config = {
+      'navigationBarTitleText': '消息',
+      'enablePullDownRefresh': false,
+      'navigationBarBackgroundColor': '#FFFFFF',
+      'usingComponents': {
+        'i-toast': '/components/iview/toast/index',
+        'i-modal': '/components/iview/modal/index'
+      }
+    }
+    components = {
+      loadMore
+    }
+
+    data = {
+      token: '',
+      loading: false,
+      hasNext: true,
+      id: '',
+      detail: {},
+      queryParam: {
+        current: 1,
+        size: 10
+      },
+      list: []
+
+    }
+
+    computed = {}
+
+    onLoad (opt) {
+    }
+
+    onShow () {
+      this.init()
+    }
+
+    onReachBottom (e) {
+    }
+
+    onShareAppMessage (e) {
+      let opt = {
+        success (res) {
+          console.log('分享成功', res)
+        }
+      }
+      return opt
+    }
+
+    init () {
+      this.getList()
+    }
+
+    methods = {
+    }
+
+    getList () {
+
+      this.loading = true
+      wx.showNavigationBarLoading()
+      this.$get('/ar/queryByType?type=niceDay', this.queryParam).then(res => {
+
+        this.detail = res
+
+        this.loading = false
+        wx.hideNavigationBarLoading()
+        this.$apply()
+      }).catch(err => {
+        this.loading = false
+        wx.hideNavigationBarLoading()
+        this.$apply()
+      })
+    }
+
+  }
+</script>

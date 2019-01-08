@@ -293,6 +293,7 @@
         'pages/my/bindPhone',
         'pages/my/message',
         'pages/my/favorite',
+        'pages/my/luckyDay',
 
         'pages/login'
       ],
