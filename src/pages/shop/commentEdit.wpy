@@ -108,7 +108,7 @@
   <view class="page">
     <view class="shop-detail">
       <image
-        src="{{item.coverFileDto.url}}"
+        src="{{detail.logoFileDto.url}}"
         mode="aspectFill"/>
       <view class="content">
         <view class="name">{{detail.name}}</view>

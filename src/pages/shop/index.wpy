@@ -309,7 +309,6 @@
       this.$get('/seller/queryPageList', this.queryParam).then(res => {
         let list = res.records || []
 
-        debugger
         if (this.queryParam.current == 1) {
           this.list = list
         } else {

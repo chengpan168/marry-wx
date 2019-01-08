@@ -327,6 +327,7 @@
 <script>
   import page from '@/common/page'
   import logger from '../../mixins/logger'
+  import format from 'date-fns/format'
   import md5 from '../../utils/md5'
 
   const { $Toast } = require('@/components/iview/base/index')
@@ -491,6 +492,10 @@
           detail.extProperty = JSON.parse(detail.extProperty)
         } else {
           detail.extProperty = {}
+        }
+
+        if ( detail.productActivityExtDto && detail.productActivityExtDto.endTime)  {
+          detail.productActivityExtDto.endTime = format(detail.productActivityExtDto.endTime, 'YYYY-MM-DD HH:mm')
         }
 
         this.detail = detail
