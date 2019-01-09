@@ -171,7 +171,7 @@
       <!--<view class="tab-item"></view>-->
     </view>
     <view wx:if="{{queryParam.objectType == 'seller'}}" class="shop-list">
-      <view class="item" wx:for="{{list}}" wx:key="{{index}}">
+      <view class="item" wx:for="{{list}}" wx:key="{{index}}" @tap="navTo('/pages/shop/detail?id={{item.sellerDto.id}}')">
         <image src="{{item.sellerDto.coverFileDto.url}}" mode="aspectFill"/>
         <view class="content">
           <view class="name">{{item.sellerDto.name}}</view>
@@ -200,7 +200,7 @@
     </view>
 
     <view wx:if="{{queryParam.objectType == 'product'}}" class="product-activity-list">
-      <view class="item" wx:for="{{list}}" wx:key="{{index}}">
+      <view class="item" wx:for="{{list}}" wx:key="{{index}}" @tap="onProductActivity('{{item.productDto.type}}', '{{item.productDto.id}}')">
         <image src="{{item.productDto.coverFileDto.url}}"
                mode="aspectFill"/>
         <view class="info">
@@ -299,6 +299,17 @@
         this.queryParam.current = 1
         this.queryParam.objectType = type
         this.getList()
+      },
+      onProductActivity(type, id) {
+        if (type == 'activity') {
+          wx.navigateTo({
+            url: '/pages/activity/detail?id='  + id
+          })
+        } else {
+          wx.navigateTo({
+            url: `/pages/product/detail?id=${id}&type=${type}`
+          })
+        }
       }
     }
 

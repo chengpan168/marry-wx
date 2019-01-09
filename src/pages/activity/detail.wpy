@@ -304,7 +304,8 @@
              show-cancel="{{false}}">
       <view class="modal setting-modal">
         <image class="error-icon" src="/assets/images/icon_read@2x.png" mode="aspectFill"/>
-        <view class="text">请仔细阅读活动要求，确保准时参加，确定报名吗？</view>
+        <view class="text">请仔细阅读活动要求</view>
+        <view class="text">确保准时参加，确定报名吗？</view>
 
         <view class="btns">
           <button class="cancel" @tap="onCloseConfirmModal" hover-class="none">取消</button>
@@ -317,7 +318,7 @@
       <view class="modal success-modal">
         <image class="success-icon" src="/assets/images/icon_success@2x.png" mode="aspectFill"/>
         <view class="name">预约成功，商家会尽快联系您</view>
-        <view class="text">也可以添加19楼客服微信:jiaxing19lou 了解具体活动详情。</view>
+        <view class="text">也可以添加19楼客服微信:13067690392 了解具体活动详情。</view>
 
         <view class="btns">
           <button class="ok" hover-class="none" @tap="setClipboard">复制微信号</button>
@@ -469,7 +470,7 @@
           if (!res.phone) {
             this.settingModalVisible = true
           } else {
-            this.confirmModalVisible = true
+            this.signUpVisible = true
           }
           this.$apply()
         })
@@ -485,7 +486,7 @@
       setClipboard () {
 
         wepy.setClipboardData({
-          data: 'jiaxing19lou'
+          data: '13067690392'
         }).then(res => {
           this.successModalVisible = false
           /*wx.hideToast()

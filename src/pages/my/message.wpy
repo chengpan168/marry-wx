@@ -48,7 +48,7 @@
     <view class="message">
       <view class="item" wx:for="{{list}}" wx:key="{{index}}">
         <view class="time">
-          <text class="iconfont icon-dot"></text>
+          <text wx:if="{{!item.isRead}}" class="iconfont icon-dot"></text>
           <text>{{item.createTimeText}}</text>
         </view>
         <view class="content">
@@ -125,9 +125,9 @@
 
     init () {
       this.queryParam.current = 1
-      this.getList()
-
-      this.markRead()
+      this.getList().then(res => {
+        this.markRead()
+      })
     }
 
     methods = {
@@ -145,7 +145,7 @@
 
       this.loading = true
       wx.showNavigationBarLoading()
-      this.$get('/message/list', this.queryParam).then(res => {
+      return this.$get('/message/list', this.queryParam).then(res => {
         let list = res.records || []
 
         list.forEach(item => {
@@ -162,6 +162,7 @@
         this.hasNext = res.current < res.pages
         wx.hideNavigationBarLoading()
         this.$apply()
+        return Promise.resolve(res)
       }).catch(err => {
         this.loading = false
         wx.hideNavigationBarLoading()
