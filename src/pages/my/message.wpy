@@ -37,6 +37,12 @@
         font-family: PingFangSC-Regular;
         color: rgba(84, 84, 84, 1);
         line-height: 1.5;
+        font-weight:bold;
+
+        .title {
+          margin-bottom: 10px;
+          font-weight:bold;
+        }
       }
     }
   }
@@ -52,6 +58,7 @@
           <text>{{item.createTimeText}}</text>
         </view>
         <view class="content">
+          <view class="title">{{item.title}}:</view>
           {{item.content}}
         </view>
       </view>

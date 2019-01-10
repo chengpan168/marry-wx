@@ -117,8 +117,8 @@
           align-items: center;
           justify-content: center;
           height: 40px;
-          padding: 0 12px;
-          background: rgba(212, 48, 48, 1);
+          padding: 0 14px;
+          background: #e75e58;
           border-radius: 50%;
           font-size: 24px;
           color: rgba(255, 255, 255, 1);
