@@ -222,12 +222,7 @@
       token: '',
       loading: false,
       hasNext: true,
-      banners: [
-        {
-          title: '拍一场最美多季节！',
-          imageUrl: 'https://cdn.pingwest.com/portal/2018/11/28/Fgy_8EAlLpNObQD_7mFN_oZ1DQzD.jpg?imageView2/2/w/1440/q/100'
-        }
-      ],
+      banners: [],
       category: [],
       weekhot: [],
       guessLike: [],
