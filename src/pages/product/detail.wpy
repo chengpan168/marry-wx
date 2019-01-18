@@ -161,6 +161,16 @@
       font-size: 60px;
       color: #ffffff;
     }
+
+    image {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+    }
+  }
+
+  .home {
+    bottom: 130px;
   }
 
   .product-menu {
@@ -291,6 +301,14 @@
         <text class="iconfont icon-fenxiang2"></text>
       </button>
     </view>
+
+    <view class="share home" wx:if="{{homeVisible}}">
+      <button open-type="share" plain="true">
+        <!--<text class="iconfont icon-fenxiang2"></text>-->
+        <image src="/assets/icon/details-button-home@2x.png" mode="aspectFill"/>
+      </button>
+    </view>
+
     <!--分隔线-->
 
 
@@ -319,6 +337,7 @@
     data = {
       token: '',
       loading: false,
+      homeVisible: false,
       id: '',
       type: '',
       detail: {},
@@ -359,6 +378,13 @@
 
     init () {
       this.getDetail()
+
+      let opt = wx.getLaunchOptionsSync()
+      console.log(opt)
+      if (('1007' == opt.scene || opt.scene == '1008') && opt.path == 'pages/product/detail') {
+        this.homeVisible = true
+        this.$apply()
+      }
     }
 
     methods = {}
