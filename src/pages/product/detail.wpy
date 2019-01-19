@@ -302,8 +302,8 @@
       </button>
     </view>
 
-    <view class="share home" wx:if="{{homeVisible}}">
-      <button open-type="share" plain="true">
+    <view class="share home" >
+      <button @tap="reLaunchTo('/pages/index')" plain="true">
         <!--<text class="iconfont icon-fenxiang2"></text>-->
         <image src="/assets/icon/details-button-home@2x.png" mode="aspectFill"/>
       </button>
@@ -381,7 +381,7 @@
 
       let opt = wx.getLaunchOptionsSync()
       console.log(opt)
-      if (('1007' == opt.scene || opt.scene == '1008') && opt.path == 'pages/product/detail') {
+      if (('1007' == opt.scene || opt.scene == '1008' || opt.scene == '1044') && opt.path == 'pages/product/detail') {
         this.homeVisible = true
         this.$apply()
       }
