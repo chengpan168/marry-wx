@@ -240,6 +240,9 @@
       }
     }
 
+    .rich-text {
+      padding: 20px;
+    }
   }
 
 </style>
@@ -268,10 +271,13 @@
       </view>
       <view class="total">共{{detail.extProperty.foodNum || 0}}个菜</view>
       <view class="foot-detail">
-        <view>{{detail.extProperty.hotFoodNum || 0}}个热菜</view>
-        <view>{{detail.extProperty.coldNum || 0}}个冷菜</view>
-        <view>{{detail.extProperty.dessertNum || 0}}个点心</view>
-        <view>{{detail.extProperty.fruitsNum || 0}}个水果</view>
+        <view wx:if="{{detail.extProperty.hotFoodNum}}">{{detail.extProperty.hotFoodNum || 0}}个热菜</view>
+        <view wx:if="{{detail.extProperty.coldNum}}">{{detail.extProperty.coldNum || 0}}个冷菜</view>
+        <view wx:if="{{detail.extProperty.dessertNum}}">{{detail.extProperty.dessertNum || 0}}个点心</view>
+        <view wx:if="{{detail.extProperty.fruitsNum}}">{{detail.extProperty.fruitsNum || 0}}个水果</view>
+      </view>
+      <view class="rich-text">
+        <rich-text nodes="{{detail.description}}"></rich-text>
       </view>
     </view>
     <view wx:else class="product-detail">

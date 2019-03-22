@@ -211,10 +211,10 @@
         title: opt.categoryName || '严选商家'
       })
 
+      this.init()
     }
 
     onShow () {
-      this.init()
     }
 
     onReachBottom (e) {

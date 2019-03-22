@@ -525,7 +525,7 @@
           <view class="info">
             <text class="name">{{item.name}}</text>
             <text class="label green" wx:if="{{item.extProperty && item.extProperty.maxTableNum}}">{{item.extProperty.maxTableNum}}桌</text>
-            <text class="label gray">{{item.extProperty.pillarNum ? item.extProperty.pillarNum : '无'}}柱</text>
+            <!--<text class="label gray">{{item.extProperty.pillarNum ? item.extProperty.pillarNum : '无'}}柱</text>-->
           </view>
         </view>
       </view>

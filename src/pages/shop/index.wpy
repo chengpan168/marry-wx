@@ -239,10 +239,10 @@
 
     onLoad (opt) {
       this.id = opt.id
+      this.init()
     }
 
     onShow () {
-      this.init()
     }
 
     onReachBottom (e) {
