@@ -258,8 +258,8 @@
           <view class="name">分享</view>
         </button>
       </view>
-      <view class="sign-up disable" disabled="true" wx:if="{{detail.productActivityExtDto.activityNum == detail.productActivityExtDto.activitySignUpNum}}">已报满</view>
       <view class="sign-up disable" disabled="{{detail.isBuy}}" wx:if="{{detail.isBuy}}">已报名</view>
+      <view class="sign-up disable" disabled="true" wx:elif="{{detail.productActivityExtDto.activityNum == detail.productActivityExtDto.activitySignUpNum}}">已报满</view>
       <view class="sign-up" @tap="onPreSubmit" wx:else>立即报名</view>
     </view>
 
