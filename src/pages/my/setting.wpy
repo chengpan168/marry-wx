@@ -42,9 +42,9 @@
         font-weight: bold;
         color: rgba(84, 84, 84, 1);
         min-width: 200px;
-        height:100px;
-        line-height:100px;
-        text-align:right;
+        height: 100px;
+        line-height: 100px;
+        text-align: right;
       }
 
       .enter {
@@ -59,7 +59,7 @@
           display: inline-block;
           max-width: 500px;
           overflow: hidden;
-          text-overflow:ellipsis;
+          text-overflow: ellipsis;
           white-space: nowrap;
         }
 
@@ -140,7 +140,7 @@
       font-size: 36px;
       font-weight: bold;
       color: rgba(255, 255, 255, 1);
-      background:rgba(252,214,1,1);
+      background: rgba(252, 214, 1, 1);
     }
   }
 
@@ -152,7 +152,7 @@
       <view class="menu-item avatar-wrapper">
         <text class="name">头像</text>
         <view class="enter">
-          <image class="avatar" src="{{avatarUrl}}" mode="aspectFill"/>
+          <image class="avatar" mode="aspectFill" src="{{avatarUrl}}"/>
         </view>
       </view>
       <view class="menu-item">
@@ -162,14 +162,14 @@
           <text class="iconfont icon-enter"></text>
         </text>
       </view>
-      <view class="menu-item" @tap="navTo('/pages/my/bindPhone')">
+      <view @tap="navTo('/pages/my/bindPhone')" class="menu-item">
         <text class="name">绑定手机</text>
         <text class="enter">
           <text>{{phone}}</text>
           <text class="iconfont icon-enter"></text>
         </text>
       </view>
-      <view class="menu-item" @tap="onAddressChange">
+      <view @tap="onAddressChange" class="menu-item">
         <text class="name">我的地址</text>
         <text class="enter">
           <text>{{formData.address}}</text>
@@ -178,7 +178,7 @@
       </view>
       <view class="menu-item">
         <text class="name">大婚日</text>
-        <picker bindchange="bindMarryTimeChange" mode="date" value="{{formData.marryTime}}" start="{{marryTimeStart}}">
+        <picker bindchange="bindMarryTimeChange" mode="date" start="{{marryTimeStart}}" value="{{formData.marryTime}}">
           <view class="picker">
             {{formData.marryTime}}
           </view>
@@ -189,7 +189,7 @@
       </view>
     </view>
     <view class="btns">
-      <button class="submit" @tap="onSubmit">确定</button>
+      <button @tap="onSubmit" class="submit">确定</button>
     </view>
 
 
@@ -245,6 +245,10 @@
     computed = {}
 
     onLoad (opt) {
+
+    }
+
+    onShow () {
       this.$getUser().then(res => {
         this.avatarUrl = res.avatarUrl
         this.phone = res.phone
@@ -255,9 +259,6 @@
         }
         this.$apply()
       })
-    }
-
-    onShow () {
       this.init()
     }
 
@@ -332,7 +333,7 @@
           }
 
         })
-      },
+      }
     }
 
   }
