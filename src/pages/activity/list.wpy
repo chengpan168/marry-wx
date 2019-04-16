@@ -70,7 +70,7 @@
         <view class="surplus" wx:if="{{item.remainSign}}">{{item.remainSign}}</view>
         <image src="{{item.coverFileDto.url}}" mode="aspectFill"/>
         <view class="name">{{item.name}}</view>
-        <view class="sub-name" wx:if="{{index == 2}}">仅售3999元|4D实景|底片全送|送婚纱</view>
+        <!--<view class="sub-name" wx:if="{{index == 2}}">仅售3999元|4D实景|底片全送|送婚纱</view>-->
         <view class="price" wx:if="{{detail.currentAmount}}">￥{{detail.currentAmount}}</view>
       </view>
 
