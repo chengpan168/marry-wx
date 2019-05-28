@@ -102,6 +102,7 @@
       color: rgba(255, 255, 255, 1);
       text-align: center;
     }
+
     .disable {
       background: #e6e6e6;
     }
@@ -259,7 +260,9 @@
         </button>
       </view>
       <view class="sign-up disable" disabled="{{detail.isBuy}}" wx:if="{{detail.isBuy}}">已报名</view>
-      <view class="sign-up disable" disabled="true" wx:elif="{{detail.productActivityExtDto.activityNum == detail.productActivityExtDto.activitySignUpNum}}">已报满</view>
+      <view class="sign-up disable" disabled="true"
+            wx:elif="{{detail.productActivityExtDto.activityNum == detail.productActivityExtDto.activitySignUpNum}}">已报满
+      </view>
       <view class="sign-up" @tap="onPreSubmit" wx:else>立即报名</view>
     </view>
 
@@ -331,6 +334,7 @@
 </template>
 
 <script>
+  import wepy from 'wepy'
   import page from '@/common/page'
   import logger from '../../mixins/logger'
   import format from 'date-fns/format'
@@ -498,7 +502,7 @@
 
           this.$apply()
         })
-      },
+      }
     }
 
     getDetail () {
@@ -515,7 +519,7 @@
           detail.extProperty = {}
         }
 
-        if ( detail.productActivityExtDto && detail.productActivityExtDto.endTime)  {
+        if (detail.productActivityExtDto && detail.productActivityExtDto.endTime) {
           detail.productActivityExtDto.endTime = format(detail.productActivityExtDto.endTime, 'YYYY-MM-DD HH:mm')
         }
 
@@ -533,30 +537,29 @@
       this.loading = true
       this.formData.productId = this.id
       this.$post('/order/createOrder', this.formData).then(buyRes => {
-        if (buyRes) {
-          this.confirmModalVisible = false
 
-          let prepayId = buyRes
-          this.pay(prepayId)
+        if (this.amount == 0) {
 
-          /*wepy.login().then(loginRes => {
-            let code = loginRes.code
-            this.$post('/wxPay/payServer', {
-              id: id,
-              code: code,
-              type: 'servicePackage'
-            }).then(res => {
-              this.pay(res.prepayId)
-            })
-          })*/
-
-        } else {
           $Toast({
-            content: '报名失败',
-            duration: 1
+            content: '支付成功'
           })
-        }
+          this.successModalVisible = true
+          this.detail.isBuy = true
+        } else {
 
+          if (buyRes) {
+            this.confirmModalVisible = false
+
+            let prepayId = buyRes
+            this.pay(prepayId)
+
+          } else {
+            $Toast({
+              content: '报名失败',
+              duration: 1
+            })
+          }
+        }
         this.loading = false
         this.$apply()
       }).catch(err => {
@@ -584,6 +587,7 @@
               content: '支付成功'
             })
             this.successModalVisible = true
+            this.detail.isBuy = true
             /* setTimeout(
                () => {
                  wx.navigateBack({
